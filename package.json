@@ -1,0 +1,16 @@
+{
+  "name": "try-electron",
+  "version": "0.0.0",
+  "description": "electronを使ってデスクトップアプリを作ってみる",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "walk8243 <walk8243@gmail.com> (https://walk8243.xyz/)",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0"
+  }
+}
