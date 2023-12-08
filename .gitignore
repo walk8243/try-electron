@@ -9,9 +9,13 @@
 # testing
 /coverage
 
+# electron
+/main
+/dist
+
 # next.js
-/.next/
-/out/
+.next
+out
 
 # production
 /build
