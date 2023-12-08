@@ -42,3 +42,9 @@ $ npm run dist
 ```bash
 $ npm run type-check
 ```
+
+## 開発
+
+### Figma
+
+https://www.figma.com/file/yQLWa7vdPFTJxUUPtUGsmj/try-electron?type=design&t=NxeAUALTrFdsd98k-6

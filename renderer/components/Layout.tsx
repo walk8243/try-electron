@@ -19,9 +19,6 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
   <div className={layoutStyles.box}>
     <Head>
       <title>{title}</title>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
     </Head>
     <Header />
     <main className={layoutStyles.main}>
