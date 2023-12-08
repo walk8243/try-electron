@@ -1,12 +1,8 @@
-import Link from 'next/link'
+import headlineStyles from '../styles/Headline.module.scss'
 
 const Header = () => (
   <header>
-    <h2 style={{ display: 'none' }}>ヘッダ</h2>
-    <nav>
-      <Link href="/">Home</Link> | <Link href="/about">About</Link> |{' '}
-      <Link href="/initial-props">With Initial Props</Link>
-    </nav>
+    <h2 className={headlineStyles['header--hidden']}>ヘッダ</h2>
   </header>
 )
 

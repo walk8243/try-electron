@@ -16,6 +16,7 @@
   "author": "walk8243 <walk8243@gmail.com> (https://walk8243.xyz/)",
   "license": "MIT",
   "dependencies": {
+    "@material/web": "^1.0.1",
     "electron-is-dev": "^1.2.0",
     "electron-next": "^3.1.5",
     "react": "^18.2.0",
@@ -29,6 +30,7 @@
     "electron-builder": "^24.9.1",
     "next": "latest",
     "rimraf": "^3.0.2",
+    "sass": "^1.69.5",
     "typescript": "^4.9.5"
   },
   "build": {
