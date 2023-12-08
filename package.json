@@ -1,5 +1,7 @@
 {
-  "private": true,
+  "name": "try-electron",
+  "version": "0.0.0",
+  "description": "Electronを使ってデスクトップアプリを作ってみる",
   "main": "main/index.js",
   "productName": "ElectronTypescriptNext",
   "scripts": {
@@ -12,6 +14,8 @@
     "dist": "npm run build && electron-builder",
     "type-check": "tsc -p ./renderer/tsconfig.json && tsc -p ./electron-src/tsconfig.json"
   },
+  "author": "walk8243 <walk8243@gmail.com> (https://walk8243.xyz/)",
+  "license": "MIT",
   "dependencies": {
     "electron-is-dev": "^1.2.0",
     "electron-next": "^3.1.5",
@@ -34,5 +38,6 @@
       "main",
       "renderer/out"
     ]
-  }
+  },
+  "private": true
 }
