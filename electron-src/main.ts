@@ -15,7 +15,7 @@ app.on('ready', async () => {
   await prepareNext('./renderer')
   if (store.has('githubToken')) {
     ipcMain.handle('github:userInfo', async () => {
-      return await getUserInfo('https://api.github.com/user')
+      return await getUserInfo()
     })
   }
 
