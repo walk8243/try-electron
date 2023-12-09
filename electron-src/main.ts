@@ -1,18 +1,17 @@
 // Native
-import { join } from 'path'
-import { format } from 'url'
+import { join } from 'node:path'
 
 // Packages
 import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron'
-import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 
-import { store } from './store'
-import { getUserInfo } from './github'
+import { createMenu } from './menu'
+import { store } from './utils/store'
+import { getUserInfo } from './utils/github'
+import { getLoadedUrl } from './utils/render'
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
-  console.log('UserData:', app.getPath('userData'))
   await prepareNext('./renderer')
   if (store.has('githubToken')) {
     ipcMain.handle('github:userInfo', async () => {
@@ -26,19 +25,12 @@ app.on('ready', async () => {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: join(__dirname, 'preload.js'),
+      preload: join(__dirname, 'preload', 'main.js'),
     },
   })
+  createMenu(mainWindow)
 
-  const url = isDev
-    ? 'http://localhost:8000/'
-    : format({
-        pathname: join(__dirname, '../renderer/out/index.html'),
-        protocol: 'file:',
-        slashes: true,
-      })
-
-  mainWindow.loadURL(url)
+  mainWindow.loadURL(getLoadedUrl())
 })
 
 // Quit the app once all windows are closed

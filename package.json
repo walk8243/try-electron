@@ -2,7 +2,7 @@
   "name": "try-electron",
   "version": "0.0.0",
   "description": "Electronを使ってデスクトップアプリを作ってみる",
-  "main": "main/index.js",
+  "main": "main/main.js",
   "scripts": {
     "clean": "rimraf dist main renderer/out renderer/.next",
     "dev": "npm run build-electron && electron .",
