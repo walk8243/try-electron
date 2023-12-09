@@ -1,4 +1,4 @@
-import { GithubUserInfo } from './Github';
+import { GithubUserInfo, GithubIssue } from './Github';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -8,6 +8,7 @@ declare global {
       receiveHello: (handler: (event, args) => void) => void
       stopReceivingHello: (handler: (event, args) => void) => void
       userInfo: () => Promise<GithubUserInfo>
+      issues: () => Promise<GithubIssue[]>
     }
     setting: {
       display: () => Promise<SettingData>

@@ -2,13 +2,22 @@ import { net, safeStorage } from 'electron'
 import { store } from './store'
 
 export const getUserInfo = async () => {
-	return await accessGithub('/user')
+	return await accessGithub({ path: '/user' })
 }
 
-const accessGithub = async (path: string) => {
-	const response = await net.fetch(`https://${getHostname()}${path}`, {
+export const getIssues = async (page: number = 1) => {
+	return await accessGithub({ path: '/issues', query: { filter: 'all', state: 'all', sort: 'updated', per_page: 100, page } })
+}
+
+const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }) => {
+	const url = new URL(path, `https://${getHostname()}`)
+	url.search = new URLSearchParams(query ?? {}).toString()
+	console.log('[accessGithub URL]', url.href)
+	const response = await net.fetch(url.href, {
 		headers: {
-			Authorization: `Bearer ${getToken()}`
+			Accept: 'application/vnd.github+json',
+			Authorization: `Bearer ${getToken()}`,
+			'X-GitHub-Api-Version': '2022-11-28',
 		}
 	})
 	if (!response.ok) {
@@ -28,5 +37,9 @@ const getHostname = () => {
 
 const getToken = () => {
 	const token = store.get('githubToken')
+	if (!token) {
+		throw new Error('No GitHub token set. Please set one in the settings.')
+	}
+
 	return safeStorage.decryptString(Buffer.from(token, 'base64'))
 }
