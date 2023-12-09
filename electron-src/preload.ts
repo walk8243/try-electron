@@ -13,4 +13,5 @@ contextBridge.exposeInMainWorld('electron', {
   stopReceivingHello: (
     handler: (event: IpcRendererEvent, ...args: any[]) => void
   ) => ipcRenderer.removeListener('message', handler),
+  userInfo: () => ipcRenderer.invoke('github:userInfo'),
 })

@@ -1,6 +1,8 @@
+import headlineStyles from '../styles/Headline.module.scss'
+
 const IssueList = () => (
   <section>
-    <h3>Issueリスト</h3>
+    <h3 className={headlineStyles['header--hidden']}>Issueリスト</h3>
   </section>
 )
 
