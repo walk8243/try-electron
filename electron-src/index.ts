@@ -7,14 +7,18 @@ import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 
+import { store } from './store'
 import { getUserInfo } from './github'
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
+  console.log('UserData:', app.getPath('userData'))
   await prepareNext('./renderer')
-  ipcMain.handle('github:userInfo', async () => {
-    return await getUserInfo('https://api.github.com/user')
-  })
+  if (store.has('githubToken')) {
+    ipcMain.handle('github:userInfo', async () => {
+      return await getUserInfo('https://api.github.com/user')
+    })
+  }
 
   const mainWindow = new BrowserWindow({
     width: 1200,
