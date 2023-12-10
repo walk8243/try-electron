@@ -31,23 +31,22 @@ app.on('ready', async () => {
       preload: join(__dirname, 'preload', 'main.js'),
     },
   })
-  createMenu(mainWindow)
+  const webview = new BrowserView({})
+  mainWindow.setBrowserView(webview)
 
+  createMenu(mainWindow, webview)
   mainWindow.loadURL(getLoadedUrl())
 
-  const view = new BrowserView({})
-  mainWindow.setBrowserView(view)
-  view.setBounds({ x: 550, y: 24, width: 1200 - 6 - 250 - 300, height: 800 - 49 - 24 - 24 })
-  view.webContents.loadURL('https://github.com/')
+  webview.setBounds({ x: 550, y: 24, width: 1200 - 6 - 250 - 300, height: 800 - 49 - 24 - 24 })
+  webview.webContents.loadURL('https://github.com/')
   ipcMain.handle('github:issue', async (_event, url: string) => {
-    view.webContents.loadURL(url)
+    webview.webContents.loadURL(url)
   })
 
   if (isDev) {
     await installExtension(REACT_DEVELOPER_TOOLS)
     console.log(app.getPath('userData'))
     await session.defaultSession.loadExtension(join(app.getPath('userData'), 'extensions', REACT_DEVELOPER_TOOLS.id))
-    mainWindow.webContents.openDevTools({ mode: 'detach' })
   }
 })
 

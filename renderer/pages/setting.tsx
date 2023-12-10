@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Head from 'next/head'
 import { SettingData } from '../interfaces'
 
 import headlineStyles from '../styles/Headline.module.scss'
@@ -24,6 +25,9 @@ const SettingPage = () => {
 
   return (
     <div>
+      <Head>
+        <title>設定</title>
+      </Head>
       <h1 className={headlineStyles['header--hidden']}>設定用のページ</h1>
   
       <section>
