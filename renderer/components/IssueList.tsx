@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { GithubIssue } from '../interfaces/Github'
+
+import issueListStyles from '../styles/IssueList.module.scss'
 import headlineStyles from '../styles/Headline.module.scss'
 
 const IssueList = () => {
@@ -11,7 +13,7 @@ const IssueList = () => {
   }, [])
 
   return (
-    <section>
+    <section className={issueListStyles.box}>
       <h3 className={headlineStyles['header--hidden']}>Issueリスト</h3>
       <ul>
         {issues.map((issue) => (

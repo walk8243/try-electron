@@ -1,9 +1,10 @@
-import { ReactNode } from 'react'
+import issueStyles from '../styles/Issue.module.scss'
 
-const Issue = ({ children }: { children: ReactNode }) => (
-  <section>
+const Issue = ({ url }: { url?: string }) => (
+  <section className={issueStyles.box}>
     <h3 style={{ display: 'none' }}>Issue</h3>
-    {children}
+    <p>{url ?? ''}</p>
+    <iframe src={url ?? ''} className={issueStyles.iframe} />
   </section>
 )
 
