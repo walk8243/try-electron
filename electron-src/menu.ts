@@ -25,7 +25,7 @@ export const createMenu = (parentWindow: BrowserWindow) => {
 		submenu: fileMenu,
 	}))
 
-	Menu.setApplicationMenu(menu)
+	parentWindow.setMenu(menu)
 
 	ipcMain.handle('setting:display', async () => {
 		return { hostname: store.get('githubHostname') }

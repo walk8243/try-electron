@@ -6,6 +6,7 @@ declare global {
     electron: {
       userInfo: () => Promise<GithubUserInfo>
       issues: () => Promise<GithubIssue[]>
+      issue: (url: string) => Promise<void>
     }
     setting: {
       display: () => Promise<SettingData>

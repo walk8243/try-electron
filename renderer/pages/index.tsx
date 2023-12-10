@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 
 import Header from '../components/Header'
@@ -11,6 +11,7 @@ import styles from '../styles/index.module.scss'
 import headlineStyles from '../styles/Headline.module.scss'
 
 const IndexPage = () => {
+  const [ issueUrl, setIssueUrl ] = useState('')
   useEffect(() => {}, [])
 
   return (
@@ -22,8 +23,8 @@ const IndexPage = () => {
       <main className={styles.main}>
         <h2 className={headlineStyles['header--hidden']}>メイン</h2>
         <Menu />
-        <IssueList />
-        <Issue url='https://nogizaka46.com' />
+        <IssueList issueUrlHandler={setIssueUrl} />
+        <Issue url={issueUrl} />
       </main>
       <Footer />
     </div>

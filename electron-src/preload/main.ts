@@ -8,4 +8,5 @@ import { contextBridge, ipcRenderer } from 'electron'
 contextBridge.exposeInMainWorld('electron', {
   userInfo: () => ipcRenderer.invoke('github:userInfo'),
   issues: () => ipcRenderer.invoke('github:issues'),
+  issue: (url: string) => ipcRenderer.invoke('github:issue', url),
 })
