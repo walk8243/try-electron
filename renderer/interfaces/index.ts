@@ -1,22 +1,19 @@
-// You can include shared interfaces/types in a separate file
-// and then use them in any component by importing them. For
-// example, to import the interface below do:
-//
-// import User from 'path/to/interfaces';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { GithubUserInfo, GithubIssue } from './Github';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   interface Window {
     electron: {
-      sayHello: () => void
-      receiveHello: (handler: (event, args) => void) => void
-      stopReceivingHello: (handler: (event, args) => void) => void
+      userInfo: () => Promise<GithubUserInfo>
+      issues: (noticeEnable: boolean) => Promise<GithubIssue[]>
+      issue: (url: string) => Promise<void>
+    }
+    setting: {
+      display: () => Promise<SettingData>
+      submit: (data: SettingData) => void
+      cancel: () => void
     }
   }
 }
 
-export type User = {
-  id: number
-  name: string
-}
+export type SettingData = { hostname: string, token?: string }

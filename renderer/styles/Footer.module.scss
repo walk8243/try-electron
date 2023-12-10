@@ -1,0 +1,10 @@
+.copyright {
+	&::before {
+		content: '@';
+		padding-right: 5px;
+	}
+
+	&Box {
+		text-align: center;
+	}
+}

@@ -1,6 +1,32 @@
-# try-electron
+# Amethyst
 
-Electronを使ってデスクトップアプリを作ってみる
+関係しているGitHubのIssuesを表示・管理するデスクトップアプリ
+
+## 使い方
+
+### 初期設定
+
+```bash
+$ npm ci
+```
+
+### 本番環境のビルド
+
+```bash
+$ npm run dist
+```
+
+### 開発時の起動
+
+```bash
+$ npm run dev
+```
+
+### TypeScriptの型チェック
+
+```bash
+$ npm run type-check
+```
 
 ## TypeScript × Next.js × Electron
 
@@ -23,22 +49,8 @@ Next.jsもElectronレイヤもTypeScriptで記述され、ビルド時にJavaScr
 $ npx create-next-app --example with-electron-typescript with-electron-typescript-app
 ```
 
-## 使い方
+## 開発
 
-### 開発時の起動
+### Figma
 
-```bash
-$ npm run dev
-```
-
-### 本番環境のビルド
-
-```bash
-$ npm run dist
-```
-
-### TypeScriptの型チェック
-
-```bash
-$ npm run type-check
-```
+https://www.figma.com/file/yQLWa7vdPFTJxUUPtUGsmj/amethyst-electron?type=design&t=40RWPyne71Apt9tS-6

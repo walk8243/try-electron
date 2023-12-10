@@ -1,14 +1,13 @@
-import Link from 'next/link'
-import Layout from '../components/Layout'
+import Head from 'next/head'
 
 const AboutPage = () => (
-  <Layout title="About | Next.js + TypeScript + Electron Example">
+  <div>
+    <Head>
+      <title>このアプリについて</title>
+    </Head>
     <h1>About</h1>
     <p>This is the about page</p>
-    <p>
-      <Link href="/">Go home</Link>
-    </p>
-  </Layout>
+  </div>
 )
 
 export default AboutPage
