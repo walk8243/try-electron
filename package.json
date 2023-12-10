@@ -4,6 +4,7 @@
   "description": "関係しているGitHubのIssuesを表示・管理するデスクトップアプリ",
   "main": "main/main.js",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
     "clean": "rimraf dist main renderer/out renderer/.next",
     "dev": "npm run build-electron && electron .",
     "build-renderer": "next build renderer",
