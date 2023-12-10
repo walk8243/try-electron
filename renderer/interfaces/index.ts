@@ -5,7 +5,7 @@ declare global {
   interface Window {
     electron: {
       userInfo: () => Promise<GithubUserInfo>
-      issues: () => Promise<GithubIssue[]>
+      issues: (noticeEnable: boolean) => Promise<GithubIssue[]>
       issue: (url: string) => Promise<void>
     }
     setting: {

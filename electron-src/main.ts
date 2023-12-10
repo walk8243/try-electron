@@ -2,10 +2,11 @@
 import { join } from 'node:path'
 
 // Packages
-import { BrowserWindow, BrowserView, app, ipcMain, session } from 'electron'
+import { BrowserWindow, BrowserView, app, ipcMain, Notification, session } from 'electron'
 import prepareNext from 'electron-next'
 import isDev from 'electron-is-dev'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+import dayjs from 'dayjs'
 
 import { createMenu } from './menu'
 import { getUserInfo, getIssues } from './utils/github'
@@ -18,7 +19,17 @@ app.on('ready', async () => {
     return await getUserInfo()
   })
   ipcMain.handle('github:issues', async () => {
-    return await getIssues()
+    const now = dayjs()
+    const issues = await getIssues()
+    const target = now.subtract(5, 'minute')
+    if (issues.some((issue) => dayjs(issue.updated_at).isAfter(target))) {
+      const notification = new Notification({
+        title: 'Issueが更新されました',
+        body: '更新されたIssue・PRがあります。Issue・PRを確認してください。',
+      })
+      notification.show()
+    }
+    return issues
   })
 
   const mainWindow = new BrowserWindow({
@@ -45,7 +56,6 @@ app.on('ready', async () => {
 
   if (isDev) {
     await installExtension(REACT_DEVELOPER_TOOLS)
-    console.log(app.getPath('userData'))
     await session.defaultSession.loadExtension(join(app.getPath('userData'), 'extensions', REACT_DEVELOPER_TOOLS.id))
   }
 })

@@ -7,6 +7,6 @@ import { contextBridge, ipcRenderer } from 'electron'
 // Be very cautious about which globals and APIs you expose to untrusted remote content.
 contextBridge.exposeInMainWorld('electron', {
   userInfo: () => ipcRenderer.invoke('github:userInfo'),
-  issues: () => ipcRenderer.invoke('github:issues'),
+  issues: (noticeEnable: boolean) => ipcRenderer.invoke('github:issues', noticeEnable),
   issue: (url: string) => ipcRenderer.invoke('github:issue', url),
 })

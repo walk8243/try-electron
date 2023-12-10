@@ -7,13 +7,20 @@ import headlineStyles from '../styles/Headline.module.scss'
 type Props = {
   issueUrlHandler: Dispatch<SetStateAction<string>>
 }
+let issueTimer: NodeJS.Timeout;
 
 const IssueList = ({ issueUrlHandler }: Props) => {
   const [issues, setIssues] = useState<GithubIssue[]>([])
   useEffect(() => {
-    window.electron?.issues()
+    window.electron?.issues(false)
       .then((data) => setIssues(() => data))
       .catch(console.error)
+
+    issueTimer = setInterval(() => {
+      window.electron?.issues(true)
+        .then((data) => setIssues(() => data))
+        .catch(console.error)
+    }, 5 * 60 * 1000);
   }, [])
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>, url: string) => {

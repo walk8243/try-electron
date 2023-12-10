@@ -9,7 +9,7 @@ export const getIssues = async (page: number = 1) => {
 	return await accessGithub({ path: '/issues', query: { filter: 'all', state: 'all', sort: 'updated', per_page: 100, page } })
 }
 
-const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }) => {
+const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }): Promise<Record<string, any>[]> => {
 	const url = new URL(path, `https://${getHostname()}`)
 	url.search = new URLSearchParams(query ?? {}).toString()
 	console.log('[accessGithub URL]', url.href)
