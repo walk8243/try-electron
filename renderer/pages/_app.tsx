@@ -4,7 +4,7 @@ import Head from 'next/head'
 const MyApp = ({ Component, pageProps }: AppProps) => (
   <>
     <Head>
-      <title>try-electron</title>
+      <title>Amethyst</title>
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
     <Component {...pageProps} />

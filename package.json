@@ -1,7 +1,7 @@
 {
-  "name": "try-electron",
-  "version": "0.0.0",
-  "description": "Electronを使ってデスクトップアプリを作ってみる",
+  "name": "amethyst-electron",
+  "version": "0.1.0",
+  "description": "関係しているGitHubのIssuesを表示・管理するデスクトップアプリ",
   "main": "main/main.js",
   "scripts": {
     "clean": "rimraf dist main renderer/out renderer/.next",
@@ -13,6 +13,7 @@
     "dist": "npm run build && electron-builder",
     "type-check": "tsc -p ./renderer/tsconfig.json && tsc -p ./electron-src/tsconfig.json"
   },
+  "keywords": ["electron", "github", "issues", "desktop-app"],
   "author": "walk8243 <walk8243@gmail.com> (https://walk8243.xyz/)",
   "license": "MIT",
   "dependencies": {
