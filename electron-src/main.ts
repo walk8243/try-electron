@@ -6,14 +6,20 @@ import { BrowserWindow, BrowserView, app, ipcMain, Notification, session } from 
 import prepareNext from 'electron-next'
 import isDev from 'electron-is-dev'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+import log from 'electron-log/main'
 import dayjs from 'dayjs'
 
 import { createMenu } from './menu'
 import { getUserInfo, getIssues } from './utils/github'
 import { getLoadedUrl } from './utils/render'
 
+log.initialize({ preload: true })
+log.eventLogger.startLogging({})
+
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
+  log.verbose('App is ready')
+
   await prepareNext('./renderer')
   ipcMain.handle('github:userInfo', async () => {
     return await getUserInfo()

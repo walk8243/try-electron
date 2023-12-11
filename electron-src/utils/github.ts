@@ -1,4 +1,5 @@
 import { net, safeStorage } from 'electron'
+import log from 'electron-log/main'
 import { store } from './store'
 
 export const getUserInfo = async () => {
@@ -12,7 +13,7 @@ export const getIssues = async (page: number = 1) => {
 const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }): Promise<Record<string, any>[]> => {
 	const url = new URL(path, `https://${getHostname()}`)
 	url.search = new URLSearchParams(query ?? {}).toString()
-	console.log('[accessGithub URL]', url.href)
+	log.verbose('[accessGithub URL]', url.href)
 	const response = await net.fetch(url.href, {
 		headers: {
 			Accept: 'application/vnd.github+json',
