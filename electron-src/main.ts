@@ -7,7 +7,7 @@ import log from 'electron-log/main'
 import dayjs from 'dayjs'
 
 import { createMenu } from './menu'
-import { getUserInfo, getIssues } from './utils/github'
+import { getUserInfo, getIssues, checkStoreData } from './utils/github'
 import * as windowUtils from './utils/window'
 
 log.initialize({ preload: true })
@@ -47,6 +47,10 @@ app.on('ready', async () => {
   ipcMain.handle('github:issue', async (_event, url: string) => {
     webview.webContents.loadURL(url)
   })
+
+  if (!checkStoreData()) {
+    settingWindow.show()
+  }
 
   if (isDev) {
     await installExtension(REACT_DEVELOPER_TOOLS)
