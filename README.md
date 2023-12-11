@@ -2,6 +2,8 @@
 
 関係しているGitHubのIssuesを表示・管理するデスクトップアプリ
 
+![application icon](docs/img/icon_200.png)
+
 ## 使い方
 
 ### 初期設定
