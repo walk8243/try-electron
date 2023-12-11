@@ -1,19 +1,13 @@
-import { join } from 'node:path'
 import { BrowserWindow, BrowserView, ipcMain, Menu, MenuItem, safeStorage } from 'electron'
 import isDev from 'electron-is-dev'
-import type { BrowserWindowConstructorOptions } from 'electron'
 
 import { store } from './utils/store'
-import { getLoadedUrl } from './utils/render'
 import type { SettingData } from './preload/setting'
 
-export const createMenu = (parentWindow: BrowserWindow, webview: BrowserView): Menu => {
+export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }: { parentWindow: BrowserWindow, settingWindow: BrowserWindow, aboutWindow: BrowserWindow, webview: BrowserView }): Menu => {
 	const menu = new Menu()
 
 	const fileMenu = new Menu()
-	const settingWindow = new BrowserWindow({ ...SettingsWindowOptions, parent: parentWindow })
-	settingWindow.removeMenu()
-	settingWindow.loadURL(getLoadedUrl('setting'))
 	fileMenu.append(new MenuItem({
 		label: 'Settings',
 		click: () => settingWindow.show(),
@@ -64,12 +58,9 @@ export const createMenu = (parentWindow: BrowserWindow, webview: BrowserView): M
 	}
 
 	const helpMenu = new Menu()
-	const helpWindow = new BrowserWindow({ ...AboutWindowOptions, parent: parentWindow })
-	helpWindow.removeMenu()
-	helpWindow.loadURL(getLoadedUrl('about'))
 	helpMenu.append(new MenuItem({
 		label: 'About',
-		click: () => helpWindow.show(),
+		click: () => aboutWindow.show(),
 	}))
 	menu.append(new MenuItem({
 		label: 'Help',
@@ -93,30 +84,4 @@ export const createMenu = (parentWindow: BrowserWindow, webview: BrowserView): M
 		})
 
 	return menu
-}
-
-const SettingsWindowOptions: BrowserWindowConstructorOptions = {
-	title: 'Settings',
-	parent: undefined, // set in createMenu
-	modal: true,
-	width: 300,
-	height: 500,
-	show: false,
-	closable: false,
-	fullscreenable: false,
-	webPreferences: {
-		nodeIntegration: false,
-		contextIsolation: true,
-		preload: join(__dirname, 'preload', 'setting.js'),
-	},
-}
-const AboutWindowOptions: BrowserWindowConstructorOptions = {
-	title: 'About',
-	parent: undefined, // set in createMenu
-	modal: true,
-	width: 300,
-	height: 200,
-	show: false,
-	resizable: false,
-	fullscreenable: false,
 }
