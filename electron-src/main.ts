@@ -45,7 +45,8 @@ app.on('ready', async () => {
   const webview = new BrowserView({})
   mainWindow.setBrowserView(webview)
 
-  createMenu(mainWindow, webview)
+  const menu = createMenu(mainWindow, webview)
+  mainWindow.setMenu(menu)
   mainWindow.loadURL(getLoadedUrl())
 
   webview.setBounds({ x: 550, y: 24, width: 1200 - 6 - 250 - 300, height: 800 - 49 - 24 - 24 })

@@ -7,7 +7,7 @@ import { store } from './utils/store'
 import { getLoadedUrl } from './utils/render'
 import type { SettingData } from './preload/setting'
 
-export const createMenu = (parentWindow: BrowserWindow, webview: BrowserView) => {
+export const createMenu = (parentWindow: BrowserWindow, webview: BrowserView): Menu => {
 	const menu = new Menu()
 
 	const fileMenu = new Menu()
@@ -76,8 +76,6 @@ export const createMenu = (parentWindow: BrowserWindow, webview: BrowserView) =>
 		submenu: helpMenu,
 	}))
 
-	parentWindow.setMenu(menu)
-
 	ipcMain.handle('setting:display', async () => {
 		return { hostname: store.get('githubHostname') }
 	})
@@ -93,6 +91,8 @@ export const createMenu = (parentWindow: BrowserWindow, webview: BrowserView) =>
 		.on('cancel', (_event: Electron.IpcMainEvent) => {
 			settingWindow.hide()
 		})
+
+	return menu
 }
 
 const SettingsWindowOptions: BrowserWindowConstructorOptions = {
