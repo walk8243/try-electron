@@ -4,6 +4,7 @@
   "description": "関係しているGitHubのIssuesを表示・管理するデスクトップアプリ",
   "main": "main/main.js",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
     "clean": "rimraf dist main renderer/out renderer/.next",
     "dev": "npm run build-electron && electron .",
     "build-renderer": "next build renderer",
@@ -24,7 +25,9 @@
   "dependencies": {
     "@material/web": "^1.0.1",
     "dayjs": "^1.11.10",
+    "electron-devtools-installer": "^3.2.0",
     "electron-is-dev": "^1.2.0",
+    "electron-log": "^5.0.1",
     "electron-next": "^3.1.5",
     "electron-store": "^8.1.0",
     "react": "^18.2.0",
@@ -36,7 +39,6 @@
     "@types/react-dom": "^16.9.24",
     "electron": "^27.1.2",
     "electron-builder": "^24.9.1",
-    "electron-devtools-installer": "^3.2.0",
     "next": "latest",
     "rimraf": "^3.0.2",
     "sass": "^1.69.5",
@@ -47,7 +49,14 @@
     "files": [
       "main",
       "renderer/out"
-    ]
+    ],
+    "mac": {
+      "icon": "docs/img/icon.png"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "docs/img/icon.png"
+    }
   },
   "private": true
 }

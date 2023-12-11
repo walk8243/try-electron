@@ -1,19 +1,21 @@
-// Native
 import { join } from 'node:path'
-
-// Packages
-import { BrowserWindow, BrowserView, app, ipcMain, Notification, session } from 'electron'
+import { app, ipcMain, Notification, session } from 'electron'
 import prepareNext from 'electron-next'
 import isDev from 'electron-is-dev'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+import log from 'electron-log/main'
 import dayjs from 'dayjs'
 
 import { createMenu } from './menu'
-import { getUserInfo, getIssues } from './utils/github'
-import { getLoadedUrl } from './utils/render'
+import { getUserInfo, getIssues, checkStoreData } from './utils/github'
+import * as windowUtils from './utils/window'
 
-// Prepare the renderer once the app is ready
+log.initialize({ preload: true })
+log.eventLogger.startLogging({})
+
 app.on('ready', async () => {
+  log.verbose('App is ready')
+
   await prepareNext('./renderer')
   ipcMain.handle('github:userInfo', async () => {
     return await getUserInfo()
@@ -32,27 +34,23 @@ app.on('ready', async () => {
     return issues
   })
 
-  const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    resizable: false,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      preload: join(__dirname, 'preload', 'main.js'),
-    },
-  })
-  const webview = new BrowserView({})
+  const mainWindow = windowUtils.createMain()
+  const webview = windowUtils.createWebview()
   mainWindow.setBrowserView(webview)
 
-  createMenu(mainWindow, webview)
-  mainWindow.loadURL(getLoadedUrl())
+  const settingWindow = windowUtils.createSetting(mainWindow)
+  const aboutWindow = windowUtils.createAbout(mainWindow)
+  const menu = createMenu({ parentWindow: mainWindow, webview, settingWindow, aboutWindow })
+  mainWindow.setMenu(menu)
+  mainWindow.show()
 
-  webview.setBounds({ x: 550, y: 24, width: 1200 - 6 - 250 - 300, height: 800 - 49 - 24 - 24 })
-  webview.webContents.loadURL('https://github.com/')
   ipcMain.handle('github:issue', async (_event, url: string) => {
     webview.webContents.loadURL(url)
   })
+
+  if (!checkStoreData()) {
+    settingWindow.show()
+  }
 
   if (isDev) {
     await installExtension(REACT_DEVELOPER_TOOLS)
@@ -60,5 +58,4 @@ app.on('ready', async () => {
   }
 })
 
-// Quit the app once all windows are closed
 app.on('window-all-closed', app.quit)
