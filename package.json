@@ -9,6 +9,7 @@
     "dev": "npm run build-electron && electron .",
     "build-renderer": "next build renderer",
     "build-electron": "tsc -p electron-src",
+    "build-icon": "png2icons docs/img/icon.png docs/img/icon -allp -bc -i",
     "build": "npm run build-renderer && npm run build-electron",
     "pack-app": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
@@ -40,6 +41,7 @@
     "electron": "^27.1.2",
     "electron-builder": "^24.9.1",
     "next": "latest",
+    "png2icons": "^2.0.1",
     "rimraf": "^3.0.2",
     "sass": "^1.69.5",
     "typescript": "^4.9.5"
@@ -51,11 +53,11 @@
       "renderer/out"
     ],
     "mac": {
-      "icon": "docs/img/icon.png"
+      "icon": "docs/img/icon.icns"
     },
     "win": {
       "target": "portable",
-      "icon": "docs/img/icon.png"
+      "icon": "docs/img/icon.ico"
     }
   },
   "private": true
