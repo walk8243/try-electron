@@ -1,11 +1,89 @@
-import { BrowserWindow, BrowserView, ipcMain, Menu, MenuItem, safeStorage } from 'electron'
+import { app, BrowserWindow, BrowserView, ipcMain, Menu, MenuItem, safeStorage, shell } from 'electron'
 import isDev from 'electron-is-dev'
 
 import { store } from './utils/store'
 import type { SettingData } from './preload/setting'
 
 export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }: { parentWindow: BrowserWindow, settingWindow: BrowserWindow, aboutWindow: BrowserWindow, webview: BrowserView }): Menu => {
-	const menu = new Menu()
+	const menu = Menu.buildFromTemplate([
+		{
+			label: app.name,
+			submenu: [
+				{ role: 'about' },
+				{ type: 'separator' },
+				{ role: 'services' },
+				{ type: 'separator' },
+				{ role: 'hide' },
+				{ role: 'hideOthers' },
+				{ role: 'unhide' },
+				{ type: 'separator' },
+				{ role: 'quit' },
+			],
+		},
+		{
+			label: 'File',
+			submenu: [
+				{ role: 'close' },
+			],
+		},
+		{
+			label: 'Edit',
+			submenu: [
+				{ role: 'undo' },
+				{ role: 'redo' },
+				{ type: 'separator' },
+				{ role: 'cut' },
+				{ role: 'copy' },
+				{ role: 'paste' },
+				{ role: 'pasteAndMatchStyle' },
+				{ role: 'delete' },
+				{ role: 'selectAll' },
+				{ type: 'separator' },
+				{
+					label: 'Speech',
+					submenu: [
+						{ role: 'startSpeaking' },
+						{ role: 'stopSpeaking' },
+					],
+				},
+			],
+		},
+		{
+			label: 'View',
+			submenu: [
+				{ role: 'reload' },
+				{ role: 'forceReload' },
+				{ role: 'toggleDevTools' },
+				{ type: 'separator' },
+				{ role: 'resetZoom' },
+				{ role: 'zoomIn' },
+				{ role: 'zoomOut' },
+				{ type: 'separator' },
+				{ role: 'togglefullscreen' },
+			],
+		},
+		{
+			label: 'Window',
+			submenu: [
+				{ role: 'minimize' },
+				{ role: 'zoom' },
+				{ type: 'separator' },
+				{ role: 'front' },
+				{ type: 'separator' },
+				{ role: 'window' },
+				{ role: 'close' },
+			],
+		},
+		{
+			role: 'help',
+			submenu: [
+				{
+					label: 'Learn More',
+					click: () => { shell.openExternal('https://electronjs.org') },
+				},
+			],
+		},
+	])
 
 	const fileMenu = new Menu()
 	fileMenu.append(new MenuItem({
@@ -14,7 +92,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 		click: () => settingWindow.show(),
 	}))
 	menu.append(new MenuItem({
-		label: 'File',
+		label: 'ORIGIN1',
 		submenu: fileMenu,
 	}))
 
@@ -34,7 +112,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 		},
 	}))
 	menu.append(new MenuItem({
-		label: 'Edit',
+		label: 'ORIGIN2',
 		submenu: editMenu,
 	}))
 
@@ -53,7 +131,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 			},
 		}))
 		menu.append(new MenuItem({
-			label: 'Developer',
+			label: 'ORIGIN3',
 			submenu: devMenu,
 		}))
 	}
@@ -64,7 +142,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 		click: () => aboutWindow.show(),
 	}))
 	menu.append(new MenuItem({
-		label: 'Help',
+		label: 'ORIGIN4',
 		submenu: helpMenu,
 	}))
 
