@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { app, ipcMain, Notification, session } from 'electron'
+import { app, ipcMain, Menu, Notification, session, shell } from 'electron'
 import prepareNext from 'electron-next'
 import isDev from 'electron-is-dev'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
@@ -12,6 +12,8 @@ import * as windowUtils from './utils/window'
 
 log.initialize({ preload: true })
 log.eventLogger.startLogging({})
+
+const isMac = process.platform === 'darwin'
 
 app.on('ready', async () => {
   log.verbose('App is ready')
@@ -41,11 +43,18 @@ app.on('ready', async () => {
   const settingWindow = windowUtils.createSetting(mainWindow)
   const aboutWindow = windowUtils.createAbout(mainWindow)
   const menu = createMenu({ parentWindow: mainWindow, webview, settingWindow, aboutWindow })
-  mainWindow.setMenu(menu)
+  if (isMac) {
+    Menu.setApplicationMenu(menu)
+  } else {
+    mainWindow.setMenu(menu)
+  }
   mainWindow.show()
 
   ipcMain.handle('github:issue', async (_event, url: string) => {
     webview.webContents.loadURL(url)
+  })
+  ipcMain.on('browser:open', (_event, url: string) => {
+    shell.openExternal(url)
   })
 
   if (!checkStoreData()) {

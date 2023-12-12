@@ -7,6 +7,7 @@ declare global {
       userInfo: () => Promise<GithubUserInfo>
       issues: (noticeEnable: boolean) => Promise<GithubIssue[]>
       issue: (url: string) => Promise<void>
+      open: (url: string) => void
     }
     setting: {
       display: () => Promise<SettingData>
@@ -16,4 +17,4 @@ declare global {
   }
 }
 
-export type SettingData = { hostname: string, token?: string }
+export type SettingData = { baseUrl: string, token?: string }
