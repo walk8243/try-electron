@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserView, ipcMain, Menu, MenuItem, safeStorage, shell } from 'electron'
+import { app, BrowserWindow, BrowserView, ipcMain, Menu, safeStorage, shell } from 'electron'
 import isDev from 'electron-is-dev'
 
 import { store } from './utils/store'
@@ -9,7 +9,16 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 		{
 			label: app.name,
 			submenu: [
-				{ role: 'about' },
+				{
+					label: 'About Amethyst',
+					click: () => aboutWindow.show(),
+				},
+				{ type: 'separator' },
+				{
+					label: 'Preferences',
+					accelerator: 'CmdOrCtrl+,',
+					click: () => settingWindow.show(),
+				},
 				{ type: 'separator' },
 				{ role: 'services' },
 				{ type: 'separator' },
@@ -51,9 +60,35 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 		{
 			label: 'View',
 			submenu: [
-				{ role: 'reload' },
-				{ role: 'forceReload' },
-				{ role: 'toggleDevTools' },
+				{
+					label: 'Reload',
+					accelerator: 'CmdOrCtrl+R',
+					click: () => webview.webContents.reload(),
+				},
+				{
+					label: 'Force Reload',
+					accelerator: 'CmdOrCtrl+Shift+R',
+					click: () => {
+						parentWindow.reload()
+						webview.webContents.reload()
+					},
+				},
+				{
+					label: 'Toggle Developer Tools',
+					enabled: isDev,
+					accelerator: 'CmdOrCtrl+Shift+I',
+					click: (_menuItem, window) => {
+						if (!window) {
+							return
+						}
+
+						if (window.webContents.isDevToolsOpened()) {
+							window.webContents.closeDevTools()
+						} else {
+							window.webContents.openDevTools({ mode: 'detach' })
+						}
+					},
+				},
 				{ type: 'separator' },
 				{ role: 'resetZoom' },
 				{ role: 'zoomIn' },
@@ -77,6 +112,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 		{
 			role: 'help',
 			submenu: [
+				{ role: 'about' },
 				{
 					label: 'Learn More',
 					click: () => { shell.openExternal('https://electronjs.org') },
@@ -84,67 +120,6 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 			],
 		},
 	])
-
-	const fileMenu = new Menu()
-	fileMenu.append(new MenuItem({
-		label: 'Settings',
-		accelerator: 'CmdOrCtrl+,',
-		click: () => settingWindow.show(),
-	}))
-	menu.append(new MenuItem({
-		label: 'ORIGIN1',
-		submenu: fileMenu,
-	}))
-
-	const editMenu = new Menu()
-	editMenu.append(new MenuItem({
-		label: 'Reload',
-		role: 'reload',
-		accelerator: 'CmdOrCtrl+R',
-		click: () => webview.webContents.reload(),
-	}))
-	editMenu.append(new MenuItem({
-		label: 'Full Reload',
-		accelerator: 'CmdOrCtrl+Shift+R',
-		click: () => {
-			parentWindow.reload()
-			webview.webContents.reload()
-		},
-	}))
-	menu.append(new MenuItem({
-		label: 'ORIGIN2',
-		submenu: editMenu,
-	}))
-
-	if (isDev) {
-		const devMenu = new Menu()
-		devMenu.append(new MenuItem({
-			label: 'Toggle Developer Tools',
-			accelerator: 'CmdOrCtrl+Alt+I',
-			click: (_menuItem, window) => {
-				if (!window) return
-				if (window.webContents.isDevToolsOpened()) {
-					window.webContents.closeDevTools()
-				} else {
-					window.webContents.openDevTools({ mode: 'detach' })
-				}
-			},
-		}))
-		menu.append(new MenuItem({
-			label: 'ORIGIN3',
-			submenu: devMenu,
-		}))
-	}
-
-	const helpMenu = new Menu()
-	helpMenu.append(new MenuItem({
-		label: 'About',
-		click: () => aboutWindow.show(),
-	}))
-	menu.append(new MenuItem({
-		label: 'ORIGIN4',
-		submenu: helpMenu,
-	}))
 
 	ipcMain.handle('setting:display', async () => {
 		return { baseUrl: store.get('githubBaseUrl') }
