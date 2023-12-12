@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { app, ipcMain, Menu, Notification, session } from 'electron'
+import { app, ipcMain, Menu, Notification, session, shell } from 'electron'
 import prepareNext from 'electron-next'
 import isDev from 'electron-is-dev'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
@@ -52,6 +52,9 @@ app.on('ready', async () => {
 
   ipcMain.handle('github:issue', async (_event, url: string) => {
     webview.webContents.loadURL(url)
+  })
+  ipcMain.on('browser:open', (_event, url: string) => {
+    shell.openExternal(url)
   })
 
   if (!checkStoreData()) {

@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld('electron', {
   userInfo: () => ipcRenderer.invoke('github:userInfo'),
   issues: (noticeEnable: boolean) => ipcRenderer.invoke('github:issues', noticeEnable),
   issue: (url: string) => ipcRenderer.invoke('github:issue', url),
+  open: (url: string) => ipcRenderer.send('browser:open', url),
 })
