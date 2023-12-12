@@ -35,7 +35,7 @@ const IssueList = ({ issueUrlHandler }: Props) => {
       <ul>
         {issues.map((issue) => (
           <li key={issue.node_id}>
-            <a href={issue.html_url} onClick={(e) => handleClick(e, issue.html_url)}>{issue.title}</a>
+            <a href={issue.html_url} className={`${issueListStyles.link} ${issue.state === 'closed' ? issueListStyles['link--visited'] : ''}`} onClick={(e) => handleClick(e, issue.html_url)}>{issue.title}</a>
           </li>
         ))}
       </ul>

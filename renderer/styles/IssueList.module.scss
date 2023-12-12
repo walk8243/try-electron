@@ -2,3 +2,10 @@
 	height: 100%;
 	overflow-y: scroll;
 }
+
+.link {
+	&--visited {
+		color: #999;
+		text-decoration: none;
+	}
+}

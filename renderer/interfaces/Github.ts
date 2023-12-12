@@ -17,7 +17,7 @@ export interface GithubIssue {
 	node_id: string,
 	title: string,
 	html_url: string,
-	state: string,
+	state: 'open' | 'closed',
 	body: string | null,
 	user: GithubUserMinimumInfo | null,
 	labels: string[] | GithubLabel[],
