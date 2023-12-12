@@ -10,6 +10,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 	const fileMenu = new Menu()
 	fileMenu.append(new MenuItem({
 		label: 'Settings',
+		accelerator: 'CmdOrCtrl+,',
 		click: () => settingWindow.show(),
 	}))
 	menu.append(new MenuItem({
@@ -68,11 +69,11 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 	}))
 
 	ipcMain.handle('setting:display', async () => {
-		return { hostname: store.get('githubHostname') }
+		return { baseUrl: store.get('githubBaseUrl') }
 	})
 	ipcMain
 		.on('submit', (_event: Electron.IpcMainEvent, data: SettingData) => {
-			store.set('githubHostname', data.hostname)
+			store.set('githubBaseUrl', data.baseUrl)
 			if (data.token) {
 				store.set('githubToken', safeStorage.encryptString(data.token).toString('base64'))
 			}

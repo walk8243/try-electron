@@ -5,7 +5,7 @@ import { SettingData } from '../interfaces'
 import headlineStyles from '../styles/Headline.module.scss'
 
 const SettingPage = () => {
-  const [data, setData] = useState<SettingData>({ hostname: '' })
+  const [data, setData] = useState<SettingData>({ baseUrl: '' })
   useEffect(() => {
     window.setting?.display()
       .then((data) => {
@@ -17,7 +17,7 @@ const SettingPage = () => {
   }, [])
 
   const handleSubmit = () => {
-    window.setting?.submit({ hostname: data.hostname, token: data.token })
+    window.setting?.submit({ baseUrl: data.baseUrl, token: data.token })
   }
   const handleCancel = () => {
     window.setting?.cancel()
@@ -34,8 +34,8 @@ const SettingPage = () => {
         <h2>設定</h2>
         <div>
           <div>
-            <div>host名</div>
-            <div><input value={data.hostname} onChange={e => setData(() => ({ ...data, hostname: e.target.value }))} /></div>
+            <div>URL</div>
+            <div><input value={data.baseUrl} onChange={e => setData(() => ({ ...data, baseUrl: e.target.value }))} /></div>
           </div>
           <div>
             <div>token</div>

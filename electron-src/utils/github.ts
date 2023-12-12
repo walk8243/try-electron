@@ -3,19 +3,19 @@ import log from 'electron-log/main'
 import { store } from './store'
 
 export const getUserInfo = async () => {
-	return await accessGithub({ path: '/user' })
+	return await accessGithub({ path: 'user' })
 }
 
 export const getIssues = async (page: number = 1) => {
-	return await accessGithub({ path: '/issues', query: { filter: 'all', state: 'all', sort: 'updated', per_page: 100, page } })
+	return await accessGithub({ path: 'issues', query: { filter: 'all', state: 'all', sort: 'updated', per_page: 100, page } })
 }
 
 export const checkStoreData = () => {
-	return store.has('githubHostname') && store.has('githubToken')
+	return store.has('githubBaseUrl') && store.has('githubToken')
 }
 
 const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }): Promise<Record<string, any>[]> => {
-	const url = new URL(path, `https://${getHostname()}`)
+	const url = new URL(path, getBaseUrl())
 	url.search = new URLSearchParams(query ?? {}).toString()
 	log.verbose('[accessGithub URL]', url.href)
 	const response = await net.fetch(url.href, {
@@ -31,13 +31,13 @@ const accessGithub = async ({ path, query }: { path: string, query?: Record<stri
 	return await response.json()
 }
 
-const getHostname = () => {
-	const hostname = store.get('githubHostname')
-	if (!hostname) {
-		throw new Error('No GitHub hostname set. Please set one in the settings.')
+const getBaseUrl = () => {
+	const baseUrl = store.get('githubBaseUrl')
+	if (!baseUrl) {
+		throw new Error('No GitHub baseURL set. Please set one in the settings.')
 	}
 
-	return hostname
+	return baseUrl
 }
 
 const getToken = () => {

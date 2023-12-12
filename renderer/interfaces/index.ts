@@ -16,4 +16,4 @@ declare global {
   }
 }
 
-export type SettingData = { hostname: string, token?: string }
+export type SettingData = { baseUrl: string, token?: string }
