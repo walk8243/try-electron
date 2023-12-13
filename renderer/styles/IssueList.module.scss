@@ -3,9 +3,14 @@
 	overflow-y: scroll;
 }
 
-.link {
-	&--visited {
-		color: #999;
-		text-decoration: none;
+.issue {
+	&--closed {
+		background-color: #999;
+	}
+
+	&_title {
+		&::before {
+			content: '●';
+		}
 	}
 }

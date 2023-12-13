@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserView, ipcMain, Menu, safeStorage, shell } from 'electron'
+import { BrowserWindow, BrowserView, ipcMain, Menu, safeStorage, shell } from 'electron'
 import isDev from 'electron-is-dev'
 
 import { store } from './utils/store'
@@ -7,7 +7,7 @@ import type { SettingData } from './preload/setting'
 export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }: { parentWindow: BrowserWindow, settingWindow: BrowserWindow, aboutWindow: BrowserWindow, webview: BrowserView }): Menu => {
 	const menu = Menu.buildFromTemplate([
 		{
-			label: app.name,
+			label: 'Amethyst',
 			submenu: [
 				{
 					label: 'About Amethyst',
@@ -125,7 +125,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 		return { baseUrl: store.get('githubBaseUrl') }
 	})
 	ipcMain
-		.on('submit', (_event: Electron.IpcMainEvent, data: SettingData) => {
+		.on('setting:submit', (_event: Electron.IpcMainEvent, data: SettingData) => {
 			store.set('githubBaseUrl', data.baseUrl)
 			if (data.token) {
 				store.set('githubToken', safeStorage.encryptString(data.token).toString('base64'))
@@ -133,8 +133,11 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 			settingWindow.hide()
 			parentWindow.reload()
 		})
-		.on('cancel', (_event: Electron.IpcMainEvent) => {
+		.on('setting:cancel', (_event: Electron.IpcMainEvent) => {
 			settingWindow.hide()
+		})
+		.on('about:close', (_event: Electron.IpcMainEvent) => {
+			aboutWindow.hide()
 		})
 
 	return menu

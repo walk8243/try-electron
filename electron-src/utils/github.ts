@@ -3,17 +3,19 @@ import log from 'electron-log/main'
 import dayjs from 'dayjs'
 import { store } from './store'
 
-export const getUserInfo = async () => {
+export const githubAppSettings: { readonly filterTypes: readonly IssueFilterType[], readonly perPage: number, readonly terms: { value: number, unit: dayjs.ManipulateType } } = {
+	filterTypes: ['assigned', 'created', 'mentioned'],
+	perPage: 100,
+	terms: { value: 3, unit: 'month' },
+} as const
+
+export const gainUserInfo = async () => {
 	return await accessGithub({ path: 'user' })
 }
 
-export const getIssues = async () => {
-	return Promise.all([
-		accessGithub({ path: 'issues', query: { filter: 'assigned', state: 'all', sort: 'updated', per_page: 100, page: 1 } }),
-		accessGithub({ path: 'issues', query: { filter: 'created', state: 'all', sort: 'updated', per_page: 100, page: 1 } }),
-		accessGithub({ path: 'issues', query: { filter: 'mentioned', state: 'all', sort: 'updated', per_page: 100, page: 1 } }),
-		accessGithub({ path: 'issues', query: { filter: 'subscribed', state: 'all', sort: 'updated', per_page: 100, page: 1 } }),
-	]).then((values) => {
+export const gainIssues = async (target?: dayjs.Dayjs) => {
+	const since = target?.toISOString() ?? ''
+	return Promise.all(githubAppSettings.filterTypes.map((filterType) => gainFilterdIssues(filterType, since))).then((values) => {
 		return values.reduce((acc, cur) => acc.concat(cur), [])
 			.reduce((acc: Record<string, any>[], cur: Record<string, any>) => {
 				if (acc.every((issue) => issue.node_id !== cur.node_id)) {
@@ -26,6 +28,18 @@ export const getIssues = async () => {
 
 export const checkStoreData = () => {
 	return store.has('githubBaseUrl') && store.has('githubToken')
+}
+
+const gainFilterdIssues = async (filterType: IssueFilterType, since: string) => {
+	const issues = []
+	for (let page = 1; ; page++) {
+		const results = await accessGithub({ path: 'issues', query: { filter: filterType, state: 'all', sort: 'updated', per_page: githubAppSettings.perPage, page, since } })
+		issues.push(...results)
+		if (results.length < githubAppSettings.perPage) {
+			break
+		}
+	}
+	return issues
 }
 
 const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }): Promise<Record<string, any>[]> => {
@@ -62,3 +76,5 @@ const getToken = () => {
 
 	return safeStorage.decryptString(Buffer.from(token, 'base64'))
 }
+
+type IssueFilterType = 'assigned' | 'created' | 'mentioned' | 'subscribed' | 'all'
