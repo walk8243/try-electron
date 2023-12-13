@@ -7,7 +7,7 @@ import log from 'electron-log/main'
 import dayjs from 'dayjs'
 
 import { createMenu } from './menu'
-import { getUserInfo, getIssues, checkStoreData } from './utils/github'
+import { gainUserInfo, gainIssues, checkStoreData, githubAppSettings } from './utils/github'
 import * as windowUtils from './utils/window'
 
 log.initialize({ preload: true })
@@ -20,11 +20,11 @@ app.on('ready', async () => {
 
   await prepareNext('./renderer')
   ipcMain.handle('github:userInfo', async () => {
-    return await getUserInfo()
+    return await gainUserInfo()
   })
   ipcMain.handle('github:issues', async () => {
     const now = dayjs()
-    const issues = await getIssues()
+    const issues = await gainIssues(now.subtract(githubAppSettings.terms.value, githubAppSettings.terms.unit))
     const target = now.subtract(5, 'minute')
     if (issues.some((issue) => dayjs(issue.updated_at).isAfter(target))) {
       const notification = new Notification({
