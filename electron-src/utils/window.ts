@@ -2,6 +2,8 @@ import { join } from 'node:path'
 import { BrowserWindow, BrowserView } from 'electron'
 import { getLoadedUrl } from './render'
 
+const isMac = process.platform === 'darwin'
+
 export const createMain = () => {
 	const mainWindow = new BrowserWindow({
 		width: 1200,
@@ -65,7 +67,7 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 
 export const createWebview = () => {
 	const webview = new BrowserView({})
-	webview.setBounds({ x: 550, y: 24, width: 1200 - 6 - 250 - 300, height: 800 - 49 - 24 - 24 })
+	webview.setBounds({ x: 550, y: 24, width: 1200 - (isMac ? 0 : 6) - 550, height: 800 - (isMac ? 27 : 49) - 24 - 24 })
 	webview.webContents.loadURL('https://github.com/')
 
 	return webview
