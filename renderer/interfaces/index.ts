@@ -14,6 +14,9 @@ declare global {
       submit: (data: SettingData) => void
       cancel: () => void
     }
+    about: {
+      close: () => void
+    }
   }
 }
 

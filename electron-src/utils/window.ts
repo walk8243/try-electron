@@ -51,6 +51,11 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 		show: false,
 		resizable: false,
 		fullscreenable: false,
+		webPreferences: {
+			nodeIntegration: false,
+			contextIsolation: true,
+			preload: join(__dirname, '../preload', 'about.js'),
+		},
 	})
 	aboutWindow.removeMenu()
 	aboutWindow.loadURL(getLoadedUrl('about'))
