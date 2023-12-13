@@ -12,7 +12,6 @@ export const getIssues = async () => {
 		accessGithub({ path: 'issues', query: { filter: 'assigned', state: 'all', sort: 'updated', per_page: 100, page: 1 } }),
 		accessGithub({ path: 'issues', query: { filter: 'created', state: 'all', sort: 'updated', per_page: 100, page: 1 } }),
 		accessGithub({ path: 'issues', query: { filter: 'mentioned', state: 'all', sort: 'updated', per_page: 100, page: 1 } }),
-		accessGithub({ path: 'issues', query: { filter: 'subscribed', state: 'all', sort: 'updated', per_page: 100, page: 1 } }),
 	]).then((values) => {
 		return values.reduce((acc, cur) => acc.concat(cur), [])
 			.reduce((acc: Record<string, any>[], cur: Record<string, any>) => {
