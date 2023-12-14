@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction, MouseEvent } from 'react'
+import { IssueFilterContext } from '../context/IssueFilterContext'
 import type { GithubIssue } from '../interfaces/Github'
 
 import { Card, CardActionArea, CardContent, Box, Grid, Typography } from '@mui/material'
@@ -13,6 +14,7 @@ let issueTimer: NodeJS.Timeout;
 
 const IssueList = ({ issueUrlHandler }: Props) => {
   const [issues, setIssues] = useState<GithubIssue[]>([])
+  const issueFilter = useContext(IssueFilterContext)
   useEffect(() => {
     window.electron?.issues(false)
       .then((data) => setIssues(() => data))
@@ -32,14 +34,14 @@ const IssueList = ({ issueUrlHandler }: Props) => {
   }
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'scroll' }}>
+    <Box sx={{ height: '100%', overflowY: 'scroll'}}>
       <Heading level={3} hidden={true}>Issueリスト</Heading>
       <Box>
         <Typography>Issue</Typography>
         <Typography>{numberFormat.format(issues.length)} issues</Typography>
       </Box>
       <Grid container>
-        {issues.map((issue) => (
+        {issues.filter(issueFilter.filter).map((issue) => (
           <Issue key={issue.node_id} issue={issue} handle={handleClick} />
         ))}
       </Grid>
