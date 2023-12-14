@@ -10,10 +10,10 @@ assignees: ''
 # 詳細
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-# 起こった状況
+# 期待する挙動
 A clear and concise description of what you want to happen.
 
-# 提案・希望する機能
+# 検討した解決方法
 A clear and concise description of any alternative solutions or features you've considered.
 
 # その他の情報
