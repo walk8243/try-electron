@@ -1,9 +1,9 @@
+import { Heading } from './Heading'
 import footerStyles from '../styles/Footer.module.scss'
-import headlineStyles from '../styles/Headline.module.scss'
 
 const Footer = () => (
   <footer>
-    <h2 className={headlineStyles['header--hidden']}>フッタ</h2>
+    <Heading level={2} hidden={true}>フッタ</Heading>
     <p className={footerStyles.copyrightBox}>
       <span className={footerStyles.copyright}>walk8243</span>
     </p>

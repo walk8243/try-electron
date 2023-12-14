@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { GithubUserInfo } from '../interfaces/Github'
 
-import headlineStyles from '../styles/Headline.module.scss'
+import { Heading } from './Heading'
 
 const Menu = () => {
   const [userInfo, setUserInfo] = useState<GithubUserInfo>(null)
@@ -13,7 +13,7 @@ const Menu = () => {
 
   return (
     <section>
-      <h3 className={headlineStyles['header--hidden']}>メニュー</h3>
+      <Heading level={3} hidden={true}>メニュー</Heading>
       <div>
         <Avator {...userInfo} />
       </div>
