@@ -1,8 +1,8 @@
-import headlineStyles from '../styles/Headline.module.scss'
+import { Heading } from './Heading'
 
 const Header = () => (
   <header>
-    <h2 className={headlineStyles['header--hidden']}>ヘッダ</h2>
+    <Heading level={2} hidden={true}>ヘッダ</Heading>
   </header>
 )
 
