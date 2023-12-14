@@ -2,8 +2,6 @@ import { createElement, useEffect, useState } from 'react'
 import type { ReactNode, Dispatch, SetStateAction, MouseEvent } from 'react'
 import type { GithubIssue } from '../interfaces/Github'
 
-import '@material/web/list/list'
-import '@material/web/list/list-item'
 import issueListStyles from '../styles/IssueList.module.scss'
 import headlineStyles from '../styles/Headline.module.scss'
 
