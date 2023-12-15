@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction, MouseEvent } from 'react'
 import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext } from '../context/IssueFilterContext'
-import type { GithubIssue } from '../interfaces/Github'
+import type { GithubIssue } from '../../types/Github'
 
 import { Card, CardActionArea, CardContent, Box, Grid, Typography } from '@mui/material'
 import { Heading } from './Heading'
@@ -11,22 +11,13 @@ type Props = {
   issueUrlHandler: Dispatch<SetStateAction<string>>
 }
 const numberFormat = Intl.NumberFormat('ja-JP')
-let issueTimer: NodeJS.Timeout;
 
 const IssueList = ({ issueUrlHandler }: Props) => {
   const userInfo = useContext(UserInfoContext)
   const [issues, setIssues] = useState<GithubIssue[]>([])
   const issueFilter = useContext(IssueFilterContext)
   useEffect(() => {
-    window.electron?.issues(false)
-      .then((data) => setIssues(() => data))
-      .catch(console.error)
-
-    issueTimer = setInterval(() => {
-      window.electron?.issues(true)
-        .then((data) => setIssues(() => data))
-        .catch(console.error)
-    }, 5 * 60 * 1000);
+    window.electron?.pushIssues((issues) => setIssues(() => issues))
   }, [])
 
   const handleClick = (e: MouseEvent, url: string) => {

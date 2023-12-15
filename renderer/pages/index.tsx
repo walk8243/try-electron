@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useState, Reducer, ReactNode } from 'react'
 import Head from 'next/head'
-import { GithubUserInfo } from '../interfaces/Github'
+import { GithubUserInfo } from '../../types/Github'
 
 import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext, IssueFilterDispatchContext, issueFilterAll, IssueFilter } from '../context/IssueFilterContext'
@@ -13,18 +13,24 @@ import Issue from '../components/Issue'
 
 import styles from '../styles/index.module.scss'
 
-const IndexPage = () => (
-  <>
-    <Head>
-      <title>Amethyst</title>
-    </Head>
-    <IssueFilterContextProvider>
-      <UserInfoContextProvider>
-        <MainComponent />
-      </UserInfoContextProvider>
-    </IssueFilterContextProvider>
-  </>
-)
+const IndexPage = () => {
+  useEffect(() => {
+    window.electron?.ready()
+  }, [])
+
+  return (
+    <>
+      <Head>
+        <title>Amethyst</title>
+      </Head>
+      <IssueFilterContextProvider>
+        <UserInfoContextProvider>
+          <MainComponent />
+        </UserInfoContextProvider>
+      </IssueFilterContextProvider>
+    </>
+  )
+}
 
 const MainComponent = () => {
   const [issueUrl, setIssueUrl] = useState('')
@@ -46,9 +52,7 @@ const MainComponent = () => {
 const UserInfoContextProvider = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useState<GithubUserInfo>(null)
   useEffect(() => {
-    window.electron?.userInfo()
-      .then((data) => setUserInfo(() => data))
-      .catch(console.error)
+    window.electron?.pushUser((user) => setUserInfo(() => user))
   }, [])
 
   return (

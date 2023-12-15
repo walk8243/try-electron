@@ -1,5 +1,5 @@
 import { Dispatch, createContext } from 'react'
-import { GithubIssue, GithubUserInfo } from '../interfaces/Github'
+import { GithubIssue, GithubUserInfo } from '../../types/Github'
 
 export const issueFilterAll: IssueFilter = {
 	type: 'all',
@@ -18,7 +18,7 @@ export const issueFilterMyIssues: IssueFilter = {
 } as const
 export const issueFilterMyPr: IssueFilter = {
 	type: 'my-pr',
-	title: 'My Pull Requests',
+	title: 'My PullRequests',
 	filter: (issue, { user }) => Object.hasOwn(issue, 'pull_request') && issue.user.login === user.login,
 } as const
 export const issueFilters: IssueFilter[] = [

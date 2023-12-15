@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext, IssueFilterDispatchContext, issueFilters } from '../context/IssueFilterContext'
-import { GithubUserInfo } from '../interfaces/Github'
+import { GithubUserInfo } from '../../types/Github'
 
 import { Avatar, Grid, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material'
 import { Heading } from './Heading'

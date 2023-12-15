@@ -2,6 +2,7 @@ import { join } from 'node:path'
 import { app, ipcMain, Menu, Notification, session, shell } from 'electron'
 import prepareNext from 'electron-next'
 import isDev from 'electron-is-dev'
+import log from 'electron-log/main'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import dayjs from 'dayjs'
 
@@ -10,29 +11,26 @@ import { gainUserInfo, gainIssues, checkStoreData, githubAppSettings } from './u
 import * as windowUtils from './utils/window'
 
 const isMac = process.platform === 'darwin'
+let latestIssueGainTime: dayjs.Dayjs
 
 export const main = async () => {
   await prepareNext('./renderer')
-  ipcMain.handle('github:userInfo', async () => {
-    return await gainUserInfo()
-  })
-  ipcMain.handle('github:issues', async () => {
-    const now = dayjs()
-    const issues = await gainIssues(now.subtract(githubAppSettings.terms.value, githubAppSettings.terms.unit))
-    const target = now.subtract(5, 'minute')
-    if (issues.some((issue) => dayjs(issue.updated_at).isAfter(target))) {
-      const notification = new Notification({
-        title: 'Issueが更新されました',
-        body: '更新されたIssue・PRがあります。Issue・PRを確認してください。',
-      })
-      notification.show()
-    }
-    return issues
-  })
+  const userInfoProcess = gainGithubUser()
+  const issuesProcess = gainGithubIssues(latestIssueGainTime)
 
   const mainWindow = windowUtils.createMain()
   const webview = windowUtils.createWebview()
   mainWindow.setBrowserView(webview)
+  
+  ipcMain.on('app:ready', (_event) => {
+    log.verbose('App renderer is ready')
+    userInfoProcess.then((userInfo) => {
+      mainWindow.webContents.send('app:pushUser', userInfo)
+    })
+    issuesProcess.then((issues) => {
+      mainWindow.webContents.send('app:pushIssues', issues)
+    })
+  })
 
   const settingWindow = windowUtils.createSetting(mainWindow)
   const aboutWindow = windowUtils.createAbout(mainWindow)
@@ -55,8 +53,28 @@ export const main = async () => {
     settingWindow.show()
   }
 
+  setInterval(() => {
+    gainGithubIssues(latestIssueGainTime)
+      .then((issues) => mainWindow.webContents.send('app:pushIssues', issues))
+  }, 5 * 60 * 1000)
+
   if (isDev) {
     await installExtension(REACT_DEVELOPER_TOOLS)
     await session.defaultSession.loadExtension(join(app.getPath('userData'), 'extensions', REACT_DEVELOPER_TOOLS.id))
   }
+}
+
+const gainGithubUser = async () => await gainUserInfo()
+const gainGithubIssues = async (prevTime?: dayjs.Dayjs) => {
+  const now = dayjs()
+  const issues = await gainIssues(now.subtract(githubAppSettings.terms.value, githubAppSettings.terms.unit))
+  if (prevTime && issues.some((issue) => dayjs(issue.updated_at).isAfter(prevTime))) {
+    const notification = new Notification({
+      title: 'Issueが更新されました',
+      body: '更新されたIssue・PRがあります。Issue・PRを確認してください。',
+    })
+    notification.show()
+  }
+  latestIssueGainTime = now
+  return issues
 }
