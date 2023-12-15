@@ -3,21 +3,15 @@ import { app, ipcMain, Menu, Notification, session, shell } from 'electron'
 import prepareNext from 'electron-next'
 import isDev from 'electron-is-dev'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
-import log from 'electron-log/main'
 import dayjs from 'dayjs'
 
 import { createMenu } from './menu'
 import { gainUserInfo, gainIssues, checkStoreData, githubAppSettings } from './utils/github'
 import * as windowUtils from './utils/window'
 
-log.initialize({ preload: true })
-log.eventLogger.startLogging({})
-
 const isMac = process.platform === 'darwin'
 
-app.on('ready', async () => {
-  log.verbose('App is ready')
-
+export const main = async () => {
   await prepareNext('./renderer')
   ipcMain.handle('github:userInfo', async () => {
     return await gainUserInfo()
@@ -65,6 +59,4 @@ app.on('ready', async () => {
     await installExtension(REACT_DEVELOPER_TOOLS)
     await session.defaultSession.loadExtension(join(app.getPath('userData'), 'extensions', REACT_DEVELOPER_TOOLS.id))
   }
-})
-
-app.on('window-all-closed', app.quit)
+}

@@ -2,7 +2,7 @@
   "name": "amethyst-electron",
   "version": "0.4.0",
   "description": "関係しているGitHubのIssuesを表示・管理するデスクトップアプリ",
-  "main": "main/main.js",
+  "main": "main/index.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "clean": "rimraf dist main renderer/out renderer/.next",
