@@ -3,7 +3,8 @@ import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext, IssueFilterDispatchContext, issueFilters } from '../context/IssueFilterContext'
 import { GithubUserInfo } from '../../types/Github'
 
-import { Avatar, Grid, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material'
+import { Avatar, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Heading } from './Heading'
 
 const Menu = () => {
@@ -19,6 +20,9 @@ const Menu = () => {
         {issueFilters.map((filter) => (
           <ListItem key={filter.type}>
             <ListItemButton onClick={(e) => issueFilterDispatch(filter)} selected={filter.type === issueFilter.type}>
+              <ListItemIcon sx={{ minWidth: 'initial', mr: 2 }}>
+                <FontAwesomeIcon icon={filter.icon} />
+              </ListItemIcon>
               <ListItemText primary={filter.title} />
             </ListItemButton>
           </ListItem>
