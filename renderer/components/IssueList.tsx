@@ -54,8 +54,8 @@ const Issue = ({ issue, handle }: { issue: GithubIssue, handle: (e: MouseEvent, 
     <CardActionArea onClick={(e) => handle(e, issue.html_url)}>
       <CardContent>
         <Typography sx={{ color: issue.state === 'open' ? '#3fb950' : '#a371f7', '::before': { content: '"●"' } }}>{Object.hasOwn(issue, 'pull_request') ? 'PR' : 'Issue'}: {issue.state}</Typography>
-        <Typography>{issue.title}</Typography>
-        <Typography style={{ fontSize: 'small' }}>{issue.repository.full_name}</Typography>
+        <Typography variant='body1' sx={{ overflowWrap: 'break-word' }}>{issue.title}</Typography>
+        <Typography variant='body2' sx={{ textOverflow: 'ellipsis' }}>{issue.repository.full_name}</Typography>
       </CardContent>
     </CardActionArea>
   </Card>
