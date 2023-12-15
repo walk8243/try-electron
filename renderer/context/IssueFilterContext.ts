@@ -1,25 +1,25 @@
 import { Dispatch, createContext } from 'react'
-import { GithubIssue } from '../interfaces/Github'
+import { GithubIssue, GithubUserInfo } from '../interfaces/Github'
 
 export const issueFilterAll: IssueFilter = {
 	type: 'all',
 	title: 'Inbox',
-	filter: (_issue) => true,
+	filter: (_issue, _option) => true,
 } as const
 export const issueFilterOpen: IssueFilter = {
 	type: 'open',
 	title: 'Open',
-	filter: (issue) => issue.state === 'open',
+	filter: (issue, _option) => issue.state === 'open',
 } as const
 export const issueFilterMyIssues: IssueFilter = {
 	type: 'my-issues',
 	title: 'My Issues',
-	filter: (issue) => !Object.hasOwn(issue, 'pull_request')
+	filter: (issue, { user }) => !Object.hasOwn(issue, 'pull_request') && issue.user.login === user.login,
 } as const
 export const issueFilterMyPr: IssueFilter = {
 	type: 'my-pr',
 	title: 'My Pull Requests',
-	filter: (issue) => Object.hasOwn(issue, 'pull_request')
+	filter: (issue, { user }) => Object.hasOwn(issue, 'pull_request') && issue.user.login === user.login,
 } as const
 export const issueFilters: IssueFilter[] = [
 	issueFilterAll,
@@ -36,7 +36,7 @@ export type IssueFilterTypes = 'all' | 'open' | 'my-issues' | 'my-pr'
 export interface IssueFilter {
 	readonly type: IssueFilterTypes
 	readonly title: string
-	readonly filter: (issue: GithubIssue) => boolean
+	readonly filter: (issue: GithubIssue, option?: { user: GithubUserInfo }) => boolean
 }
 
 export const fromFilterType = (type: IssueFilterTypes): IssueFilter => {

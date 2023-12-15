@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction, MouseEvent } from 'react'
+import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext } from '../context/IssueFilterContext'
 import type { GithubIssue } from '../interfaces/Github'
 
@@ -13,6 +14,7 @@ const numberFormat = Intl.NumberFormat('ja-JP')
 let issueTimer: NodeJS.Timeout;
 
 const IssueList = ({ issueUrlHandler }: Props) => {
+  const userInfo = useContext(UserInfoContext)
   const [issues, setIssues] = useState<GithubIssue[]>([])
   const issueFilter = useContext(IssueFilterContext)
   useEffect(() => {
@@ -34,14 +36,14 @@ const IssueList = ({ issueUrlHandler }: Props) => {
   }
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'scroll'}}>
+    <Box sx={{ height: '100%', overflowY: 'scroll' }}>
       <Heading level={3} hidden={true}>Issueリスト</Heading>
       <Box>
         <Typography>Issue</Typography>
         <Typography>{numberFormat.format(issues.length)} issues</Typography>
       </Box>
       <Grid container>
-        {issues.filter(issueFilter.filter).map((issue) => (
+        {issues.filter((issue) => issueFilter.filter(issue, { user: userInfo })).map((issue) => (
           <Issue key={issue.node_id} issue={issue} handle={handleClick} />
         ))}
       </Grid>

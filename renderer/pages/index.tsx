@@ -1,6 +1,8 @@
-import { useReducer, useState, Reducer, ReactNode } from 'react'
+import { useEffect, useReducer, useState, Reducer, ReactNode } from 'react'
 import Head from 'next/head'
+import { GithubUserInfo } from '../interfaces/Github'
 
+import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext, IssueFilterDispatchContext, issueFilterAll, IssueFilter } from '../context/IssueFilterContext'
 import { Heading } from '../components/Heading'
 import Header from '../components/Header'
@@ -17,7 +19,9 @@ const IndexPage = () => (
       <title>Amethyst</title>
     </Head>
     <IssueFilterContextProvider>
-      <MainComponent />
+      <UserInfoContextProvider>
+        <MainComponent />
+      </UserInfoContextProvider>
     </IssueFilterContextProvider>
   </>
 )
@@ -36,6 +40,21 @@ const MainComponent = () => {
       </main>
       <Footer />
     </div>
+  )
+}
+
+const UserInfoContextProvider = ({ children }: { children: ReactNode }) => {
+  const [userInfo, setUserInfo] = useState<GithubUserInfo>(null)
+  useEffect(() => {
+    window.electron?.userInfo()
+      .then((data) => setUserInfo(() => data))
+      .catch(console.error)
+  }, [])
+
+  return (
+    <UserInfoContext.Provider value={userInfo}>
+      {children}
+    </UserInfoContext.Provider>
   )
 }
 
