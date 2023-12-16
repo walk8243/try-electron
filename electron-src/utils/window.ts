@@ -49,7 +49,7 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 		parent: parentWindow,
 		modal: true,
 		width: 500,
-		height: 590,
+		height: 670 + (isMac ? 0 : 27),
 		show: false,
 		resizable: false,
 		fullscreenable: false,

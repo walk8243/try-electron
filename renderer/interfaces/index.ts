@@ -18,6 +18,7 @@ declare global {
     }
     about: {
       close: () => void
+      open: (url: string) => void
     }
   }
 }
