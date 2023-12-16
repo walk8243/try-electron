@@ -34,8 +34,8 @@ const IssueList = ({ issueUrlHandler }: Props) => {
     <Box sx={{ height: '100%', overflowY: 'scroll' }}>
       <Heading level={3} hidden={true}>Issueリスト</Heading>
       <Box>
-        <Typography>Issue</Typography>
-        <Typography>{numberFormat.format(issues.length)} issues</Typography>
+        <Heading level={4}>Issue</Heading>
+        <Typography variant='subtitle1'>{numberFormat.format(issues.length)} issues</Typography>
       </Box>
       <Grid container>
         {issues.filter((issue) => issueFilter.filter(issue, { user: userInfo })).map((issue) => (
@@ -50,8 +50,14 @@ const IssueCard = ({ issue, handle }: { issue: Issue, handle: (e: MouseEvent, ur
   <Card sx={{ width: '100%', m: 0.5 }}>
     <CardActionArea onClick={(e) => handle(e, issue.url)}>
       <CardContent>
-        <FontAwesomeIcon icon={findIssueIcon(issue.state)} />
-        <Typography variant='body1' sx={{ overflowWrap: 'break-word' }}>{issue.title}</Typography>
+        <Grid container columnGap={1}>
+          <Grid item>
+            <FontAwesomeIcon icon={findIssueIcon(issue.state)} color={findIssueStateColor(issue.state)} />
+          </Grid>
+          <Grid item xs zeroMinWidth>
+            <Typography variant='body1' sx={{ overflowWrap: 'break-word' }}>{issue.title}</Typography>
+          </Grid>
+        </Grid>
         <Typography variant='body2' sx={{ textOverflow: 'ellipsis' }}>{issue.repositoryName}</Typography>
       </CardContent>
     </CardActionArea>
@@ -64,6 +70,20 @@ const findIssueIcon = (state: IssueState): IconDefinition => {
       return faCircleDot
     case 'pull-request':
       return faCodePullRequest
+  }
+
+  safeUnreachable(state)
+}
+const findIssueStateColor = (state: IssueState): string => {
+  switch (state.state) {
+    case 'open':
+      return 'green'
+    case 'closed':
+      return 'red'
+    case 'merged':
+      return 'purple'
+    case 'draft':
+      return 'gray'
   }
 
   safeUnreachable(state)

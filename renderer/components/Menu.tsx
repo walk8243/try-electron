@@ -33,11 +33,11 @@ const Menu = () => {
 }
 
 const User = ({ user }: { user: UserInfo }) => (
-  <Grid container>
+  <Grid container columnGap={1}>
     <Grid item xs='auto'>
-      <Avatar alt={user.login} src={user.avatarUrl} sx={{ width: 100, height: 100 }} />
+      <Avatar alt={user.login} src={user.avatarUrl} sx={{ width: 80, height: 80 }} />
     </Grid>
-    <Grid item xs='auto' sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
+    <Grid container item xs zeroMinWidth direction='column' justifyContent='center'>
       <Typography>{user.name}</Typography>
       <Typography>{user.login}</Typography>
     </Grid>
