@@ -1,10 +1,27 @@
-import { BrowserWindow, BrowserView, ipcMain, Menu, safeStorage, shell } from 'electron'
-import isDev from 'electron-is-dev'
+import {
+	BrowserWindow,
+	BrowserView,
+	ipcMain,
+	Menu,
+	safeStorage,
+	shell,
+} from 'electron';
+import isDev from 'electron-is-dev';
 
-import { store } from './utils/store'
-import type { SettingData } from './preload/setting'
+import { store } from './utils/store';
+import type { SettingData } from './preload/setting';
 
-export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }: { parentWindow: BrowserWindow, settingWindow: BrowserWindow, aboutWindow: BrowserWindow, webview: BrowserView }): Menu => {
+export const createMenu = ({
+	parentWindow,
+	webview,
+	settingWindow,
+	aboutWindow,
+}: {
+	parentWindow: BrowserWindow;
+	settingWindow: BrowserWindow;
+	aboutWindow: BrowserWindow;
+	webview: BrowserView;
+}): Menu => {
 	const menu = Menu.buildFromTemplate([
 		{
 			label: 'Amethyst',
@@ -31,9 +48,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 		},
 		{
 			label: 'File',
-			submenu: [
-				{ role: 'close' },
-			],
+			submenu: [{ role: 'close' }],
 		},
 		{
 			label: 'Edit',
@@ -50,10 +65,7 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 				{ type: 'separator' },
 				{
 					label: 'Speech',
-					submenu: [
-						{ role: 'startSpeaking' },
-						{ role: 'stopSpeaking' },
-					],
+					submenu: [{ role: 'startSpeaking' }, { role: 'stopSpeaking' }],
 				},
 			],
 		},
@@ -69,8 +81,8 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 					label: 'Force Reload',
 					accelerator: 'CmdOrCtrl+Shift+R',
 					click: () => {
-						parentWindow.reload()
-						webview.webContents.reload()
+						parentWindow.reload();
+						webview.webContents.reload();
 					},
 				},
 				{
@@ -79,13 +91,13 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 					accelerator: 'CmdOrCtrl+Shift+I',
 					click: (_menuItem, window) => {
 						if (!window) {
-							return
+							return;
 						}
 
 						if (window.webContents.isDevToolsOpened()) {
-							window.webContents.closeDevTools()
+							window.webContents.closeDevTools();
 						} else {
-							window.webContents.openDevTools({ mode: 'detach' })
+							window.webContents.openDevTools({ mode: 'detach' });
 						}
 					},
 				},
@@ -115,30 +127,38 @@ export const createMenu = ({ parentWindow, webview, settingWindow, aboutWindow }
 				{ role: 'about' },
 				{
 					label: 'Learn More',
-					click: () => { shell.openExternal('https://electronjs.org') },
+					click: () => {
+						shell.openExternal('https://electronjs.org');
+					},
 				},
 			],
 		},
-	])
+	]);
 
 	ipcMain.handle('setting:display', async () => {
-		return { baseUrl: store.get('githubBaseUrl') }
-	})
+		return { baseUrl: store.get('githubBaseUrl') };
+	});
 	ipcMain
-		.on('setting:submit', (_event: Electron.IpcMainEvent, data: SettingData) => {
-			store.set('githubBaseUrl', data.baseUrl)
-			if (data.token) {
-				store.set('githubToken', safeStorage.encryptString(data.token).toString('base64'))
-			}
-			settingWindow.hide()
-			parentWindow.reload()
-		})
+		.on(
+			'setting:submit',
+			(_event: Electron.IpcMainEvent, data: SettingData) => {
+				store.set('githubBaseUrl', data.baseUrl);
+				if (data.token) {
+					store.set(
+						'githubToken',
+						safeStorage.encryptString(data.token).toString('base64'),
+					);
+				}
+				settingWindow.hide();
+				parentWindow.reload();
+			},
+		)
 		.on('setting:cancel', (_event: Electron.IpcMainEvent) => {
-			settingWindow.hide()
+			settingWindow.hide();
 		})
 		.on('about:close', (_event: Electron.IpcMainEvent) => {
-			aboutWindow.hide()
-		})
+			aboutWindow.hide();
+		});
 
-	return menu
-}
+	return menu;
+};

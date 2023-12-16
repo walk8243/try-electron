@@ -1,9 +1,11 @@
-import { Heading } from './Heading'
+import { Heading } from './Heading';
 
 const Footer = () => (
-  <footer>
-    <Heading level={2} hidden={true}>フッタ</Heading>
-  </footer>
-)
+	<footer>
+		<Heading level={2} hidden={true}>
+			フッタ
+		</Heading>
+	</footer>
+);
 
-export default Footer
+export default Footer;

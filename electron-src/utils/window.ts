@@ -1,8 +1,8 @@
-import { join } from 'node:path'
-import { BrowserWindow, BrowserView } from 'electron'
-import { getLoadedUrl } from './render'
+import { join } from 'node:path';
+import { BrowserWindow, BrowserView } from 'electron';
+import { getLoadedUrl } from './render';
 
-const isMac = process.platform === 'darwin' as const
+const isMac = process.platform === ('darwin' as const);
 
 export const createMain = () => {
 	const mainWindow = new BrowserWindow({
@@ -14,11 +14,11 @@ export const createMain = () => {
 			contextIsolation: true,
 			preload: join(__dirname, '../preload', 'main.js'),
 		},
-	})
-	mainWindow.loadURL(getLoadedUrl())
+	});
+	mainWindow.loadURL(getLoadedUrl());
 
-	return mainWindow
-}
+	return mainWindow;
+};
 
 export const createSetting = (parentWindow: BrowserWindow) => {
 	const settingWindow = new BrowserWindow({
@@ -36,12 +36,12 @@ export const createSetting = (parentWindow: BrowserWindow) => {
 			contextIsolation: true,
 			preload: join(__dirname, '../preload', 'setting.js'),
 		},
-	})
-	settingWindow.removeMenu()
-	settingWindow.loadURL(getLoadedUrl('setting'))
+	});
+	settingWindow.removeMenu();
+	settingWindow.loadURL(getLoadedUrl('setting'));
 
-	return settingWindow
-}
+	return settingWindow;
+};
 
 export const createAbout = (parentWindow: BrowserWindow) => {
 	const aboutWindow = new BrowserWindow({
@@ -58,38 +58,53 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 			contextIsolation: true,
 			preload: join(__dirname, '../preload', 'about.js'),
 		},
-	})
-	aboutWindow.removeMenu()
-	aboutWindow.loadURL(getLoadedUrl('about'))
+	});
+	aboutWindow.removeMenu();
+	aboutWindow.loadURL(getLoadedUrl('about'));
 
-	return aboutWindow
-}
+	return aboutWindow;
+};
 
 export const createWebview = () => {
-	const webview = new BrowserView({})
-	webview.webContents.loadURL('https://github.com/')
+	const webview = new BrowserView({});
+	webview.webContents.loadURL('https://github.com/');
 
-	return webview
-}
+	return webview;
+};
 
-const boundPosition = { x: 600, y: 24 } as const
-export const putWebview = (mainWindow: BrowserWindow, webview: BrowserView, { noHeaderFlag }: { noHeaderFlag?: boolean } = {}) => {
-	const bounds = mainWindow.getBounds()
-	const option = { isNoHeader: noHeaderFlag === true, isMac }
-	const boundsPlan = { x: boundPosition.x, y: boundPosition.y, width: calcWebviewWidth(bounds, option), height: calcWebviewHeight(bounds, option) }
-	webview.setBounds(boundsPlan)
-}
-const calcWebviewWidth = (mainWindowBounds: Electron.Rectangle, option: { isNoHeader: boolean, isMac: boolean }) => {
-	let width = mainWindowBounds.width - boundPosition.x
+const boundPosition = { x: 600, y: 24 } as const;
+export const putWebview = (
+	mainWindow: BrowserWindow,
+	webview: BrowserView,
+	{ noHeaderFlag }: { noHeaderFlag?: boolean } = {},
+) => {
+	const bounds = mainWindow.getBounds();
+	const option = { isNoHeader: noHeaderFlag === true, isMac };
+	const boundsPlan = {
+		x: boundPosition.x,
+		y: boundPosition.y,
+		width: calcWebviewWidth(bounds, option),
+		height: calcWebviewHeight(bounds, option),
+	};
+	webview.setBounds(boundsPlan);
+};
+const calcWebviewWidth = (
+	mainWindowBounds: Electron.Rectangle,
+	option: { isNoHeader: boolean; isMac: boolean },
+) => {
+	let width = mainWindowBounds.width - boundPosition.x;
 	if (!option.isMac) {
-		width -= 16
+		width -= 16;
 	}
-	return width
-}
-const calcWebviewHeight = (mainWindowBounds: Electron.Rectangle, option: { isNoHeader: boolean, isMac: boolean }) => {
-	const height = mainWindowBounds.height - boundPosition.y
+	return width;
+};
+const calcWebviewHeight = (
+	mainWindowBounds: Electron.Rectangle,
+	option: { isNoHeader: boolean; isMac: boolean },
+) => {
+	const height = mainWindowBounds.height - boundPosition.y;
 	if (option.isNoHeader) {
-		return height
+		return height;
 	}
-	return height - (option.isMac ? 27 : 59)
-}
+	return height - (option.isMac ? 27 : 59);
+};
