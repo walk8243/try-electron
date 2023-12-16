@@ -1,8 +1,11 @@
 import { net, safeStorage } from 'electron'
 import log from 'electron-log/main'
 import dayjs from 'dayjs'
+import { translateUserInfo, translateIssues } from '../tanslators/GithubTranslator'
 import { store } from './store'
 import type { GithubUserInfo, GithubIssue } from '../types/GitHub'
+import type { UserInfo } from '../../types/User'
+import type { Issue } from '../../types/Issue'
 
 export const githubAppSettings: { readonly filterTypes: readonly IssueFilterType[], readonly perPage: number, readonly terms: { value: number, unit: dayjs.ManipulateType } } = {
 	filterTypes: ['assigned', 'created', 'mentioned'],
@@ -10,15 +13,15 @@ export const githubAppSettings: { readonly filterTypes: readonly IssueFilterType
 	terms: { value: 3, unit: 'month' },
 } as const
 
-export const gainUserInfo = async () => {
+export const gainUserInfo = async (): Promise<UserInfo> => {
 	const result = await accessGithub({ path: 'user' })
 	if (!isUserInfoType(result)) {
 		throw new Error('GitHub APIからの認証されたユーザのresponseが異常値です')
 	}
-	return result
+	return translateUserInfo(result)
 }
 
-export const gainIssues = async (target?: dayjs.Dayjs): Promise<GithubIssue[]> => {
+export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 	const since = target?.toISOString() ?? ''
 	return Promise.all(githubAppSettings.filterTypes.map((filterType) => gainFilterdIssues(filterType, since))).then((values) => {
 		return values.reduce((acc, cur) => acc.concat(cur), [])
@@ -28,7 +31,9 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<GithubIssue[]> =
 				}
 				return acc
 			}, [])
-	}).then((issues) => issues.toSorted((a, b) => dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1))
+	})
+		.then((issues) => issues.toSorted((a, b) => dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1))
+		.then(translateIssues)
 }
 
 export const checkStoreData = () => {
@@ -89,7 +94,7 @@ const isUserInfoType = (target: unknown): target is GithubUserInfo => {
 	if (target === null || typeof target !== 'object') {
 		return false
 	}
-	return 'id' in target && 'login' in target && 'avatar_url' in target && 'html_url' in target
+	return 'id' in target && 'node_id' in target && 'login' in target && 'avatar_url' in target && 'html_url' in target && 'url' in target && 'created_at' in target && 'updated_at' in target
 }
 const isIssuesType = (target: unknown): target is GithubIssue[] => {
 	if (!Array.isArray(target)) {
@@ -102,7 +107,7 @@ const isIssueType = (target: unknown): target is GithubIssue => {
 	if (target === null || typeof target !== 'object') {
 		return false
 	}
-	return 'id' in target && 'node_id' in target && 'title' in target && 'html_url' in target && 'state' in target && 'updated_at' in target
+	return 'id' in target && 'node_id' in target && 'url' in target && 'title' in target && 'html_url' in target && 'state' in target && 'labels' in target && 'created_at' in target && 'updated_at' in target
 }
 
 type IssueFilterType = 'assigned' | 'created' | 'mentioned' | 'subscribed' | 'all'

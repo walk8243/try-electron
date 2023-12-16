@@ -2,9 +2,13 @@ import { useContext, useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction, MouseEvent } from 'react'
 import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext } from '../context/IssueFilterContext'
-import type { GithubIssue } from '../../types/Github'
+import { safeUnreachable } from '../utils/typescript'
+import type { Issue, IssueState } from '../../types/Issue'
 
 import { Card, CardActionArea, CardContent, Box, Grid, Typography } from '@mui/material'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconDefinition, faCodePullRequest } from '@fortawesome/free-solid-svg-icons'
+import { faCircleDot } from '@fortawesome/free-regular-svg-icons'
 import { Heading } from './Heading'
 
 type Props = {
@@ -14,7 +18,7 @@ const numberFormat = Intl.NumberFormat('ja-JP')
 
 const IssueList = ({ issueUrlHandler }: Props) => {
   const userInfo = useContext(UserInfoContext)
-  const [issues, setIssues] = useState<GithubIssue[]>([])
+  const [issues, setIssues] = useState<Issue[]>([])
   const issueFilter = useContext(IssueFilterContext)
   useEffect(() => {
     window.electron?.pushIssues((issues) => setIssues(() => issues))
@@ -35,23 +39,34 @@ const IssueList = ({ issueUrlHandler }: Props) => {
       </Box>
       <Grid container>
         {issues.filter((issue) => issueFilter.filter(issue, { user: userInfo })).map((issue) => (
-          <Issue key={issue.node_id} issue={issue} handle={handleClick} />
+          <IssueCard key={issue.key} issue={issue} handle={handleClick} />
         ))}
       </Grid>
     </Box>
   )
 }
 
-const Issue = ({ issue, handle }: { issue: GithubIssue, handle: (e: MouseEvent, url: string) => void }) => (
-  <Card sx={{ width: '100%', m: 0.5, color: (issue.state === 'open' ? '#111' : '#444'), backgroundColor: (issue.state === 'open' ? '#eee' : '#aaa') }}>
-    <CardActionArea onClick={(e) => handle(e, issue.html_url)}>
+const IssueCard = ({ issue, handle }: { issue: Issue, handle: (e: MouseEvent, url: string) => void }) => (
+  <Card sx={{ width: '100%', m: 0.5 }}>
+    <CardActionArea onClick={(e) => handle(e, issue.url)}>
       <CardContent>
-        <Typography sx={{ color: issue.state === 'open' ? '#3fb950' : '#a371f7', '::before': { content: '"●"' } }}>{Object.hasOwn(issue, 'pull_request') ? 'PR' : 'Issue'}: {issue.state}</Typography>
+        <FontAwesomeIcon icon={findIssueIcon(issue.state)} />
         <Typography variant='body1' sx={{ overflowWrap: 'break-word' }}>{issue.title}</Typography>
-        <Typography variant='body2' sx={{ textOverflow: 'ellipsis' }}>{issue.repository.full_name}</Typography>
+        <Typography variant='body2' sx={{ textOverflow: 'ellipsis' }}>{issue.repositoryName}</Typography>
       </CardContent>
     </CardActionArea>
   </Card>
 )
+
+const findIssueIcon = (state: IssueState): IconDefinition => {
+  switch (state.type) {
+    case 'issue':
+      return faCircleDot
+    case 'pull-request':
+      return faCodePullRequest
+  }
+
+  safeUnreachable(state)
+}
 
 export default IssueList

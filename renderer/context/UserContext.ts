@@ -1,4 +1,4 @@
 import { createContext } from 'react'
-import { GithubUserInfo } from '../../types/Github'
+import type { UserInfo } from '../../types/User'
 
-export const UserInfoContext = createContext<GithubUserInfo | null>(null)
+export const UserInfoContext = createContext<UserInfo | null>(null)

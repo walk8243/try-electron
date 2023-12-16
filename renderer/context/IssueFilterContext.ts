@@ -1,7 +1,9 @@
 import { Dispatch, createContext } from 'react'
-import { GithubIssue, GithubUserInfo } from '../../types/Github'
 import { IconDefinition, faInbox, faCircleHalfStroke, faCodePullRequest } from '@fortawesome/free-solid-svg-icons'
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons'
+import { safeUnreachable } from '../utils/typescript'
+import type { UserInfo } from '../../types/User'
+import type { Issue } from '../../types/Issue'
 
 export const issueFilterAll: IssueFilter = {
 	type: 'all',
@@ -13,19 +15,19 @@ export const issueFilterOpen: IssueFilter = {
 	type: 'open',
 	title: 'Open',
 	icon: faCircleHalfStroke,
-	filter: (issue, _option) => issue.state === 'open',
+	filter: (issue, _option) => ['open', 'draft'].includes(issue.state.state),
 } as const
 export const issueFilterMyIssues: IssueFilter = {
 	type: 'my-issues',
 	title: 'My Issues',
 	icon: faCircleDot,
-	filter: (issue, { user }) => !Object.hasOwn(issue, 'pull_request') && checkOwnIssue(issue, user),
+	filter: (issue, { user }) => issue.state.type === 'issue' && checkOwnIssue(issue, user),
 } as const
 export const issueFilterMyPr: IssueFilter = {
 	type: 'my-pr',
 	title: 'My PullRequests',
 	icon: faCodePullRequest,
-	filter: (issue, { user }) => Object.hasOwn(issue, 'pull_request') && checkOwnIssue(issue, user),
+	filter: (issue, { user }) => issue.state.type === 'pull-request' && checkOwnIssue(issue, user),
 } as const
 export const issueFilters: IssueFilter[] = [
 	issueFilterAll,
@@ -38,13 +40,13 @@ export const IssueFilterContext = createContext<IssueFilter>(issueFilterAll)
 export const IssueFilterDispatchContext = createContext<Dispatch<IssueFilter>>((v) => { })
 
 export type IssueFilterTypes = 'all' | 'open' | 'my-issues' | 'my-pr'
-type IssueFilterOption = { user: GithubUserInfo | null }
+type IssueFilterOption = { user: UserInfo | null }
 
 export interface IssueFilter {
 	readonly type: IssueFilterTypes
 	readonly title: string
 	readonly icon: IconDefinition
-	readonly filter: (issue: GithubIssue, option: IssueFilterOption) => boolean
+	readonly filter: (issue: Issue, option: IssueFilterOption) => boolean
 }
 
 export const fromFilterType = (type: IssueFilterTypes): IssueFilter => {
@@ -62,13 +64,9 @@ export const fromFilterType = (type: IssueFilterTypes): IssueFilter => {
 	safeUnreachable(type)
 }
 
-const checkOwnIssue = (issue: GithubIssue, user: GithubUserInfo | null) => {
+const checkOwnIssue = (issue: Issue, user: UserInfo | null) => {
 	if (!issue.user || !user) {
 		return false
 	}
-	return issue.user.login === user.login
-}
-
-const safeUnreachable = (_x: never): never => {
-	throw new Error('Unreachable code')
+	return issue.user === user.login
 }

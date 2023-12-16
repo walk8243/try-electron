@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useState, Reducer, ReactNode } from 'react'
 import Head from 'next/head'
-import { GithubUserInfo } from '../../types/Github'
+import type { UserInfo } from '../../types/User'
 
 import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext, IssueFilterDispatchContext, issueFilterAll, IssueFilter } from '../context/IssueFilterContext'
@@ -50,7 +50,7 @@ const MainComponent = () => {
 }
 
 const UserInfoContextProvider = ({ children }: { children: ReactNode }) => {
-  const [userInfo, setUserInfo] = useState<GithubUserInfo | null>(null)
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   useEffect(() => {
     window.electron?.pushUser((user) => setUserInfo(() => user))
   }, [])

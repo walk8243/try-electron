@@ -68,7 +68,7 @@ const gainGithubUser = async () => await gainUserInfo()
 const gainGithubIssues = async (prevTime?: dayjs.Dayjs) => {
   const now = dayjs()
   const issues = await gainIssues(now.subtract(githubAppSettings.terms.value, githubAppSettings.terms.unit))
-  if (prevTime && issues.some((issue) => dayjs(issue.updated_at).isAfter(prevTime))) {
+  if (prevTime && issues.some((issue) => dayjs(issue.updatedAt).isAfter(prevTime))) {
     const notification = new Notification({
       title: 'Issueが更新されました',
       body: '更新されたIssue・PRがあります。Issue・PRを確認してください。',

@@ -1,4 +1,5 @@
-import { GithubUserInfo, GithubIssue } from '../../types/Github';
+import type { UserInfo } from '../../types/User'
+import type { Issue } from '../../types/Issue'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -7,8 +8,8 @@ declare global {
       issue: (url: string) => Promise<void>
       open: (url: string) => void
       ready: () => void
-      pushUser: (callback: (user: GithubUserInfo) => void) => void
-      pushIssues: (callback: (issues: GithubIssue[]) => void) => void
+      pushUser: (callback: (user: UserInfo) => void) => void
+      pushIssues: (callback: (issues: Issue[]) => void) => void
     }
     setting: {
       display: () => Promise<SettingData>

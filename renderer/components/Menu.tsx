@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext, IssueFilterDispatchContext, issueFilters } from '../context/IssueFilterContext'
-import { GithubUserInfo } from '../../types/Github'
+import type { UserInfo } from '../../types/User'
 
 import { Avatar, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -32,10 +32,10 @@ const Menu = () => {
   )
 }
 
-const User = ({ user }: { user: GithubUserInfo }) => (
+const User = ({ user }: { user: UserInfo }) => (
   <Grid container>
     <Grid item xs='auto'>
-      <Avatar alt={user.login} src={user.avatar_url} sx={{ width: 100, height: 100 }} />
+      <Avatar alt={user.login} src={user.avatarUrl} sx={{ width: 100, height: 100 }} />
     </Grid>
     <Grid item xs='auto' sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
       <Typography>{user.name}</Typography>
