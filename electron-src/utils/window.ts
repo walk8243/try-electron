@@ -87,7 +87,7 @@ const calcWebviewWidth = (mainWindowBounds: Electron.Rectangle, option: { isNoHe
 	return width
 }
 const calcWebviewHeight = (mainWindowBounds: Electron.Rectangle, option: { isNoHeader: boolean, isMac: boolean }) => {
-	let height = mainWindowBounds.height - boundPosition.y
+	const height = mainWindowBounds.height - boundPosition.y
 	if (option.isNoHeader) {
 		return height
 	}

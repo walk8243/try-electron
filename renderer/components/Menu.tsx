@@ -19,7 +19,7 @@ const Menu = () => {
       <List>
         {issueFilters.map((filter) => (
           <ListItem key={filter.type}>
-            <ListItemButton onClick={(e) => issueFilterDispatch(filter)} selected={filter.type === issueFilter.type}>
+            <ListItemButton onClick={(_e) => issueFilterDispatch(filter)} selected={filter.type === issueFilter.type}>
               <ListItemIcon sx={{ minWidth: 'initial', mr: 2 }}>
                 <FontAwesomeIcon icon={filter.icon} />
               </ListItemIcon>

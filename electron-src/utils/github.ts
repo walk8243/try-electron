@@ -43,7 +43,7 @@ export const checkStoreData = () => {
 const gainFilterdIssues = async (filterType: IssueFilterType, since: string): Promise<GithubIssue[]> => {
 	const issues = []
 	for (let page = 1; ; page++) {
-		const results = await accessGithub({ path: 'issues', query: { filter: filterType, state: 'all', sort: 'updated', per_page: githubAppSettings.perPage, page, since } })
+		const results = await accessGithub({ path: 'issues', query: { filter: filterType, state: 'all', sort: 'updated', per_page: String(githubAppSettings.perPage), page: String(page), since } })
 		if (!isIssuesType(results)) {
 			throw new Error('GitHub APIからのIssueのresponseが異常値です')
 		}
@@ -55,7 +55,7 @@ const gainFilterdIssues = async (filterType: IssueFilterType, since: string): Pr
 	return issues
 }
 
-const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }): Promise<unknown> => {
+const accessGithub = async ({ path, query }: { path: string, query?: Record<string, string> }): Promise<unknown> => {
 	const url = new URL(path, getBaseUrl())
 	url.search = new URLSearchParams(query ?? {}).toString()
 	log.verbose('[accessGithub URL]', url.href)

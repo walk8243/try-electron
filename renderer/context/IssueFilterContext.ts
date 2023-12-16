@@ -37,7 +37,7 @@ export const issueFilters: IssueFilter[] = [
 ] as const
 
 export const IssueFilterContext = createContext<IssueFilter>(issueFilterAll)
-export const IssueFilterDispatchContext = createContext<Dispatch<IssueFilter>>((v) => { })
+export const IssueFilterDispatchContext = createContext<Dispatch<IssueFilter>>((_v) => { })
 
 export type IssueFilterTypes = 'all' | 'open' | 'my-issues' | 'my-pr'
 type IssueFilterOption = { user: UserInfo | null }

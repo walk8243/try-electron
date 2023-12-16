@@ -1,5 +1,3 @@
-import type { UserInfo } from './User'
-
 export interface Issue {
 	id: number,
 	key: string,
@@ -22,4 +20,3 @@ export interface IssueLabel {
 	text: string,
 	color: string | null,
 }
-
