@@ -28,6 +28,7 @@ export const createSetting = (parentWindow: BrowserWindow) => {
 		width: 300,
 		height: 500,
 		show: false,
+		resizable: false,
 		closable: false,
 		fullscreenable: false,
 		webPreferences: {
