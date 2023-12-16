@@ -19,13 +19,13 @@ export const issueFilterMyIssues: IssueFilter = {
 	type: 'my-issues',
 	title: 'My Issues',
 	icon: faCircleDot,
-	filter: (issue, { user }) => !Object.hasOwn(issue, 'pull_request') && issue.user.login === user.login,
+	filter: (issue, { user }) => !Object.hasOwn(issue, 'pull_request') && checkOwnIssue(issue, user),
 } as const
 export const issueFilterMyPr: IssueFilter = {
 	type: 'my-pr',
 	title: 'My PullRequests',
 	icon: faCodePullRequest,
-	filter: (issue, { user }) => Object.hasOwn(issue, 'pull_request') && issue.user.login === user.login,
+	filter: (issue, { user }) => Object.hasOwn(issue, 'pull_request') && checkOwnIssue(issue, user),
 } as const
 export const issueFilters: IssueFilter[] = [
 	issueFilterAll,
@@ -34,16 +34,17 @@ export const issueFilters: IssueFilter[] = [
 	issueFilterMyPr,
 ] as const
 
-export const IssueFilterContext = createContext<IssueFilter>(null)
-export const IssueFilterDispatchContext = createContext<Dispatch<IssueFilter>>(null)
+export const IssueFilterContext = createContext<IssueFilter>(issueFilterAll)
+export const IssueFilterDispatchContext = createContext<Dispatch<IssueFilter>>((v) => { })
 
 export type IssueFilterTypes = 'all' | 'open' | 'my-issues' | 'my-pr'
+type IssueFilterOption = { user: GithubUserInfo | null }
 
 export interface IssueFilter {
 	readonly type: IssueFilterTypes
 	readonly title: string
 	readonly icon: IconDefinition
-	readonly filter: (issue: GithubIssue, option?: { user: GithubUserInfo }) => boolean
+	readonly filter: (issue: GithubIssue, option: IssueFilterOption) => boolean
 }
 
 export const fromFilterType = (type: IssueFilterTypes): IssueFilter => {
@@ -61,6 +62,13 @@ export const fromFilterType = (type: IssueFilterTypes): IssueFilter => {
 	safeUnreachable(type)
 }
 
-export const safeUnreachable = (_x: never): never => {
+const checkOwnIssue = (issue: GithubIssue, user: GithubUserInfo | null) => {
+	if (!issue.user || !user) {
+		return false
+	}
+	return issue.user.login === user.login
+}
+
+const safeUnreachable = (_x: never): never => {
 	throw new Error('Unreachable code')
 }

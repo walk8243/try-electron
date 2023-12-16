@@ -42,6 +42,8 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@tsconfig/next": "^2.0.1",
+    "@tsconfig/node18": "^18.2.2",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.17",

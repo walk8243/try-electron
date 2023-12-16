@@ -50,7 +50,7 @@ const MainComponent = () => {
 }
 
 const UserInfoContextProvider = ({ children }: { children: ReactNode }) => {
-  const [userInfo, setUserInfo] = useState<GithubUserInfo>(null)
+  const [userInfo, setUserInfo] = useState<GithubUserInfo | null>(null)
   useEffect(() => {
     window.electron?.pushUser((user) => setUserInfo(() => user))
   }, [])

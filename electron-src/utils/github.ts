@@ -2,6 +2,7 @@ import { net, safeStorage } from 'electron'
 import log from 'electron-log/main'
 import dayjs from 'dayjs'
 import { store } from './store'
+import type { GithubUserInfo, GithubIssue } from '../types/GitHub'
 
 export const githubAppSettings: { readonly filterTypes: readonly IssueFilterType[], readonly perPage: number, readonly terms: { value: number, unit: dayjs.ManipulateType } } = {
 	filterTypes: ['assigned', 'created', 'mentioned'],
@@ -10,30 +11,37 @@ export const githubAppSettings: { readonly filterTypes: readonly IssueFilterType
 } as const
 
 export const gainUserInfo = async () => {
-	return await accessGithub({ path: 'user' })
+	const result = await accessGithub({ path: 'user' })
+	if (!isUserInfoType(result)) {
+		throw new Error('GitHub APIからの認証されたユーザのresponseが異常値です')
+	}
+	return result
 }
 
-export const gainIssues = async (target?: dayjs.Dayjs) => {
+export const gainIssues = async (target?: dayjs.Dayjs): Promise<GithubIssue[]> => {
 	const since = target?.toISOString() ?? ''
 	return Promise.all(githubAppSettings.filterTypes.map((filterType) => gainFilterdIssues(filterType, since))).then((values) => {
 		return values.reduce((acc, cur) => acc.concat(cur), [])
-			.reduce((acc: Record<string, any>[], cur: Record<string, any>) => {
+			.reduce((acc: GithubIssue[], cur: GithubIssue) => {
 				if (acc.every((issue) => issue.node_id !== cur.node_id)) {
 					acc.push(cur)
 				}
 				return acc
 			}, [])
-	}).then((issues) => issues.sort((a, b) => dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1))
+	}).then((issues) => issues.toSorted((a, b) => dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1))
 }
 
 export const checkStoreData = () => {
 	return store.has('githubBaseUrl') && store.has('githubToken')
 }
 
-const gainFilterdIssues = async (filterType: IssueFilterType, since: string) => {
+const gainFilterdIssues = async (filterType: IssueFilterType, since: string): Promise<GithubIssue[]> => {
 	const issues = []
 	for (let page = 1; ; page++) {
 		const results = await accessGithub({ path: 'issues', query: { filter: filterType, state: 'all', sort: 'updated', per_page: githubAppSettings.perPage, page, since } })
+		if (!isIssuesType(results)) {
+			throw new Error('GitHub APIからのIssueのresponseが異常値です')
+		}
 		issues.push(...results)
 		if (results.length < githubAppSettings.perPage) {
 			break
@@ -42,7 +50,7 @@ const gainFilterdIssues = async (filterType: IssueFilterType, since: string) => 
 	return issues
 }
 
-const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }): Promise<Record<string, any>[]> => {
+const accessGithub = async ({ path, query }: { path: string, query?: Record<string, any> }): Promise<unknown> => {
 	const url = new URL(path, getBaseUrl())
 	url.search = new URLSearchParams(query ?? {}).toString()
 	log.verbose('[accessGithub URL]', url.href)
@@ -75,6 +83,26 @@ const getToken = () => {
 	}
 
 	return safeStorage.decryptString(Buffer.from(token, 'base64'))
+}
+
+const isUserInfoType = (target: unknown): target is GithubUserInfo => {
+	if (target === null || typeof target !== 'object') {
+		return false
+	}
+	return 'id' in target && 'login' in target && 'avatar_url' in target && 'html_url' in target
+}
+const isIssuesType = (target: unknown): target is GithubIssue[] => {
+	if (!Array.isArray(target)) {
+		return false
+	}
+
+	return target.every((issue) => isIssueType(issue))
+}
+const isIssueType = (target: unknown): target is GithubIssue => {
+	if (target === null || typeof target !== 'object') {
+		return false
+	}
+	return 'id' in target && 'node_id' in target && 'title' in target && 'html_url' in target && 'state' in target && 'updated_at' in target
 }
 
 type IssueFilterType = 'assigned' | 'created' | 'mentioned' | 'subscribed' | 'all'
