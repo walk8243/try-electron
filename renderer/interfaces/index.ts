@@ -2,7 +2,6 @@ import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
 
 declare global {
-	// eslint-disable-next-line @typescript-eslint/no-namespace
 	interface Window {
 		electron: {
 			issue: (url: string) => Promise<void>;
