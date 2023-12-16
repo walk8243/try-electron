@@ -6,10 +6,9 @@ const isMac = process.platform === 'darwin'
 
 export const createMain = () => {
 	const mainWindow = new BrowserWindow({
-		width: 1200,
+		width: 1500,
 		height: 800,
 		show: false,
-		resizable: false,
 		webPreferences: {
 			nodeIntegration: false,
 			contextIsolation: true,
@@ -67,8 +66,13 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 
 export const createWebview = () => {
 	const webview = new BrowserView({})
-	webview.setBounds({ x: 550, y: 24, width: 1200 - (isMac ? 0 : 6) - 550, height: 800 - (isMac ? 27 : 49) - 24 - 24 })
 	webview.webContents.loadURL('https://github.com/')
 
 	return webview
+}
+
+export const putWebview = (mainWindow: BrowserWindow, webview: BrowserView) => {
+	const bounds = mainWindow.getBounds()
+	const boundsPlan = { x: 600, y: 24, width: bounds.width - (isMac ? 0 : 16) - 600, height: bounds.height - (isMac ? 27 : 59) - 24 }
+	webview.setBounds(boundsPlan)
 }

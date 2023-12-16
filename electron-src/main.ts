@@ -21,7 +21,8 @@ export const main = async () => {
   const mainWindow = windowUtils.createMain()
   const webview = windowUtils.createWebview()
   mainWindow.setBrowserView(webview)
-  
+  windowUtils.putWebview(mainWindow, webview)
+
   ipcMain.on('app:ready', (_event) => {
     log.verbose('App renderer is ready')
     userInfoProcess.then((userInfo) => {
@@ -52,6 +53,17 @@ export const main = async () => {
   if (!checkStoreData()) {
     settingWindow.show()
   }
+
+  mainWindow
+    .on('maximize', () => {
+      windowUtils.putWebview(mainWindow, webview)
+    })
+    .on('unmaximize', () => {
+      windowUtils.putWebview(mainWindow, webview)
+    })
+    .on('resized', () => {
+      windowUtils.putWebview(mainWindow, webview)
+    })
 
   setInterval(() => {
     gainGithubIssues(latestIssueGainTime)

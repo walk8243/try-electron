@@ -2,6 +2,7 @@ import { useEffect, useReducer, useState, Reducer, ReactNode } from 'react'
 import Head from 'next/head'
 import type { UserInfo } from '../../types/User'
 
+import { Box, Grid } from '@mui/material'
 import { UserInfoContext } from '../context/UserContext'
 import { IssueFilterContext, IssueFilterDispatchContext, issueFilterAll, IssueFilter } from '../context/IssueFilterContext'
 import { Heading } from '../components/Heading'
@@ -10,8 +11,6 @@ import Footer from '../components/Footer'
 import Menu from '../components/Menu'
 import IssueList from '../components/IssueList'
 import Issue from '../components/Issue'
-
-import styles from '../styles/index.module.scss'
 
 const IndexPage = () => {
   useEffect(() => {
@@ -36,16 +35,22 @@ const MainComponent = () => {
   const [issueUrl, setIssueUrl] = useState('')
 
   return (
-    <div className={styles.box}>
+    <Box height='100vh'>
       <Header />
-      <main className={styles.main}>
+      <Grid container component='main' display='grid' gridTemplateColumns='250px 350px 1fr' gridTemplateRows='1fr' maxHeight='100%' overflow='hidden'>
         <Heading level={2} hidden={true}>メイン</Heading>
-        <Menu />
-        <IssueList issueUrlHandler={setIssueUrl} />
-        <Issue url={issueUrl} />
-      </main>
+        <Grid item sx={{ width: 250 }}>
+          <Menu />
+        </Grid>
+        <Grid item sx={{ width: 350, maxHeight: '100%', overflowY: 'hidden' }}>
+          <IssueList issueUrlHandler={setIssueUrl} />
+        </Grid>
+        <Grid item>
+          <Issue url={issueUrl} />
+        </Grid>
+      </Grid>
       <Footer />
-    </div>
+    </Box>
   )
 }
 
