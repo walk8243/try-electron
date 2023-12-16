@@ -64,6 +64,12 @@ export const main = async () => {
     .on('resized', () => {
       windowUtils.putWebview(mainWindow, webview)
     })
+    .on('enter-full-screen', () => {
+      windowUtils.putWebview(mainWindow, webview, { noHeaderFlag: true })
+    })
+    .on('leave-full-screen', () => {
+      windowUtils.putWebview(mainWindow, webview)
+    })
 
   setInterval(() => {
     gainGithubIssues(latestIssueGainTime)

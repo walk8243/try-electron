@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import { BrowserWindow, BrowserView } from 'electron'
 import { getLoadedUrl } from './render'
 
-const isMac = process.platform === 'darwin'
+const isMac = process.platform === 'darwin' as const
 
 export const createMain = () => {
 	const mainWindow = new BrowserWindow({
@@ -72,8 +72,24 @@ export const createWebview = () => {
 	return webview
 }
 
-export const putWebview = (mainWindow: BrowserWindow, webview: BrowserView) => {
+const boundPosition = { x: 600, y: 24 } as const
+export const putWebview = (mainWindow: BrowserWindow, webview: BrowserView, { noHeaderFlag }: { noHeaderFlag?: boolean } = {}) => {
 	const bounds = mainWindow.getBounds()
-	const boundsPlan = { x: 600, y: 24, width: bounds.width - (isMac ? 0 : 16) - 600, height: bounds.height - (isMac ? 27 : 59) - 24 }
+	const option = { isNoHeader: noHeaderFlag === true, isMac }
+	const boundsPlan = { x: boundPosition.x, y: boundPosition.y, width: calcWebviewWidth(bounds, option), height: calcWebviewHeight(bounds, option) }
 	webview.setBounds(boundsPlan)
+}
+const calcWebviewWidth = (mainWindowBounds: Electron.Rectangle, option: { isNoHeader: boolean, isMac: boolean }) => {
+	let width = mainWindowBounds.width - boundPosition.x
+	if (!option.isMac) {
+		width -= 16
+	}
+	return width
+}
+const calcWebviewHeight = (mainWindowBounds: Electron.Rectangle, option: { isNoHeader: boolean, isMac: boolean }) => {
+	let height = mainWindowBounds.height - boundPosition.y
+	if (option.isNoHeader) {
+		return height
+	}
+	return height - (option.isMac ? 27 : 59)
 }
