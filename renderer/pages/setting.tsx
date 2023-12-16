@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { SettingData } from '../interfaces'
-
-import headlineStyles from '../styles/Headline.module.scss'
+import { Box, Button, Grid, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material'
+import { Heading } from '../components/Heading'
+import type { SettingData } from '../interfaces'
 
 const SettingPage = () => {
   const [data, setData] = useState<SettingData>({ baseUrl: '' })
@@ -28,29 +28,45 @@ const SettingPage = () => {
       <Head>
         <title>設定</title>
       </Head>
-      <h1 className={headlineStyles['header--hidden']}>設定用のページ</h1>
-  
-      <section>
-        <h2>設定</h2>
-        <div>
-          <div>
-            <div>URL</div>
-            <div><input value={data.baseUrl} onChange={e => setData(() => ({ ...data, baseUrl: e.target.value }))} /></div>
-          </div>
-          <div>
-            <div>token</div>
-            <div><input type='password' value={data.token} onChange={e => setData(() => ({ ...data, token: e.target.value }))} /></div>
-          </div>
-        </div>
-      </section>
-  
-      <section>
-        <h2>操作ボタン</h2>
-        <div>
-          <button onClick={handleSubmit}>保存</button>
-          <button onClick={handleCancel}>キャンセル</button>
-        </div>
-      </section>
+      <Heading level={1}>設定</Heading>
+
+      <Box component='section'>
+        <Heading level={2} hidden>設定</Heading>
+        <TableContainer>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <Typography>URL</Typography>
+                </TableCell>
+                <TableCell>
+                  <TextField value={data.baseUrl} onChange={e => setData(() => ({ ...data, baseUrl: e.target.value }))} variant='standard' />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <Typography>token</Typography>
+                </TableCell>
+                <TableCell>
+                  <TextField type='password' value={data.token} onChange={e => setData(() => ({ ...data, token: e.target.value }))} variant='standard' />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      <Box component='section' mt={3}>
+        <Heading level={2} hidden>操作ボタン</Heading>
+        <Grid container justifyContent='center' gap={2}>
+          <Grid item>
+            <Button variant='contained' onClick={handleSubmit}>保存</Button>
+          </Grid>
+          <Grid item>
+            <Button variant='outlined' onClick={handleCancel}>キャンセル</Button>
+          </Grid>
+        </Grid>
+      </Box>
     </div>
   )
 }
