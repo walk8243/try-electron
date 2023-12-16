@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Head from 'next/head'
 import { Box, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { Heading } from '../components/Heading'
+import appIcon from '../../docs/img/icon.png'
 
 const AboutPage = () => {
   const handleClose = () => {
@@ -17,7 +18,7 @@ const AboutPage = () => {
 
       <Grid container alignItems='center' gap={2} sx={{ px: 1, my: 1 }}>
         <Grid item xs='auto'>
-          <Image alt='app icon' src='https://walk8243.github.io/amethyst-electron/img/icon.png' width={100} height={100} style={{ marginLeft: 'auto', marginRight: 'auto' }} />
+          <Image alt='app icon' src={appIcon} width={100} height={100} style={{ marginLeft: 'auto', marginRight: 'auto' }} placeholder='blur' />
         </Grid>
         <Grid container item direction='column' xs zeroMinWidth gap={2}>
           <Grid container item alignItems='flex-end' gap={1}>
