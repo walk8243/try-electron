@@ -2,7 +2,9 @@ name: Release
 
 on:
   release:
-    types: [created]
+    types: [published]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   linux:
@@ -15,8 +17,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
+      - run: ls -al dist
 
   windows:
+    if: false
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,6 +32,7 @@ jobs:
       - run: npm run dist
 
   macos:
+    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
