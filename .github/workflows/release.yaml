@@ -3,8 +3,9 @@ name: Release
 on:
   release:
     types: [published]
-  pull_request:
-    types: [opened, synchronize, reopened]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   linux:
@@ -34,10 +35,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
-      - run: ls -1 dist/*.exe
+      - run: gh release upload ${{ github.ref }} dist/*.exe
 
   macos:
-    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,7 +47,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
-      - run: ls -1 dist/*.dmg
       - run: gh release upload ${{ github.ref }} dist/*.dmg
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: gh release upload ${{ github.ref }} dist/*.zip
