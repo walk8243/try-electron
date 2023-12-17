@@ -9,12 +9,6 @@ env:
   TAG_ID: ${{ github.event.release.tag_name }}
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: echo $TAG_ID
-
   linux:
     if: false
     runs-on: ubuntu-latest
@@ -29,7 +23,6 @@ jobs:
       - run: ls -al dist
 
   windows:
-    if: false
     runs-on: windows-latest
     steps:
       - name: Set git to use LF
@@ -46,7 +39,6 @@ jobs:
       - run: gh release upload $TAG_ID dist/amethyst-0.6.0-win.exe
 
   macos:
-    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
