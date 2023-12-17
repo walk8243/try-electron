@@ -8,6 +8,7 @@ on:
 
 jobs:
   linux:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +21,6 @@ jobs:
       - run: ls -al dist
 
   windows:
-    if: false
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,9 +30,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
+      - run: ls -1 dist/*.exe
 
   macos:
-    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,3 +42,4 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
+      - run: ls -1 dist/*.dmg
