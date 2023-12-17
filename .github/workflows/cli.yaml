@@ -1,4 +1,4 @@
-name: GitHub Cli test
+name: GitHub CLI test
 
 on:
   pull_request:
@@ -7,12 +7,12 @@ on:
 env:
   OWNER: ${{ github.repository_owner }}
   REPO: ${{ github.repository }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - run: echo $OWNER
-      - run: echo $REPO
+      - run: echo /repos/$OWNER/$REPO/releases
       - run: gh api /repos/$OWNER/$REPO/releases
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
