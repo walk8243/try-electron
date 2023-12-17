@@ -17,10 +17,7 @@ jobs:
       - run: echo $TAG_ID
       - run: echo "dist/amethyst-${TAG_ID}-mac.zip"
       - run: echo "Hello World" > dummy.txt
-      - uses: actions/upload-artifact@v4
-        with:
-          name: upload-test
-          path: dummy.txt
+      - run: gh release upload $TAG_ID dummy.txt
 
   linux:
     if: false
