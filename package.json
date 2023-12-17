@@ -1,5 +1,5 @@
 {
-  "name": "amethyst-electron",
+  "name": "amethyst",
   "version": "0.6.0",
   "description": "関係しているGitHubのIssuesを表示・管理するデスクトップアプリ",
   "main": "main/index.js",
@@ -66,6 +66,7 @@
     "typescript": "^5.3.3"
   },
   "build": {
+    "artifactName": "${productName}-${version}-${os}.${ext}",
     "asar": true,
     "files": [
       "main",

@@ -35,7 +35,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
-      - run: gh release upload ${{ github.ref }} dist/*.exe
+      - run: gh release upload ${{ github.ref }} dist/amethyst-0.6.0-win.exe
 
   macos:
     runs-on: macos-latest
@@ -47,5 +47,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
-      - run: gh release upload ${{ github.ref }} dist/*.dmg
-      - run: gh release upload ${{ github.ref }} dist/*.zip
+      - run: gh release upload ${{ github.ref }} dist/amethyst-0.6.0-mac.dmg
+      - run: gh release upload ${{ github.ref }} dist/amethyst-0.6.0-mac.zip
