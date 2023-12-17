@@ -54,7 +54,8 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 };
 
 export const checkStoreData = () => {
-	return store.has('githubBaseUrl') && store.has('githubToken');
+	const githubSetting = store.get('githubSetting');
+	return githubAppSettings && githubSetting.baseUrl && githubSetting.token;
 };
 
 const gainFilterdIssues = async (
@@ -109,7 +110,7 @@ const accessGithub = async ({
 };
 
 const getBaseUrl = () => {
-	const baseUrl = store.get('githubBaseUrl');
+	const baseUrl = store.get('githubSetting')?.baseUrl;
 	if (!baseUrl) {
 		throw new Error('No GitHub baseURL set. Please set one in the settings.');
 	}
@@ -118,7 +119,7 @@ const getBaseUrl = () => {
 };
 
 const getToken = () => {
-	const token = store.get('githubToken');
+	const token = store.get('githubSetting')?.token;
 	if (!token) {
 		throw new Error('No GitHub token set. Please set one in the settings.');
 	}

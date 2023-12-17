@@ -8,6 +8,7 @@ import {
 } from 'electron';
 import isDev from 'electron-is-dev';
 
+import { gainGithubUser, gainGithubIssues } from './main';
 import { store } from './utils/store';
 import type { SettingData } from './preload/setting';
 
@@ -136,21 +137,26 @@ export const createMenu = ({
 	]);
 
 	ipcMain.handle('setting:display', async () => {
-		return { baseUrl: store.get('githubBaseUrl') };
+		return {
+			baseUrl: store.get('githubSetting', {
+				baseUrl: 'https://api.github.com/',
+				token: '',
+			}).baseUrl,
+		};
 	});
 	ipcMain
 		.on(
 			'setting:submit',
 			(_event: Electron.IpcMainEvent, data: SettingData) => {
-				store.set('githubBaseUrl', data.baseUrl);
-				if (data.token) {
-					store.set(
-						'githubToken',
+				store.set('githubSetting', {
+					baseUrl: data.baseUrl,
+					token:
+						data.token &&
 						safeStorage.encryptString(data.token).toString('base64'),
-					);
-				}
+				});
 				settingWindow.hide();
-				parentWindow.reload();
+
+				Promise.all([gainGithubUser(), gainGithubIssues()]);
 			},
 		)
 		.on('setting:cancel', (_event: Electron.IpcMainEvent) => {

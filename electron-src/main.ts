@@ -8,22 +8,23 @@ import installExtension, {
 } from 'electron-devtools-installer';
 import dayjs from 'dayjs';
 
-import { createMenu } from './menu';
 import {
 	gainUserInfo,
 	gainIssues,
 	checkStoreData,
 	githubAppSettings,
 } from './utils/github';
+import { createMenu } from './menu';
+import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 
 const isMac = process.platform === 'darwin';
-let latestIssueGainTime: dayjs.Dayjs;
+let latestIssueGainTime: dayjs.Dayjs | null = null;
 
 export const main = async () => {
 	await prepareNext('./renderer');
-	const userInfoProcess = gainGithubUser();
-	const issuesProcess = gainGithubIssues(latestIssueGainTime);
+	gainGithubUser().catch((_err) => {});
+	gainGithubIssues().catch((_err) => {});
 
 	const mainWindow = windowUtils.createMain();
 	const webview = windowUtils.createWebview();
@@ -32,11 +33,20 @@ export const main = async () => {
 
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
-		userInfoProcess.then((userInfo) => {
-			mainWindow.webContents.send('app:pushUser', userInfo);
+
+		mainWindow.webContents.send('app:pushUser', store.get('userInfo') ?? {});
+		mainWindow.webContents.send(
+			'app:pushIssues',
+			store.get('issueData')?.issues ?? [],
+		);
+
+		store.onDidChange('userInfo', (userInfo) => {
+			mainWindow.webContents.send('app:pushUser', userInfo ?? {});
 		});
-		issuesProcess.then((issues) => {
-			mainWindow.webContents.send('app:pushIssues', issues);
+		store.onDidChange('issueData', (data) => {
+			log.debug('蓄積しているデータが更新されました');
+			if (!data) return;
+			mainWindow.webContents.send('app:pushIssues', data.issues ?? []);
 		});
 	});
 
@@ -85,7 +95,7 @@ export const main = async () => {
 
 	setInterval(
 		() => {
-			gainGithubIssues(latestIssueGainTime).then((issues) =>
+			gainGithubIssues().then((issues) =>
 				mainWindow.webContents.send('app:pushIssues', issues),
 			);
 		},
@@ -100,15 +110,23 @@ export const main = async () => {
 	}
 };
 
-const gainGithubUser = async () => await gainUserInfo();
-const gainGithubIssues = async (prevTime?: dayjs.Dayjs) => {
+export const gainGithubUser = async () => {
+	log.debug('main.gainGithubUser を実行します');
+	const userInfo = await gainUserInfo();
+
+	store.set('userInfo', userInfo);
+	return userInfo;
+};
+export const gainGithubIssues = async () => {
+	log.debug('main.gainGithubIssues を実行します');
 	const now = dayjs();
 	const issues = await gainIssues(
 		now.subtract(githubAppSettings.terms.value, githubAppSettings.terms.unit),
 	);
+
 	if (
-		prevTime &&
-		issues.some((issue) => dayjs(issue.updatedAt).isAfter(prevTime))
+		latestIssueGainTime &&
+		issues.some((issue) => dayjs(issue.updatedAt).isAfter(latestIssueGainTime))
 	) {
 		const notification = new Notification({
 			title: 'Issueが更新されました',
@@ -117,5 +135,7 @@ const gainGithubIssues = async (prevTime?: dayjs.Dayjs) => {
 		notification.show();
 	}
 	latestIssueGainTime = now;
+
+	store.set('issueData', { issues });
 	return issues;
 };
