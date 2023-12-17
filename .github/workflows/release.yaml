@@ -23,6 +23,10 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -33,6 +37,7 @@ jobs:
       - run: ls -1 dist/*.exe
 
   macos:
+    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,3 +48,6 @@ jobs:
       - run: npm ci
       - run: npm run dist
       - run: ls -1 dist/*.dmg
+      - run: gh release upload ${{ github.ref }} dist/*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
