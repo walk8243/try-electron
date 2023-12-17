@@ -91,12 +91,12 @@ const AppInfo = () => {
 };
 
 const OssData: OssInfoProps[] = [
-	{ name: 'Node.js', version: '18.18.2' },
-	{ name: 'Electron', version: '28.0.0' },
-	{ name: 'React', version: '18.2.0' },
-	{ name: 'Next.js', version: '14.0.4' },
-	{ name: 'Chronium', version: '120.0.6099.56' },
-	{ name: 'Material UI', version: '5.15.0' },
+	{ id: 'nodejs', name: 'Node.js', version: '18.18.2' },
+	{ id: 'electron', name: 'Electron', version: '28.0.0' },
+	{ id: 'react', name: 'React', version: '18.2.0' },
+	{ id: 'nextjs', name: 'Next.js', version: '14.0.4' },
+	{ id: 'chronium', name: 'Chronium', version: '120.0.6099.56' },
+	{ id: 'mui', name: 'Material UI', version: '5.15.0' },
 ];
 const OssList = () => (
 	<Box component="section" my={3}>
@@ -106,23 +106,26 @@ const OssList = () => (
 
 		<TableContainer component={Paper}>
 			<Table>
-				<TableHead>{OssInfo({ name: 'OSS', version: 'Version' })}</TableHead>
+				<TableHead>
+					{OssInfo({ id: 'header', name: 'OSS', version: 'Version' })}
+				</TableHead>
 				<TableBody>
-					{OssData.map((data, index) => (
-						<OssInfo key={index} {...data} />
+					{OssData.map((data: OssInfoProps) => (
+						<OssInfo key={data.id} {...data} />
 					))}
 				</TableBody>
 			</Table>
 		</TableContainer>
 	</Box>
 );
-const OssInfo = ({ name, version }: OssInfoProps) => (
+const OssInfo = ({ id: _id, name, version }: OssInfoProps) => (
 	<TableRow>
 		<TableCell>{name}</TableCell>
 		<TableCell>{version}</TableCell>
 	</TableRow>
 );
 type OssInfoProps = {
+	id: string;
 	name: string;
 	version: string;
 };
