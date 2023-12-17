@@ -5,6 +5,8 @@ on:
     types: [published]
 
 env:
+  OWNER: ${{ github.repository_owner }}
+  REPO: ${{ github.repository }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   TAG_ID: ${{ github.event.release.tag_name }}
 
@@ -17,7 +19,7 @@ jobs:
       - run: echo "dist/amethyst-${TAG_ID}-mac.zip"
       - run: |
           echo "Hello World" > dummy.txt
-          gh release upload $TAG_ID dummy.txt
+          gh api --method POST /repos/$OWNER/$REPO/releases/$TAG_ID/assets?name=dummy.txt -f '@dummy.txt'
 
   linux:
     if: false
