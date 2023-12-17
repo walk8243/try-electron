@@ -12,7 +12,6 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - run: echo /repos/$OWNER/$REPO/releases
-      - run: gh api /repos/$OWNER/$REPO/releases
+      - run: gh release list
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
