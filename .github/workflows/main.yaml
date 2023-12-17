@@ -1,4 +1,4 @@
-name: Check
+name: Source Code Check
 
 on:
   push:
@@ -16,7 +16,6 @@ jobs:
         with:
           node-version: 18
           cache: npm
-      - run: ls -la
       - run: npm ci
       - run: npm run type-check
       - run: npm run lint
