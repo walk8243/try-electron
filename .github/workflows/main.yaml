@@ -30,4 +30,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: echo "ELECTRON_VER=$(npx electron -v)" >> $GITHUB_ENV
-      - run: echo ${{ env.ELECTRON_VER }}
+      - run: curl -s https://raw.githubusercontent.com/electron/electron/${{ env.ELECTRON_VER }}/DEPS > DEPS
+      - run: node ./scripts/electron-ver.js
