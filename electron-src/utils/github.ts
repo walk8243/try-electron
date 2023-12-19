@@ -110,7 +110,10 @@ const accessGithub = async ({
 };
 
 const getBaseUrl = () => {
-	const baseUrl = store.get('githubSetting')?.baseUrl;
+	const baseUrl = store.get('githubSetting', {
+		baseUrl: '',
+		token: '',
+	}).baseUrl;
 	if (!baseUrl) {
 		throw new Error('No GitHub baseURL set. Please set one in the settings.');
 	}
@@ -119,7 +122,7 @@ const getBaseUrl = () => {
 };
 
 const getToken = () => {
-	const token = store.get('githubSetting')?.token;
+	const token = store.get('githubSetting', { baseUrl: '', token: '' }).token;
 	if (!token) {
 		throw new Error('No GitHub token set. Please set one in the settings.');
 	}
