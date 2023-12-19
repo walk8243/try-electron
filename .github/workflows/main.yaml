@@ -31,5 +31,5 @@ jobs:
       - run: npm ci
       - run: ELECTRON_VER=$(npx electron -v)
       - run: echo $ELECTRON_VER
-      - run: curl -sL https://github.com/electron/electron/blob/v28.0.0/DEPS
+      - run: curl -sL https://github.com/electron/electron/blob/v28.0.0/DEPS > DEPS
       - run: node ./scripts/electron-ver.js
