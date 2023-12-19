@@ -29,6 +29,5 @@ jobs:
           node-version: 18
           cache: npm
       - run: npm ci
-      - run: npx electron -v
-      - run: ELECTRON_VER=$(npx electron -v 2>&1 | grep v)
-      - run: echo $ELECTRON_VER
+      - run: echo "ELECTRON_VER=$(npx electron -v)" >> $GITHUB_ENV
+      - run: echo ${{ env.ELECTRON_VER }}
