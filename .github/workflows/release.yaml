@@ -9,6 +9,18 @@ env:
   TAG_ID: ${{ github.event.release.tag_name }}
 
 jobs:
+  note:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+      - run: curl -sL https://github.com/electron/electron/blob/v28.0.0/DEPS > DEPS
+      - run: node ./scripts/electron-ver.js
+      - run: gh release update ${{ env.TAG_ID }} --notes-file ./scripts/release-notes.md
+
   linux:
     if: false
     runs-on: ubuntu-latest
