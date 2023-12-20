@@ -31,6 +31,7 @@ export const main = async () => {
 	mainWindow.setBrowserView(webview);
 	windowUtils.putWebview(mainWindow, webview);
 
+	ipcMain.handle('app:version', () => `v${app.getVersion()}`);
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
 

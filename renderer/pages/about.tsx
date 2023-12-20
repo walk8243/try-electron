@@ -1,19 +1,7 @@
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
-import {
-	Box,
-	Button,
-	Grid,
-	Link,
-	Paper,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
-} from '@mui/material';
+import { Box, Button, Grid, Link, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { Heading } from '../components/Heading';
@@ -30,15 +18,19 @@ const AboutPage = () => (
 
 		<AppInfo />
 		<ButtonArea />
-		<OssList />
 		<CopyRight />
 	</Box>
 );
 
 const AppInfo = () => {
+	const [version, setVersion] = useState('');
 	const handleOpenSource = (url: string) => {
 		window.about?.open(url);
 	};
+
+	useEffect(() => {
+		window.about?.version().then((v) => setVersion(v));
+	}, []);
 
 	return (
 		<Box component="section" my={3}>
@@ -63,7 +55,7 @@ const AppInfo = () => {
 							<Typography variant="h3">Amethyst</Typography>
 						</Grid>
 						<Grid item>
-							<Typography variant="subtitle1">v0.0.1</Typography>
+							<Typography variant="subtitle1">{version}</Typography>
 						</Grid>
 					</Grid>
 					<Grid item>
@@ -88,46 +80,6 @@ const AppInfo = () => {
 			</Grid>
 		</Box>
 	);
-};
-
-const OssData: OssInfoProps[] = [
-	{ id: 'nodejs', name: 'Node.js', version: '18.18.2' },
-	{ id: 'electron', name: 'Electron', version: '28.0.0' },
-	{ id: 'react', name: 'React', version: '18.2.0' },
-	{ id: 'nextjs', name: 'Next.js', version: '14.0.4' },
-	{ id: 'chronium', name: 'Chronium', version: '120.0.6099.56' },
-	{ id: 'mui', name: 'Material UI', version: '5.15.0' },
-];
-const OssList = () => (
-	<Box component="section" my={3}>
-		<Heading level={2} hidden>
-			使用しているOSSの一覧
-		</Heading>
-
-		<TableContainer component={Paper}>
-			<Table>
-				<TableHead>
-					{OssInfo({ id: 'header', name: 'OSS', version: 'Version' })}
-				</TableHead>
-				<TableBody>
-					{OssData.map((data: OssInfoProps) => (
-						<OssInfo key={data.id} {...data} />
-					))}
-				</TableBody>
-			</Table>
-		</TableContainer>
-	</Box>
-);
-const OssInfo = ({ id: _id, name, version }: OssInfoProps) => (
-	<TableRow>
-		<TableCell>{name}</TableCell>
-		<TableCell>{version}</TableCell>
-	</TableRow>
-);
-type OssInfoProps = {
-	id: string;
-	name: string;
-	version: string;
 };
 
 const ButtonArea = () => {

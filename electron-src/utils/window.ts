@@ -49,7 +49,7 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 		parent: parentWindow,
 		modal: true,
 		width: 500,
-		height: 670 + (isMac ? 0 : 27),
+		height: 270 + (isMac ? 0 : 27),
 		show: false,
 		resizable: false,
 		fullscreenable: false,
@@ -76,7 +76,7 @@ const boundPosition = { x: 600, y: 24 } as const;
 export const putWebview = (
 	mainWindow: BrowserWindow,
 	webview: BrowserView,
-	{ noHeaderFlag }: { noHeaderFlag?: boolean } = {},
+	{ noHeaderFlag }: WebviewPutOptions = {},
 ) => {
 	const bounds = mainWindow.getBounds();
 	const option = { isNoHeader: noHeaderFlag === true, isMac };
@@ -107,4 +107,8 @@ const calcWebviewHeight = (
 		return height;
 	}
 	return height - (option.isMac ? 27 : 59);
+};
+
+export type WebviewPutOptions = {
+	noHeaderFlag?: boolean;
 };
