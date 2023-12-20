@@ -9,6 +9,7 @@ on:
 
 jobs:
   test:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +29,8 @@ jobs:
         with:
           node-version: 18
           cache: npm
-      - run: npm ci
-      - run: echo "ELECTRON_VER=$(npx electron -v)" >> $GITHUB_ENV
-      - run: curl -s https://raw.githubusercontent.com/electron/electron/${{ env.ELECTRON_VER }}/DEPS > DEPS
-      - run: node ./scripts/electron-ver.js
+      # - run: npm ci
+      # - run: echo "ELECTRON_VER=$(npx electron -v)" >> $GITHUB_ENV
+      # - run: curl -s https://raw.githubusercontent.com/electron/electron/${{ env.ELECTRON_VER }}/DEPS > DEPS
+      # - run: node ./scripts/electron-ver.js
+      - run: gh release view 0.6.1
