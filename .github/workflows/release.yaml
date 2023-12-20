@@ -22,7 +22,7 @@ jobs:
       - run: echo "ELECTRON_VER=$(npx electron -v)" >> $GITHUB_ENV
       - run: curl -s https://raw.githubusercontent.com/electron/electron/${{ env.ELECTRON_VER }}/DEPS > DEPS
       - run: node ./scripts/electron-ver.js >> release-note.md
-      - run: gh release edit ${{ env.TAG_ID }} --notes-file release-notes.md
+      - run: gh release edit ${{ env.TAG_ID }} --notes-file release-note.md
 
   linux:
     if: false
