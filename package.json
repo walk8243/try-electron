@@ -76,7 +76,7 @@
       "icon": "docs/img/icon.icns"
     },
     "win": {
-      "target": "portable",
+      "target": "msi",
       "icon": "docs/img/icon.ico"
     }
   },
