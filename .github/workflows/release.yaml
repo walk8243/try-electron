@@ -63,5 +63,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
+      - run: sha256sum "dist/amethyst-${TAG_ID}-mac.zip"
       - run: gh release upload $TAG_ID "dist/amethyst-${TAG_ID}-mac.dmg"
       - run: gh release upload $TAG_ID "dist/amethyst-${TAG_ID}-mac.zip"
