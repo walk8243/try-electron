@@ -16,6 +16,7 @@ declare global {
 			cancel: () => void;
 		};
 		about: {
+			version: () => Promise<string>;
 			close: () => void;
 			open: (url: string) => void;
 		};

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import {
@@ -36,9 +37,14 @@ const AboutPage = () => (
 );
 
 const AppInfo = () => {
+	const [version, setVersion] = useState('');
 	const handleOpenSource = (url: string) => {
 		window.about?.open(url);
 	};
+
+	useEffect(() => {
+		window.about?.version().then((v) => setVersion(v));
+	}, []);
 
 	return (
 		<Box component="section" my={3}>
@@ -63,7 +69,7 @@ const AppInfo = () => {
 							<Typography variant="h3">Amethyst</Typography>
 						</Grid>
 						<Grid item>
-							<Typography variant="subtitle1">v0.0.1</Typography>
+							<Typography variant="subtitle1">{version}</Typography>
 						</Grid>
 					</Grid>
 					<Grid item>
