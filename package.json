@@ -1,6 +1,6 @@
 {
   "name": "amethyst",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "関係しているGitHubのIssuesを表示・管理するデスクトップアプリ",
   "main": "main/index.js",
   "scripts": {
@@ -76,7 +76,7 @@
       "icon": "docs/img/icon.icns"
     },
     "win": {
-      "target": "portable",
+      "target": "msi",
       "icon": "docs/img/icon.ico"
     }
   },
