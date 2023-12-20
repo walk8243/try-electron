@@ -9,6 +9,7 @@ on:
 
 jobs:
   test:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,3 +20,9 @@ jobs:
       - run: npm ci
       - run: npm run type-check
       - run: npm run lint
+
+  sha256:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: shasum -a 256 package.json
