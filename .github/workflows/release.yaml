@@ -18,10 +18,11 @@ jobs:
           node-version: 18
           cache: npm
       - run: npm ci
+      - run: gh release view 0.6.1 --json body --jq '.body' > release-note.md
       - run: echo "ELECTRON_VER=$(npx electron -v)" >> $GITHUB_ENV
       - run: curl -s https://raw.githubusercontent.com/electron/electron/${{ env.ELECTRON_VER }}/DEPS > DEPS
-      - run: node ./scripts/electron-ver.js
-      - run: gh release update ${{ env.TAG_ID }} --notes-file ./scripts/release-notes.md
+      - run: node ./scripts/electron-ver.js >> release-note.md
+      - run: gh release edit ${{ env.TAG_ID }} --notes-file release-notes.md
 
   linux:
     if: false
