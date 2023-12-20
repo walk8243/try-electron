@@ -2,12 +2,14 @@ const { execSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
+console.log('');
 const main = () => {
 	const result = {
 		...collectDependencyVersions(),
 		...collectElectronEnvVersions(),
 	};
 
+	console.log('## Electron Environment');
 	console.log('| OSS | Version |');
 	console.log('|:---|---:|');
 	console.log(`| Electron | ${result.electron} |`);
