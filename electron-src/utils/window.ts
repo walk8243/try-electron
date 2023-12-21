@@ -15,7 +15,6 @@ export const createMain = () => {
 			preload: join(__dirname, '../preload', 'main.js'),
 		},
 	});
-	mainWindow.loadURL(getLoadedUrl());
 
 	return mainWindow;
 };

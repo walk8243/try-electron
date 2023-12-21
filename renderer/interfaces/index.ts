@@ -9,6 +9,7 @@ declare global {
 			ready: () => void;
 			pushUser: (callback: (user: UserInfo) => void) => void;
 			pushIssues: (callback: (issues: Issue[]) => void) => void;
+			pushUpdatedAt: (callback: (updatedAt: string) => void) => void;
 		};
 		setting: {
 			display: () => Promise<SettingData>;

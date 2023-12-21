@@ -8,13 +8,14 @@ import installExtension, {
 } from 'electron-devtools-installer';
 import dayjs from 'dayjs';
 
+import { createMenu } from './menu';
 import {
 	gainUserInfo,
 	gainIssues,
 	checkStoreData,
 	githubAppSettings,
 } from './utils/github';
-import { createMenu } from './menu';
+import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 
@@ -22,15 +23,7 @@ const isMac = process.platform === 'darwin';
 let latestIssueGainTime: dayjs.Dayjs | null = null;
 
 export const main = async () => {
-	await prepareNext('./renderer');
-	gainGithubUser().catch((_err) => {});
-	gainGithubIssues().catch((_err) => {});
-
 	const mainWindow = windowUtils.createMain();
-	const webview = windowUtils.createWebview();
-	mainWindow.setBrowserView(webview);
-	windowUtils.putWebview(mainWindow, webview);
-
 	ipcMain.handle('app:version', () => `v${app.getVersion()}`);
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
@@ -40,6 +33,10 @@ export const main = async () => {
 			'app:pushIssues',
 			store.get('issueData')?.issues ?? [],
 		);
+		mainWindow.webContents.send(
+			'app:pushUpdatedAt',
+			store.get('issueData')?.updatedAt ?? '',
+		);
 
 		store.onDidChange('userInfo', (userInfo) => {
 			mainWindow.webContents.send('app:pushUser', userInfo ?? {});
@@ -47,9 +44,19 @@ export const main = async () => {
 		store.onDidChange('issueData', (data) => {
 			log.debug('蓄積しているデータが更新されました');
 			if (!data) return;
+			mainWindow.webContents.send('app:pushUpdatedAt', data.updatedAt ?? {});
 			mainWindow.webContents.send('app:pushIssues', data.issues ?? []);
 		});
 	});
+
+	await prepareNext('./renderer');
+	mainWindow.loadURL(getLoadedUrl());
+	gainGithubUser().catch((_err) => {});
+	gainGithubIssues().catch((_err) => {});
+
+	const webview = windowUtils.createWebview();
+	mainWindow.setBrowserView(webview);
+	windowUtils.putWebview(mainWindow, webview);
 
 	const settingWindow = windowUtils.createSetting(mainWindow);
 	const aboutWindow = windowUtils.createAbout(mainWindow);
@@ -137,6 +144,6 @@ export const gainGithubIssues = async () => {
 	}
 	latestIssueGainTime = now;
 
-	store.set('issueData', { issues });
+	store.set('issueData', { updatedAt: now.toISOString(), issues });
 	return issues;
 };
