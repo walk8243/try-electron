@@ -27,7 +27,7 @@ const Menu = () => {
 	return (
 		<Grid
 			container
-			component={'section'}
+			component="section"
 			sx={{
 				display: 'grid',
 				gridTemplateRows: '80px 1fr max-content',
@@ -96,6 +96,7 @@ const UpdatedAt = () => {
 	const [updatedAt, setUpdatedAt] = useState<string>('');
 	useEffect(() => {
 		window.electron.pushUpdatedAt((updatedAt) => {
+			if (!updatedAt) return '';
 			setUpdatedAt(dayjs(updatedAt).format('YYYY/MM/DD HH:mm:ss'));
 		});
 	}, []);

@@ -35,7 +35,7 @@ export const main = async () => {
 		);
 		mainWindow.webContents.send(
 			'app:pushUpdatedAt',
-			store.get('issueData')?.updatedAt ?? {},
+			store.get('issueData')?.updatedAt ?? '',
 		);
 
 		store.onDidChange('userInfo', (userInfo) => {
