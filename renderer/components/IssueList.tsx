@@ -9,7 +9,6 @@ import {
 	Card,
 	CardActionArea,
 	CardContent,
-	Box,
 	Grid,
 	Typography,
 } from '@mui/material';
@@ -40,20 +39,31 @@ const IssueList = ({ issueUrlHandler }: Props) => {
 	};
 
 	return (
-		<Box sx={{ height: '100%', overflowY: 'scroll' }}>
+		<Grid
+			container
+			display="grid"
+			gridTemplateRows="max-content 1fr"
+			sx={{ height: '100%' }}
+		>
 			<Heading level={3} hidden={true}>
 				Issueリスト
 			</Heading>
-			<Box>
-				<Heading level={4}>Issue</Heading>
-				<Typography variant="subtitle1" sx={{ height: '1lh' }}>
-					{issues
-						? `${numberFormat.format(issues.length)} issues`
-						: 'Loading...'}
-				</Typography>
-			</Box>
+			<Header issues={issues} />
 			<IssueCards issues={issues} handle={handleClick} />
-		</Box>
+		</Grid>
+	);
+};
+
+const Header = ({ issues }: { issues: Issue[] | null }) => {
+	const subtitle = issues
+		? `${numberFormat.format(issues.length)} issues`
+		: 'Loading...';
+
+	return (
+		<Grid item>
+			<Heading level={4}>Issue</Heading>
+			<Typography variant="subtitle1">{subtitle}</Typography>
+		</Grid>
 	);
 };
 
@@ -69,21 +79,16 @@ const IssueCards = ({
 
 	if (!issues) {
 		return (
-			<Grid
-				container
-				alignItems="center"
-				justifyContent="center"
-				sx={{ width: '100%', height: '100%' }}
-			>
+			<Grid container item alignItems="center" justifyContent="center">
 				<Grid item>
-					<FontAwesomeIcon icon={faSpinner} spin={true} />
+					<FontAwesomeIcon icon={faSpinner} size="xl" spin={true} />
 				</Grid>
 			</Grid>
 		);
 	}
 
 	return (
-		<Grid container>
+		<Grid container sx={{ overflowY: 'scroll' }}>
 			{issues
 				.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
 				.map((issue) => (

@@ -48,7 +48,7 @@ const MainComponent = () => {
 				display="grid"
 				gridTemplateColumns="250px 350px 1fr"
 				gridTemplateRows="1fr"
-				maxHeight="100%"
+				height="100%"
 				overflow="hidden"
 			>
 				<Heading level={2} hidden={true}>
@@ -57,7 +57,7 @@ const MainComponent = () => {
 				<Grid item sx={{ width: 250 }}>
 					<Menu />
 				</Grid>
-				<Grid item sx={{ width: 350, maxHeight: '100%', overflowY: 'hidden' }}>
+				<Grid item sx={{ width: 350, height: '100%', overflowY: 'hidden' }}>
 					<IssueList issueUrlHandler={setIssueUrl} />
 				</Grid>
 				<Grid item>
