@@ -30,7 +30,7 @@ const Menu = () => {
 			component={'section'}
 			sx={{
 				display: 'grid',
-				gridTemplateRows: 'max-content 1fr max-content',
+				gridTemplateRows: '80px 1fr max-content',
 				height: '100%',
 			}}
 		>
