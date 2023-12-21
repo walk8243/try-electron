@@ -9,7 +9,6 @@ import {
 	Card,
 	CardActionArea,
 	CardContent,
-	Box,
 	Grid,
 	Typography,
 } from '@mui/material';
@@ -17,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	IconDefinition,
 	faCodePullRequest,
+	faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { Heading } from './Heading';
@@ -27,9 +27,7 @@ type Props = {
 const numberFormat = Intl.NumberFormat('ja-JP');
 
 const IssueList = ({ issueUrlHandler }: Props) => {
-	const userInfo = useContext(UserInfoContext);
-	const [issues, setIssues] = useState<Issue[]>([]);
-	const issueFilter = useContext(IssueFilterContext);
+	const [issues, setIssues] = useState<Issue[] | null>(null);
 	useEffect(() => {
 		window.electron?.pushIssues((issues) => setIssues(() => issues));
 	}, []);
@@ -41,24 +39,62 @@ const IssueList = ({ issueUrlHandler }: Props) => {
 	};
 
 	return (
-		<Box sx={{ height: '100%', overflowY: 'scroll' }}>
+		<Grid
+			container
+			display="grid"
+			gridTemplateRows="max-content 1fr"
+			sx={{ height: '100%' }}
+		>
 			<Heading level={3} hidden={true}>
 				Issueリスト
 			</Heading>
-			<Box>
-				<Heading level={4}>Issue</Heading>
-				<Typography variant="subtitle1">
-					{numberFormat.format(issues.length)} issues
-				</Typography>
-			</Box>
-			<Grid container>
-				{issues
-					.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
-					.map((issue) => (
-						<IssueCard key={issue.key} issue={issue} handle={handleClick} />
-					))}
+			<Header issues={issues} />
+			<IssueCards issues={issues} handle={handleClick} />
+		</Grid>
+	);
+};
+
+const Header = ({ issues }: { issues: Issue[] | null }) => {
+	const subtitle = issues
+		? `${numberFormat.format(issues.length)} issues`
+		: 'Loading...';
+
+	return (
+		<Grid item>
+			<Heading level={4}>Issue</Heading>
+			<Typography variant="subtitle1">{subtitle}</Typography>
+		</Grid>
+	);
+};
+
+const IssueCards = ({
+	issues,
+	handle,
+}: {
+	issues: Issue[] | null;
+	handle: (e: MouseEvent, url: string) => void;
+}) => {
+	const userInfo = useContext(UserInfoContext);
+	const issueFilter = useContext(IssueFilterContext);
+
+	if (!issues) {
+		return (
+			<Grid container item alignItems="center" justifyContent="center">
+				<Grid item>
+					<FontAwesomeIcon icon={faSpinner} size="xl" spin={true} />
+				</Grid>
 			</Grid>
-		</Box>
+		);
+	}
+
+	return (
+		<Grid container sx={{ overflowY: 'scroll' }}>
+			{issues
+				.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
+				.map((issue) => (
+					<IssueCard key={issue.key} issue={issue} handle={handle} />
+				))}
+		</Grid>
 	);
 };
 
