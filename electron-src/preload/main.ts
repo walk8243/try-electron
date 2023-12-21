@@ -11,4 +11,6 @@ contextBridge.exposeInMainWorld('electron', {
 		ipcRenderer.on('app:pushUser', (_event, value) => callback(value)),
 	pushIssues: (callback: (issues: Issue[]) => void) =>
 		ipcRenderer.on('app:pushIssues', (_event, value) => callback(value)),
+	pushUpdatedAt: (callback: (updatedAt: string) => void) =>
+		ipcRenderer.on('app:pushUpdatedAt', (_event, value) => callback(value)),
 });

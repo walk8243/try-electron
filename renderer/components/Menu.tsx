@@ -1,4 +1,5 @@
-import { useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
+import dayjs from 'dayjs';
 import { UserInfoContext } from '../context/UserContext';
 import {
 	IssueFilterContext,
@@ -22,36 +23,29 @@ import { Heading } from './Heading';
 
 const Menu = () => {
 	const userInfo = useContext(UserInfoContext);
-	const issueFilter = useContext(IssueFilterContext);
-	const issueFilterDispatch = useContext(IssueFilterDispatchContext);
 
 	return (
-		<section>
+		<Grid
+			container
+			component={'section'}
+			sx={{
+				display: 'grid',
+				gridTemplateRows: 'max-content 1fr max-content',
+				height: '100%',
+			}}
+		>
 			<Heading level={3} hidden={true}>
 				メニュー
 			</Heading>
-			{userInfo ? <User user={userInfo} /> : <></>}
-			<List>
-				{issueFilters.map((filter) => (
-					<ListItem key={filter.type}>
-						<ListItemButton
-							onClick={(_e) => issueFilterDispatch(filter)}
-							selected={filter.type === issueFilter.type}
-						>
-							<ListItemIcon sx={{ minWidth: 'initial', mr: 2 }}>
-								<FontAwesomeIcon icon={filter.icon} />
-							</ListItemIcon>
-							<ListItemText primary={filter.title} />
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
-		</section>
+			{userInfo ? <User user={userInfo} /> : <Grid item></Grid>}
+			<Filters />
+			<UpdatedAt />
+		</Grid>
 	);
 };
 
 const User = ({ user }: { user: UserInfo }) => (
-	<Grid container columnGap={1}>
+	<Grid container item columnGap={1}>
 		<Grid item xs="auto">
 			<Avatar
 				alt={user.login}
@@ -72,5 +66,47 @@ const User = ({ user }: { user: UserInfo }) => (
 		</Grid>
 	</Grid>
 );
+
+const Filters = () => {
+	const issueFilter = useContext(IssueFilterContext);
+	const issueFilterDispatch = useContext(IssueFilterDispatchContext);
+
+	return (
+		<Grid item sx={{ width: '100%' }}>
+			<List>
+				{issueFilters.map((filter) => (
+					<ListItem key={filter.type}>
+						<ListItemButton
+							onClick={(_e) => issueFilterDispatch(filter)}
+							selected={filter.type === issueFilter.type}
+						>
+							<ListItemIcon sx={{ minWidth: 'initial', mr: 2 }}>
+								<FontAwesomeIcon icon={filter.icon} />
+							</ListItemIcon>
+							<ListItemText primary={filter.title} />
+						</ListItemButton>
+					</ListItem>
+				))}
+			</List>
+		</Grid>
+	);
+};
+
+const UpdatedAt = () => {
+	const [updatedAt, setUpdatedAt] = useState<string>('');
+	useEffect(() => {
+		window.electron.pushUpdatedAt((updatedAt) => {
+			setUpdatedAt(dayjs(updatedAt).format('YYYY/MM/DD HH:mm:ss'));
+		});
+	}, []);
+
+	return (
+		<Grid item sx={{ width: '100%', px: 2, py: 1 }}>
+			<Typography sx={{ height: '1lh', overflow: 'hidden' }}>
+				{updatedAt}
+			</Typography>
+		</Grid>
+	);
+};
 
 export default Menu;

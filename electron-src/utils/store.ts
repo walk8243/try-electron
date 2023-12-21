@@ -6,6 +6,7 @@ export const store = new Store<{
 	githubSetting: { baseUrl: string; token: string };
 	userInfo: UserInfo;
 	issueData: {
+		updatedAt: string;
 		issues: Issue[];
 	};
 }>({
@@ -38,6 +39,9 @@ export const store = new Store<{
 		issueData: {
 			type: 'object',
 			properties: {
+				updatedAt: {
+					type: 'string',
+				},
 				issues: {
 					type: 'array',
 					items: {
