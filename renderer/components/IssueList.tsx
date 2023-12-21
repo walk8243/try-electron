@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	IconDefinition,
 	faCodePullRequest,
+	faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { Heading } from './Heading';
@@ -27,9 +28,7 @@ type Props = {
 const numberFormat = Intl.NumberFormat('ja-JP');
 
 const IssueList = ({ issueUrlHandler }: Props) => {
-	const userInfo = useContext(UserInfoContext);
-	const [issues, setIssues] = useState<Issue[]>([]);
-	const issueFilter = useContext(IssueFilterContext);
+	const [issues, setIssues] = useState<Issue[] | null>(null);
 	useEffect(() => {
 		window.electron?.pushIssues((issues) => setIssues(() => issues));
 	}, []);
@@ -47,18 +46,50 @@ const IssueList = ({ issueUrlHandler }: Props) => {
 			</Heading>
 			<Box>
 				<Heading level={4}>Issue</Heading>
-				<Typography variant="subtitle1">
-					{numberFormat.format(issues.length)} issues
+				<Typography variant="subtitle1" sx={{ height: '1lh' }}>
+					{issues
+						? `${numberFormat.format(issues.length)} issues`
+						: 'Loading...'}
 				</Typography>
 			</Box>
-			<Grid container>
-				{issues
-					.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
-					.map((issue) => (
-						<IssueCard key={issue.key} issue={issue} handle={handleClick} />
-					))}
-			</Grid>
+			<IssueCards issues={issues} handle={handleClick} />
 		</Box>
+	);
+};
+
+const IssueCards = ({
+	issues,
+	handle,
+}: {
+	issues: Issue[] | null;
+	handle: (e: MouseEvent, url: string) => void;
+}) => {
+	const userInfo = useContext(UserInfoContext);
+	const issueFilter = useContext(IssueFilterContext);
+
+	if (!issues) {
+		return (
+			<Grid
+				container
+				alignItems="center"
+				justifyContent="center"
+				sx={{ width: '100%', height: '100%' }}
+			>
+				<Grid item>
+					<FontAwesomeIcon icon={faSpinner} spin={true} />
+				</Grid>
+			</Grid>
+		);
+	}
+
+	return (
+		<Grid container>
+			{issues
+				.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
+				.map((issue) => (
+					<IssueCard key={issue.key} issue={issue} handle={handle} />
+				))}
+		</Grid>
 	);
 };
 

@@ -28,15 +28,19 @@ export const main = async () => {
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
 
-		mainWindow.webContents.send('app:pushUser', store.get('userInfo') ?? {});
-		mainWindow.webContents.send(
-			'app:pushIssues',
-			store.get('issueData')?.issues ?? [],
-		);
-		mainWindow.webContents.send(
-			'app:pushUpdatedAt',
-			store.get('issueData')?.updatedAt ?? '',
-		);
+		if (store.has('userInfo')) {
+			mainWindow.webContents.send('app:pushUser', store.get('userInfo'));
+		}
+		if (store.has('issueData')) {
+			mainWindow.webContents.send(
+				'app:pushIssues',
+				store.get('issueData')?.issues ?? [],
+			);
+			mainWindow.webContents.send(
+				'app:pushUpdatedAt',
+				store.get('issueData')?.updatedAt ?? '',
+			);
+		}
 
 		store.onDidChange('userInfo', (userInfo) => {
 			mainWindow.webContents.send('app:pushUser', userInfo ?? {});
