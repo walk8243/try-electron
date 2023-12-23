@@ -62,7 +62,7 @@ export const tint = {
 };
 
 export default {
-	surface,
+	...surface,
 	variant,
 	inverse,
 	container,

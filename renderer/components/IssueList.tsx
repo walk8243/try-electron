@@ -45,6 +45,7 @@ const IssueList = ({ issueUrlHandler }: Props) => {
 			container
 			display="grid"
 			gridTemplateRows="max-content 1fr"
+			rowGap={1}
 			sx={{ height: '100%' }}
 		>
 			<Heading level={3} hidden={true}>
@@ -63,7 +64,7 @@ const Header = ({ issues }: { issues: Issue[] | null }) => {
 	const colorMode = useContext(ColorModeContext);
 
 	return (
-		<Grid item bgcolor={surface.container[colorMode].high}>
+		<Grid item bgcolor={surface.container[colorMode].high} boxShadow={4}>
 			<Heading level={4}>Issue</Heading>
 			<Typography variant="subtitle1">{subtitle}</Typography>
 		</Grid>
@@ -77,12 +78,19 @@ const IssueCards = ({
 	issues: Issue[] | null;
 	handle: (e: MouseEvent, url: string) => void;
 }) => {
+	const colorMode = useContext(ColorModeContext);
 	const userInfo = useContext(UserInfoContext);
 	const issueFilter = useContext(IssueFilterContext);
 
 	if (!issues) {
 		return (
-			<Grid container item alignItems="center" justifyContent="center">
+			<Grid
+				container
+				item
+				alignItems="center"
+				justifyContent="center"
+				bgcolor={surface.container[colorMode].main}
+			>
 				<Grid item>
 					<FontAwesomeIcon icon={faSpinner} size="xl" spin={true} />
 				</Grid>
@@ -91,7 +99,11 @@ const IssueCards = ({
 	}
 
 	return (
-		<Grid container sx={{ overflowY: 'scroll' }}>
+		<Grid
+			container
+			bgcolor={surface.container[colorMode].main}
+			sx={{ overflowY: 'auto' }}
+		>
 			{issues
 				.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
 				.map((issue) => (
