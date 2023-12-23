@@ -1,16 +1,21 @@
 import { useEffect, useContext, useState } from 'react';
 import dayjs from 'dayjs';
-import { UserInfoContext } from '../context/UserContext';
+import {
+	ColorModeContext,
+	ColorModeDispatchContext,
+} from '../context/ColorModeContext';
 import {
 	IssueFilterContext,
 	IssueFilterDispatchContext,
 	issueFilters,
 } from '../context/IssueFilterContext';
+import { UserInfoContext } from '../context/UserContext';
 import type { UserInfo } from '../../types/User';
 
 import {
 	Avatar,
 	Grid,
+	IconButton,
 	List,
 	ListItem,
 	ListItemButton,
@@ -19,6 +24,8 @@ import {
 	Typography,
 } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSun } from '@fortawesome/free-regular-svg-icons';
+import { faMoon } from '@fortawesome/free-solid-svg-icons';
 import { Heading } from './Heading';
 
 const Menu = () => {
@@ -94,6 +101,8 @@ const Filters = () => {
 
 const UpdatedAt = () => {
 	const [updatedAt, setUpdatedAt] = useState<string>('');
+	const colorMode = useContext(ColorModeContext);
+	const colorModeDispatch = useContext(ColorModeDispatchContext);
 	useEffect(() => {
 		window.electron.pushUpdatedAt((updatedAt) => {
 			if (!updatedAt) return '';
@@ -102,10 +111,31 @@ const UpdatedAt = () => {
 	}, []);
 
 	return (
-		<Grid item sx={{ width: '100%', px: 2, py: 1 }}>
-			<Typography sx={{ height: '1lh', overflow: 'hidden' }}>
-				{updatedAt}
-			</Typography>
+		<Grid
+			container
+			item
+			justifyContent="space-between"
+			alignItems="center"
+			sx={{ width: '100%', px: 2, py: 1 }}
+		>
+			<Grid item>
+				<Typography
+					sx={{ height: '1lh', overflow: 'hidden', verticalAlign: 'bottom' }}
+				>
+					{updatedAt}
+				</Typography>
+			</Grid>
+			<Grid item>
+				<IconButton
+					aria-label="toggle color mode"
+					size="small"
+					onClick={() => {
+						colorModeDispatch(colorMode === 'light' ? 'dark' : 'light');
+					}}
+				>
+					<FontAwesomeIcon icon={colorMode === 'light' ? faSun : faMoon} />
+				</IconButton>
+			</Grid>
 		</Grid>
 	);
 };
