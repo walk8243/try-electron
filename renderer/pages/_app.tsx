@@ -1,18 +1,18 @@
 import { Reducer, useMemo, useReducer } from 'react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import type { PaletteMode } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import type { PaletteOptions } from '@mui/material/styles';
 import {
 	ColorModeContext,
 	ColorModeDispatchContext,
 } from '../context/ColorModeContext';
-import type { PaletteOptions } from '@mui/material/styles';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { PaletteMode } from '@mui/material';
 
 const colorSet: PaletteOptions = {
 	primary: {
