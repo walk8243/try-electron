@@ -29,7 +29,6 @@ import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 
-const isMac = process.platform === 'darwin';
 let latestIssueGainTime: dayjs.Dayjs | null = null;
 
 export const main = async () => {
@@ -43,11 +42,15 @@ export const main = async () => {
 			log.error(
 				new Error('GitHub APIからのデータ取得に失敗しました', { cause: err }),
 			);
-			mainWindow.once('ready-to-show', () => {
+			ipcMain.once('app:ready', () => {
 				dialog.showErrorBox(
 					'GitHub APIからのデータ取得に失敗しました',
 					'tokenの有効期限が切れている可能性があります。設定画面からtokenを再設定してください。',
 				);
+				app.applicationMenu?.items
+					.find((item) => item.label === 'Amethyst')
+					?.submenu?.items.find((item) => item.label === 'Preferences')
+					?.click();
 			});
 		});
 	}
@@ -156,11 +159,7 @@ const setupModalWindow = (
 		settingWindow,
 		aboutWindow,
 	});
-	if (isMac) {
-		Menu.setApplicationMenu(menu);
-	} else {
-		mainWindow.setMenu(menu);
-	}
+	Menu.setApplicationMenu(menu);
 	mainWindow.show();
 
 	if (settingShowFlag) {
