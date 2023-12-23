@@ -3,6 +3,7 @@ import {
 	app,
 	BrowserView,
 	BrowserWindow,
+	dialog,
 	ipcMain,
 	Menu,
 	Notification,
@@ -39,7 +40,15 @@ export const main = async () => {
 	mainWindow.loadURL(getLoadedUrl());
 	if (!storeDataFlag.isInvalid()) {
 		await Promise.all([gainGithubUser(), gainGithubIssues()]).catch((err) => {
-			log.error(err);
+			log.error(
+				new Error('GitHub APIからのデータ取得に失敗しました', { cause: err }),
+			);
+			mainWindow.once('ready-to-show', () => {
+				dialog.showErrorBox(
+					'GitHub APIからのデータ取得に失敗しました',
+					'tokenの有効期限が切れている可能性があります。設定画面からtokenを再設定してください。',
+				);
+			});
 		});
 	}
 
