@@ -30,6 +30,7 @@ export const createSetting = (parentWindow: BrowserWindow) => {
 		resizable: false,
 		closable: false,
 		fullscreenable: false,
+		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: false,
 			contextIsolation: true,
@@ -52,6 +53,7 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 		show: false,
 		resizable: false,
 		fullscreenable: false,
+		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: false,
 			contextIsolation: true,

@@ -5,7 +5,6 @@ import {
 	BrowserWindow,
 	ipcMain,
 	Menu,
-	Notification,
 	session,
 	shell,
 } from 'electron';
@@ -15,32 +14,26 @@ import log from 'electron-log/main';
 import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
-import dayjs from 'dayjs';
 
+import { gainGithubAllData, gainGithubIssues } from './github';
 import { createMenu } from './menu';
-import {
-	gainUserInfo,
-	gainIssues,
-	checkStoreData,
-	githubAppSettings,
-} from './utils/github';
+import { checkStoreData } from './utils/github';
 import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 
-const isMac = process.platform === 'darwin';
-let latestIssueGainTime: dayjs.Dayjs | null = null;
-
 export const main = async () => {
 	const mainWindow = setupMainWindow();
+	const storeDataFlag = checkStoreData();
 
 	await prepareNext('./renderer');
 	mainWindow.loadURL(getLoadedUrl());
-	gainGithubUser().catch((_err) => {});
-	gainGithubIssues().catch((_err) => {});
+	if (!storeDataFlag.isInvalid()) {
+		gainGithubAllData(true);
+	}
 
 	const webview = setupWebview(mainWindow);
-	setupModalWindow(mainWindow, webview);
+	setupModalWindow(mainWindow, webview, storeDataFlag.isInvalid());
 	setupResizedSetting(mainWindow, webview);
 
 	setInterval(
@@ -53,36 +46,6 @@ export const main = async () => {
 	);
 
 	await setupDevtools();
-};
-
-export const gainGithubUser = async () => {
-	log.debug('main.gainGithubUser を実行します');
-	const userInfo = await gainUserInfo();
-
-	store.set('userInfo', userInfo);
-	return userInfo;
-};
-export const gainGithubIssues = async () => {
-	log.debug('main.gainGithubIssues を実行します');
-	const now = dayjs();
-	const issues = await gainIssues(
-		now.subtract(githubAppSettings.terms.value, githubAppSettings.terms.unit),
-	);
-
-	if (
-		latestIssueGainTime &&
-		issues.some((issue) => dayjs(issue.updatedAt).isAfter(latestIssueGainTime))
-	) {
-		const notification = new Notification({
-			title: 'Issueが更新されました',
-			body: '更新されたIssue・PRがあります。Issue・PRを確認してください。',
-		});
-		notification.show();
-	}
-	latestIssueGainTime = now;
-
-	store.set('issueData', { updatedAt: now.toISOString(), issues });
-	return issues;
 };
 
 const setupMainWindow = () => {
@@ -130,7 +93,11 @@ const setupWebview = (mainWindow: BrowserWindow) => {
 	});
 	return webview;
 };
-const setupModalWindow = (mainWindow: BrowserWindow, webview: BrowserView) => {
+const setupModalWindow = (
+	mainWindow: BrowserWindow,
+	webview: BrowserView,
+	settingShowFlag: boolean,
+) => {
 	const settingWindow = windowUtils.createSetting(mainWindow);
 	const aboutWindow = windowUtils.createAbout(mainWindow);
 	const menu = createMenu({
@@ -139,14 +106,10 @@ const setupModalWindow = (mainWindow: BrowserWindow, webview: BrowserView) => {
 		settingWindow,
 		aboutWindow,
 	});
-	if (isMac) {
-		Menu.setApplicationMenu(menu);
-	} else {
-		mainWindow.setMenu(menu);
-	}
+	Menu.setApplicationMenu(menu);
 	mainWindow.show();
 
-	if (!checkStoreData()) {
+	if (settingShowFlag) {
 		settingWindow.show();
 	}
 };
