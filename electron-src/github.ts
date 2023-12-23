@@ -1,7 +1,13 @@
 import { app, dialog, ipcMain, Notification } from 'electron';
 import log from 'electron-log/main';
 import dayjs from 'dayjs';
-import { gainUserInfo, gainIssues, githubAppSettings } from './utils/github';
+import semver from 'semver';
+import {
+	gainUserInfo,
+	gainIssues,
+	githubAppSettings,
+	viewLatestRelease,
+} from './utils/github';
 import { store } from './utils/store';
 
 let latestIssueGainTime: dayjs.Dayjs | null = null;
@@ -52,6 +58,16 @@ export const gainGithubIssues = async () => {
 
 	store.set('issueData', { updatedAt: now.toISOString(), issues });
 	return issues;
+};
+
+export const checkUpdate = async () => {
+	const latestRelease = await viewLatestRelease();
+	const currentVersion = app.getVersion();
+	log.verbose('versions:', {
+		appVersion: currentVersion,
+		latestRelease: latestRelease.tag,
+	});
+	return semver.gt(latestRelease.tag, currentVersion);
 };
 
 const showErrorDialog = () => {

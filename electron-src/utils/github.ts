@@ -7,7 +7,11 @@ import {
 } from '../tanslators/GithubTranslator';
 import { store } from './store';
 import StoreDataFlag from '../enum/StoreDataFlag';
-import type { GithubUserInfo, GithubIssue } from '../types/GitHub';
+import type {
+	GithubUserInfo,
+	GithubIssue,
+	GithubRelease,
+} from '../types/GitHub';
 import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
 
@@ -20,6 +24,8 @@ export const githubAppSettings: {
 	perPage: 100,
 	terms: { value: 3, unit: 'month' },
 } as const;
+const latestReleaseUrl =
+	'https://api.github.com/repos/walk8243/amethyst-electron/releases/latest';
 
 export const gainUserInfo = async (): Promise<UserInfo> => {
 	const result = await accessGithub({ path: 'user' });
@@ -59,6 +65,30 @@ export const checkStoreData = () => {
 	return githubSetting?.baseUrl && githubSetting?.token
 		? StoreDataFlag.VALID
 		: StoreDataFlag.INVALID;
+};
+
+export const viewLatestRelease = async (): Promise<{
+	id: string;
+	tag: string;
+	url: string;
+}> => {
+	try {
+		const data = await accessLatestRelease();
+		if (!isReleaseType(data)) {
+			throw new Error('GitHub APIからの最新リリースのresponseが異常値です');
+		}
+		return {
+			id: data.node_id,
+			tag: data.tag_name,
+			url: data.html_url,
+		};
+	} catch (error) {
+		return {
+			id: '',
+			tag: '',
+			url: '',
+		};
+	}
 };
 
 const gainFilterdIssues = async (
@@ -109,6 +139,22 @@ const accessGithub = async ({
 	if (!response.ok) {
 		throw new Error(`HTTP error! status: ${response.status}`);
 	}
+	return await response.json();
+};
+
+const accessLatestRelease = async () => {
+	const response = await net.fetch(latestReleaseUrl, {
+		headers: {
+			Accept: 'application/vnd.github+json',
+			'X-GitHub-Api-Version': '2022-11-28',
+		},
+	});
+	if (!response.ok) {
+		return new Error(
+			`最新リリースの取得に失敗しました。status: ${response.status}`,
+		);
+	}
+
 	return await response.json();
 };
 
@@ -169,6 +215,20 @@ const isIssueType = (target: unknown): target is GithubIssue => {
 		'labels' in target &&
 		'created_at' in target &&
 		'updated_at' in target
+	);
+};
+const isReleaseType = (target: unknown): target is GithubRelease => {
+	if (target === null || typeof target !== 'object') {
+		return false;
+	}
+	return (
+		'id' in target &&
+		'node_id' in target &&
+		'tag_name' in target &&
+		'name' in target &&
+		'html_url' in target &&
+		'body' in target &&
+		'created_at' in target
 	);
 };
 

@@ -71,3 +71,13 @@ export interface GithubIssueReaction {
 	url: string;
 	total_count: number;
 }
+
+export interface GithubRelease {
+	id: number;
+	node_id: string;
+	tag_name: string;
+	name: string;
+	html_url: string;
+	body: string;
+	created_at: string;
+}

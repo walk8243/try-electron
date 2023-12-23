@@ -3,6 +3,7 @@ import {
 	app,
 	BrowserView,
 	BrowserWindow,
+	dialog,
 	ipcMain,
 	Menu,
 	session,
@@ -15,7 +16,7 @@ import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
 
-import { gainGithubAllData, gainGithubIssues } from './github';
+import { checkUpdate, gainGithubAllData, gainGithubIssues } from './github';
 import { createMenu } from './menu';
 import { checkStoreData } from './utils/github';
 import { getLoadedUrl } from './utils/render';
@@ -45,6 +46,7 @@ export const main = async () => {
 		5 * 60 * 1000,
 	);
 
+	await announceUpdate(mainWindow);
 	await setupDevtools();
 };
 
@@ -133,6 +135,16 @@ const setupResizedSetting = (
 		.on('leave-full-screen', () => {
 			windowUtils.putWebview(mainWindow, webview);
 		});
+};
+const announceUpdate = async (mainWindow: BrowserWindow) => {
+	if (!(await checkUpdate())) return;
+
+	setImmediate(() => {
+		dialog.showMessageBox(mainWindow, {
+			title: '最新のリリースがあります',
+			message: 'アップデートして最新の機能を体験してください。',
+		});
+	});
 };
 const setupDevtools = async () => {
 	if (isDev) {
