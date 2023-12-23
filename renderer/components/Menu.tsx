@@ -37,12 +37,12 @@ const Menu = () => {
 		<Grid
 			container
 			component="section"
+			display="grid"
+			gridTemplateRows="60px 1fr max-content"
+			rowGap={6}
+			height="100%"
+			p={4}
 			bgcolor={surface.container[colorMode].high}
-			sx={{
-				display: 'grid',
-				gridTemplateRows: '80px 1fr max-content',
-				height: '100%',
-			}}
 		>
 			<Heading level={3} hidden={true}>
 				メニュー
@@ -55,12 +55,12 @@ const Menu = () => {
 };
 
 const User = ({ user }: { user: UserInfo }) => (
-	<Grid container item columnGap={1}>
+	<Grid container item columnGap={2}>
 		<Grid item xs="auto">
 			<Avatar
 				alt={user.login}
 				src={user.avatarUrl}
-				sx={{ width: 80, height: 80 }}
+				sx={{ width: 60, height: 60 }}
 			/>
 		</Grid>
 		<Grid
@@ -72,7 +72,7 @@ const User = ({ user }: { user: UserInfo }) => (
 			justifyContent="center"
 		>
 			<Typography>{user.name}</Typography>
-			<Typography>{user.login}</Typography>
+			<Typography variant="body2">{user.login}</Typography>
 		</Grid>
 	</Grid>
 );
@@ -82,22 +82,26 @@ const Filters = () => {
 	const issueFilterDispatch = useContext(IssueFilterDispatchContext);
 
 	return (
-		<Grid item sx={{ width: '100%' }}>
-			<List>
-				{issueFilters.map((filter) => (
-					<ListItem key={filter.type}>
-						<ListItemButton
-							onClick={(_e) => issueFilterDispatch(filter)}
-							selected={filter.type === issueFilter.type}
-						>
-							<ListItemIcon sx={{ minWidth: 'initial', mr: 2 }}>
-								<FontAwesomeIcon icon={filter.icon} />
-							</ListItemIcon>
-							<ListItemText primary={filter.title} />
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
+		<Grid container item width="100%">
+			<Grid item width="100%">
+				<Typography variant="subtitle1">Library</Typography>
+				<List sx={{ px: 2 }}>
+					{issueFilters.map((filter) => (
+						<ListItem key={filter.type} sx={{ p: 0 }}>
+							<ListItemButton
+								onClick={(_e) => issueFilterDispatch(filter)}
+								selected={filter.type === issueFilter.type}
+								sx={{ p: '3px' }}
+							>
+								<ListItemIcon sx={{ minWidth: 'initial', mr: 2 }}>
+									<FontAwesomeIcon icon={filter.icon} />
+								</ListItemIcon>
+								<ListItemText primary={filter.title} />
+							</ListItemButton>
+						</ListItem>
+					))}
+				</List>
+			</Grid>
 		</Grid>
 	);
 };
@@ -119,7 +123,7 @@ const UpdatedAt = () => {
 			item
 			justifyContent="space-between"
 			alignItems="center"
-			sx={{ width: '100%', px: 2, py: 1 }}
+			width="100%"
 		>
 			<Grid item>
 				<Typography

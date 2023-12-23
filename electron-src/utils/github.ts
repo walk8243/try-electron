@@ -211,6 +211,7 @@ const isIssueType = (target: unknown): target is GithubIssue => {
 		'url' in target &&
 		'title' in target &&
 		'html_url' in target &&
+		'number' in target &&
 		'state' in target &&
 		'labels' in target &&
 		'created_at' in target &&

@@ -13,6 +13,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import textColor from '../styles/colors/text';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const [mode, dispatch] = useReducer<Reducer<PaletteMode, PaletteMode>>(
@@ -25,6 +26,45 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				palette: {
 					...colorSetting,
 					mode,
+				},
+				spacing: 5,
+				typography: {
+					fontSize: 14,
+					h3: {
+						fontSize: '32px',
+					},
+					h4: {
+						fontSize: '28px',
+					},
+					h5: {
+						fontSize: '24px',
+					},
+					h6: {
+						fontSize: '22px',
+					},
+					subtitle1: {
+						color: textColor.level[mode].weak,
+						fontSize: '16px',
+					},
+					subtitle2: {
+						color: textColor.level[mode].weak,
+						fontSize: '14px',
+					},
+					body1: {
+						fontSize: '14px',
+					},
+					body2: {
+						fontSize: '12px',
+					},
+				},
+				components: {
+					MuiCardContent: {
+						styleOverrides: {
+							root: {
+								padding: '10px',
+							},
+						},
+					},
 				},
 			}),
 		[mode],

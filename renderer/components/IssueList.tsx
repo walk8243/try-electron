@@ -64,7 +64,7 @@ const Header = ({ issues }: { issues: Issue[] | null }) => {
 	const colorMode = useContext(ColorModeContext);
 
 	return (
-		<Grid item bgcolor={surface.container[colorMode].high} boxShadow={4}>
+		<Grid item p={3} bgcolor={surface.container[colorMode].high} boxShadow={4}>
 			<Heading level={4}>Issue</Heading>
 			<Typography variant="subtitle1">{subtitle}</Typography>
 		</Grid>
@@ -101,6 +101,7 @@ const IssueCards = ({
 	return (
 		<Grid
 			container
+			p={1}
 			bgcolor={surface.container[colorMode].main}
 			sx={{ overflowY: 'auto' }}
 		>
@@ -124,21 +125,29 @@ const IssueCard = ({
 		<CardActionArea onClick={(e) => handle(e, issue.url)}>
 			<CardContent>
 				<Grid container columnGap={1}>
-					<Grid item>
+					<Grid item pt="2px">
 						<FontAwesomeIcon
 							icon={findIssueIcon(issue.state)}
 							color={findIssueStateColor(issue.state)}
 						/>
 					</Grid>
 					<Grid item xs zeroMinWidth>
-						<Typography variant="body1" sx={{ overflowWrap: 'break-word' }}>
+						<Typography variant="subtitle1" sx={{ overflowWrap: 'break-word' }}>
 							{issue.title}
 						</Typography>
 					</Grid>
 				</Grid>
-				<Typography variant="body2" sx={{ textOverflow: 'ellipsis' }}>
-					{issue.repositoryName}
-				</Typography>
+				<Grid container columnGap={1}>
+					<Grid container item xs zeroMinWidth>
+						<Typography variant="body2">{issue.repositoryName}</Typography>
+						<Typography
+							variant="body2"
+							sx={{ ml: 1, '::before': { content: '"#"' } }}
+						>
+							{issue.number}
+						</Typography>
+					</Grid>
+				</Grid>
 			</CardContent>
 		</CardActionArea>
 	</Card>

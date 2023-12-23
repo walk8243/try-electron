@@ -1,6 +1,7 @@
 export interface Issue {
 	id: number;
 	key: string;
+	number: number;
 	title: string;
 	url: string;
 	repositoryName: string;
