@@ -3,31 +3,16 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import type { PaletteMode } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import type { PaletteOptions } from '@mui/material/styles';
 import {
 	ColorModeContext,
 	ColorModeDispatchContext,
+	colorSetting,
 } from '../context/ColorModeContext';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-
-const colorSet: PaletteOptions = {
-	primary: {
-		main: '#874692',
-		light: '#6c3a81',
-		dark: '#aa75b2',
-		contrastText: '#fff',
-	},
-	secondary: {
-		main: '#71b356',
-		light: '#4f813a',
-		dark: '#b5d8aa',
-		contrastText: '#000',
-	},
-};
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const [mode, dispatch] = useReducer<Reducer<PaletteMode, PaletteMode>>(
@@ -38,7 +23,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 		() =>
 			createTheme({
 				palette: {
-					...colorSet,
+					...colorSetting,
 					mode,
 				},
 			}),
