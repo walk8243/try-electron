@@ -33,14 +33,18 @@ let latestIssueGainTime: dayjs.Dayjs | null = null;
 
 export const main = async () => {
 	const mainWindow = setupMainWindow();
+	const storeDataFlag = checkStoreData();
 
 	await prepareNext('./renderer');
 	mainWindow.loadURL(getLoadedUrl());
-	gainGithubUser().catch((_err) => {});
-	gainGithubIssues().catch((_err) => {});
+	if (!storeDataFlag.isInvalid()) {
+		await Promise.all([gainGithubUser(), gainGithubIssues()]).catch((err) => {
+			log.error(err);
+		});
+	}
 
 	const webview = setupWebview(mainWindow);
-	setupModalWindow(mainWindow, webview);
+	setupModalWindow(mainWindow, webview, storeDataFlag.isInvalid());
 	setupResizedSetting(mainWindow, webview);
 
 	setInterval(
@@ -130,7 +134,11 @@ const setupWebview = (mainWindow: BrowserWindow) => {
 	});
 	return webview;
 };
-const setupModalWindow = (mainWindow: BrowserWindow, webview: BrowserView) => {
+const setupModalWindow = (
+	mainWindow: BrowserWindow,
+	webview: BrowserView,
+	settingShowFlag: boolean,
+) => {
 	const settingWindow = windowUtils.createSetting(mainWindow);
 	const aboutWindow = windowUtils.createAbout(mainWindow);
 	const menu = createMenu({
@@ -146,7 +154,7 @@ const setupModalWindow = (mainWindow: BrowserWindow, webview: BrowserView) => {
 	}
 	mainWindow.show();
 
-	if (!checkStoreData()) {
+	if (settingShowFlag) {
 		settingWindow.show();
 	}
 };

@@ -6,6 +6,7 @@ import {
 	translateIssues,
 } from '../tanslators/GithubTranslator';
 import { store } from './store';
+import StoreDataFlag from '../enum/StoreDataFlag';
 import type { GithubUserInfo, GithubIssue } from '../types/GitHub';
 import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
@@ -55,7 +56,9 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 
 export const checkStoreData = () => {
 	const githubSetting = store.get('githubSetting');
-	return githubAppSettings && githubSetting.baseUrl && githubSetting.token;
+	return githubSetting?.baseUrl && githubSetting?.token
+		? StoreDataFlag.VALID
+		: StoreDataFlag.INVALID;
 };
 
 const gainFilterdIssues = async (

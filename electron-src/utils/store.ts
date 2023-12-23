@@ -106,3 +106,5 @@ export const store = new Store<{
 		},
 	},
 });
+
+store.clear();
