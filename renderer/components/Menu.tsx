@@ -27,14 +27,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun } from '@fortawesome/free-regular-svg-icons';
 import { faMoon } from '@fortawesome/free-solid-svg-icons';
 import { Heading } from './Heading';
+import surface from '../styles/colors/surface';
 
 const Menu = () => {
+	const colorMode = useContext(ColorModeContext);
 	const userInfo = useContext(UserInfoContext);
 
 	return (
 		<Grid
 			container
 			component="section"
+			bgcolor={surface.container[colorMode].high}
 			sx={{
 				display: 'grid',
 				gridTemplateRows: '80px 1fr max-content',

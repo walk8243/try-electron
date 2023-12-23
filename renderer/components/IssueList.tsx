@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction, MouseEvent } from 'react';
-import { UserInfoContext } from '../context/UserContext';
+import { ColorModeContext } from '../context/ColorModeContext';
 import { IssueFilterContext } from '../context/IssueFilterContext';
+import { UserInfoContext } from '../context/UserContext';
 import { safeUnreachable } from '../utils/typescript';
 import type { Issue, IssueState } from '../../types/Issue';
 
@@ -20,6 +21,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { Heading } from './Heading';
+import surface from '../styles/colors/surface';
 
 type Props = {
 	issueUrlHandler: Dispatch<SetStateAction<string>>;
@@ -58,9 +60,10 @@ const Header = ({ issues }: { issues: Issue[] | null }) => {
 	const subtitle = issues
 		? `${numberFormat.format(issues.length)} issues`
 		: 'Loading...';
+	const colorMode = useContext(ColorModeContext);
 
 	return (
-		<Grid item>
+		<Grid item bgcolor={surface.container[colorMode].high}>
 			<Heading level={4}>Issue</Heading>
 			<Typography variant="subtitle1">{subtitle}</Typography>
 		</Grid>

@@ -1,21 +1,31 @@
-import { useEffect, useReducer, useState, Reducer, ReactNode } from 'react';
+import {
+	ReactNode,
+	Reducer,
+	useContext,
+	useEffect,
+	useReducer,
+	useState,
+} from 'react';
 import Head from 'next/head';
 import type { UserInfo } from '../../types/User';
 
 import { Box, Grid } from '@mui/material';
-import { UserInfoContext } from '../context/UserContext';
+import { ColorModeContext } from '../context/ColorModeContext';
 import {
 	IssueFilterContext,
 	IssueFilterDispatchContext,
 	issueFilterAll,
 	IssueFilter,
 } from '../context/IssueFilterContext';
+import { UserInfoContext } from '../context/UserContext';
 import { Heading } from '../components/Heading';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Menu from '../components/Menu';
 import IssueList from '../components/IssueList';
 import Issue from '../components/Issue';
+import { background } from '../styles/colors/common';
+import text from '../styles/colors/text';
 
 const IndexPage = () => {
 	useEffect(() => {
@@ -38,9 +48,14 @@ const IndexPage = () => {
 
 const MainComponent = () => {
 	const [issueUrl, setIssueUrl] = useState('');
+	const colorMode = useContext(ColorModeContext);
 
 	return (
-		<Box height="100vh">
+		<Box
+			height="100vh"
+			color={text[colorMode]}
+			bgcolor={background[colorMode].main}
+		>
 			<Header />
 			<Grid
 				container
