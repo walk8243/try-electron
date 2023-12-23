@@ -1,4 +1,5 @@
 export const primary = {
+	key: '#61337A',
 	light: {
 		main: '#745086',
 		on: '#FFFFFF',

@@ -1,4 +1,5 @@
 export const secondary = {
+	key: '#9B8BA0',
 	light: {
 		main: '#745186',
 		on: '#FFFFFF',

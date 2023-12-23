@@ -1,4 +1,5 @@
 export const error = {
+	key: '#FF5449',
 	light: {
 		main: '#BA1A1A',
 		on: '#FFFFFF',

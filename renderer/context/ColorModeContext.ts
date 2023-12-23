@@ -1,5 +1,8 @@
 import { Dispatch, createContext } from 'react';
 import type { PaletteMode, PaletteOptions } from '@mui/material';
+import { error } from '../styles/colors/error';
+import { primary } from '../styles/colors/primary';
+import { secondary } from '../styles/colors/secondary';
 
 export const ColorModeContext = createContext<PaletteMode>('light');
 export const ColorModeDispatchContext = createContext<Dispatch<PaletteMode>>(
@@ -8,19 +11,21 @@ export const ColorModeDispatchContext = createContext<Dispatch<PaletteMode>>(
 
 export const colorSetting: PaletteOptions = {
 	primary: {
-		main: '#61337A',
-		light: '#61337A',
-		dark: '#aa75b2',
+		main: primary.key,
+		light: primary.light.main,
+		dark: primary.dark.main,
 		contrastText: '#fff',
 	},
 	secondary: {
-		main: '#9B8BA0',
-		light: '#9B8BA0',
-		dark: '#b5d8aa',
+		main: secondary.key,
+		light: secondary.light.main,
+		dark: secondary.dark.main,
 		contrastText: '#000',
 	},
 	error: {
-		main: '#FF5449',
-		light: '#FF5449',
+		main: error.key,
+		light: error.light.main,
+		dark: error.dark.main,
+		contrastText: '#fff',
 	},
 };
