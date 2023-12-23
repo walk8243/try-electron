@@ -3,10 +3,8 @@ import {
 	app,
 	BrowserView,
 	BrowserWindow,
-	dialog,
 	ipcMain,
 	Menu,
-	Notification,
 	session,
 	shell,
 } from 'electron';
@@ -16,20 +14,13 @@ import log from 'electron-log/main';
 import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
-import dayjs from 'dayjs';
 
+import { gainGithubAllData, gainGithubIssues } from './github';
 import { createMenu } from './menu';
-import {
-	gainUserInfo,
-	gainIssues,
-	checkStoreData,
-	githubAppSettings,
-} from './utils/github';
+import { checkStoreData } from './utils/github';
 import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
-
-let latestIssueGainTime: dayjs.Dayjs | null = null;
 
 export const main = async () => {
 	const mainWindow = setupMainWindow();
@@ -38,21 +29,7 @@ export const main = async () => {
 	await prepareNext('./renderer');
 	mainWindow.loadURL(getLoadedUrl());
 	if (!storeDataFlag.isInvalid()) {
-		await Promise.all([gainGithubUser(), gainGithubIssues()]).catch((err) => {
-			log.error(
-				new Error('GitHub APIからのデータ取得に失敗しました', { cause: err }),
-			);
-			ipcMain.once('app:ready', () => {
-				dialog.showErrorBox(
-					'GitHub APIからのデータ取得に失敗しました',
-					'tokenの有効期限が切れている可能性があります。設定画面からtokenを再設定してください。',
-				);
-				app.applicationMenu?.items
-					.find((item) => item.label === 'Amethyst')
-					?.submenu?.items.find((item) => item.label === 'Preferences')
-					?.click();
-			});
-		});
+		gainGithubAllData(true);
 	}
 
 	const webview = setupWebview(mainWindow);
@@ -69,36 +46,6 @@ export const main = async () => {
 	);
 
 	await setupDevtools();
-};
-
-export const gainGithubUser = async () => {
-	log.debug('main.gainGithubUser を実行します');
-	const userInfo = await gainUserInfo();
-
-	store.set('userInfo', userInfo);
-	return userInfo;
-};
-export const gainGithubIssues = async () => {
-	log.debug('main.gainGithubIssues を実行します');
-	const now = dayjs();
-	const issues = await gainIssues(
-		now.subtract(githubAppSettings.terms.value, githubAppSettings.terms.unit),
-	);
-
-	if (
-		latestIssueGainTime &&
-		issues.some((issue) => dayjs(issue.updatedAt).isAfter(latestIssueGainTime))
-	) {
-		const notification = new Notification({
-			title: 'Issueが更新されました',
-			body: '更新されたIssue・PRがあります。Issue・PRを確認してください。',
-		});
-		notification.show();
-	}
-	latestIssueGainTime = now;
-
-	store.set('issueData', { updatedAt: now.toISOString(), issues });
-	return issues;
 };
 
 const setupMainWindow = () => {

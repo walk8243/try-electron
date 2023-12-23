@@ -8,7 +8,7 @@ import {
 } from 'electron';
 import isDev from 'electron-is-dev';
 
-import { gainGithubUser, gainGithubIssues } from './main';
+import { gainGithubAllData } from './github';
 import { store } from './utils/store';
 import type { SettingData } from './preload/setting';
 
@@ -156,7 +156,7 @@ export const createMenu = ({
 				});
 				settingWindow.hide();
 
-				Promise.all([gainGithubUser(), gainGithubIssues()]);
+				gainGithubAllData(false);
 			},
 		)
 		.on('setting:cancel', (_event: Electron.IpcMainEvent) => {
