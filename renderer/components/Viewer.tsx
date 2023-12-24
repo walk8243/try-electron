@@ -1,10 +1,8 @@
-import { useContext } from 'react';
-import { Grid, IconButton, Paper } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
 import { ColorModeContext } from '../context/ColorModeContext';
-import { IssueContext } from '../context/IssueContext';
 
+import { Grid, IconButton, Paper } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {} from '@fortawesome/free-regular-svg-icons';
 import {
 	faArrowLeft,
 	faArrowRight,
@@ -38,8 +36,24 @@ const Viewer = () => {
 };
 
 const IssueUrlBar = () => {
-	const issue = useContext(IssueContext);
-	if (!issue) return <Grid container></Grid>;
+	const [url, setUrl] = useState<string | null>(null);
+	const handleBack = () => {
+		window.electron?.goBack();
+	};
+	const handleForward = () => {
+		window.electron?.goForward();
+	};
+	const handleReload = () => {
+		window.electron?.reload();
+	};
+	const handleOpen = () => {
+		if (!url) return;
+		window.electron?.open(url);
+	};
+
+	useEffect(() => {
+		window.electron?.load(setUrl);
+	}, []);
 
 	return (
 		<Grid container component="section" columnGap={2} p={2}>
@@ -47,30 +61,30 @@ const IssueUrlBar = () => {
 				Issue URLバー
 			</Heading>
 			<Grid item>
-				<IconButton size="small">
+				<IconButton onClick={handleBack} size="small">
 					<FontAwesomeIcon icon={faArrowLeft} />
 				</IconButton>
 			</Grid>
 			<Grid item>
-				<IconButton size="small">
+				<IconButton onClick={handleForward} size="small">
 					<FontAwesomeIcon icon={faArrowRight} />
 				</IconButton>
 			</Grid>
 			<Grid item>
-				<IconButton size="small">
+				<IconButton onClick={handleReload} size="small">
 					<FontAwesomeIcon icon={faArrowRotateRight} />
 				</IconButton>
 			</Grid>
 			<Grid item xs zeroMinWidth>
-				<UrlBar issue={issue} />
+				<UrlBar url={url} />
 			</Grid>
 			<Grid item>
-				<IconButton size="small">
+				<IconButton size="small" disabled>
 					<FontAwesomeIcon icon={faMagnifyingGlass} />
 				</IconButton>
 			</Grid>
 			<Grid item>
-				<IconButton size="small">
+				<IconButton onClick={handleOpen} size="small">
 					<FontAwesomeIcon icon={faArrowUpRightFromSquare} />
 				</IconButton>
 			</Grid>
