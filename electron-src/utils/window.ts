@@ -73,7 +73,7 @@ export const createWebview = () => {
 	return webview;
 };
 
-const boundPosition = { x: 600, y: 24 } as const;
+const boundPosition = { x: 600, y: 48 } as const;
 export const putWebview = (
 	mainWindow: BrowserWindow,
 	webview: BrowserView,

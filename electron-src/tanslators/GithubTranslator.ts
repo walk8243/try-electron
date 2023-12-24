@@ -14,6 +14,7 @@ export const translateIssues = (issues: GithubIssue[]): Issue[] =>
 export const translateIssue = (issue: GithubIssue): Issue => ({
 	id: issue.id,
 	key: issue.node_id,
+	number: issue.number,
 	title: issue.title,
 	url: issue.html_url,
 	repositoryName: issue.repository ? issue.repository.full_name : '',

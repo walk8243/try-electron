@@ -20,6 +20,7 @@ export interface GithubIssue {
 	url: string;
 	title: string;
 	html_url: string;
+	number: number;
 	state: 'open' | 'closed';
 	body?: string | null;
 	user: GithubUserMinimumInfo | null;

@@ -3,6 +3,7 @@ import {
 	app,
 	BrowserView,
 	BrowserWindow,
+	clipboard,
 	dialog,
 	ipcMain,
 	Menu,
@@ -92,6 +93,22 @@ const setupWebview = (mainWindow: BrowserWindow) => {
 	});
 	ipcMain.on('browser:open', (_event, url: string) => {
 		shell.openExternal(url);
+	});
+	ipcMain.handle('browser:back', (_event) => {
+		webview.webContents.goBack();
+	});
+	ipcMain.handle('browser:forward', (_event) => {
+		webview.webContents.goForward();
+	});
+	ipcMain.handle('browser:reload', (_event) => {
+		webview.webContents.reload();
+	});
+	ipcMain.on('browser:copy', (_event, url: string) => {
+		clipboard.writeText(url);
+	});
+
+	webview.webContents.on('did-finish-load', () => {
+		mainWindow.webContents.send('browser:load', webview.webContents.getURL());
 	});
 	return webview;
 };
