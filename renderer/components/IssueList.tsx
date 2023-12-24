@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import type { Dispatch, SetStateAction, MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { ColorModeContext } from '../context/ColorModeContext';
+import { IssueDispatchContext } from '../context/IssueContext';
 import { IssueFilterContext } from '../context/IssueFilterContext';
 import { UserInfoContext } from '../context/UserContext';
 import { safeUnreachable } from '../utils/typescript';
@@ -23,22 +24,13 @@ import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { Heading } from './Heading';
 import surface from '../styles/colors/surface';
 
-type Props = {
-	issueUrlHandler: Dispatch<SetStateAction<string>>;
-};
 const numberFormat = Intl.NumberFormat('ja-JP');
 
-const IssueList = ({ issueUrlHandler }: Props) => {
+const IssueList = () => {
 	const [issues, setIssues] = useState<Issue[] | null>(null);
 	useEffect(() => {
 		window.electron?.pushIssues((issues) => setIssues(() => issues));
 	}, []);
-
-	const handleClick = (e: MouseEvent, url: string) => {
-		issueUrlHandler(() => url);
-		window.electron?.issue(url);
-		e.preventDefault();
-	};
 
 	return (
 		<Grid
@@ -52,7 +44,7 @@ const IssueList = ({ issueUrlHandler }: Props) => {
 				Issueリスト
 			</Heading>
 			<Header issues={issues} />
-			<IssueCards issues={issues} handle={handleClick} />
+			<IssueCards issues={issues} />
 		</Grid>
 	);
 };
@@ -71,13 +63,7 @@ const Header = ({ issues }: { issues: Issue[] | null }) => {
 	);
 };
 
-const IssueCards = ({
-	issues,
-	handle,
-}: {
-	issues: Issue[] | null;
-	handle: (e: MouseEvent, url: string) => void;
-}) => {
+const IssueCards = ({ issues }: { issues: Issue[] | null }) => {
 	const colorMode = useContext(ColorModeContext);
 	const userInfo = useContext(UserInfoContext);
 	const issueFilter = useContext(IssueFilterContext);
@@ -108,50 +94,56 @@ const IssueCards = ({
 			{issues
 				.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
 				.map((issue) => (
-					<IssueCard key={issue.key} issue={issue} handle={handle} />
+					<IssueCard key={issue.key} issue={issue} />
 				))}
 		</Grid>
 	);
 };
 
-const IssueCard = ({
-	issue,
-	handle,
-}: {
-	issue: Issue;
-	handle: (e: MouseEvent, url: string) => void;
-}) => (
-	<Card sx={{ width: '100%', m: 0.5 }}>
-		<CardActionArea onClick={(e) => handle(e, issue.url)}>
-			<CardContent>
-				<Grid container columnGap={1}>
-					<Grid item pt="2px">
-						<FontAwesomeIcon
-							icon={findIssueIcon(issue.state)}
-							color={findIssueStateColor(issue.state)}
-						/>
+const IssueCard = ({ issue }: { issue: Issue }) => {
+	const dispatch = useContext(IssueDispatchContext);
+	const handleClick = (e: MouseEvent) => {
+		dispatch(issue);
+		window.electron?.issue(issue.url);
+		e.preventDefault();
+	};
+
+	return (
+		<Card sx={{ width: '100%', m: 0.5 }}>
+			<CardActionArea onClick={handleClick}>
+				<CardContent>
+					<Grid container columnGap={1}>
+						<Grid item pt="2px">
+							<FontAwesomeIcon
+								icon={findIssueIcon(issue.state)}
+								color={findIssueStateColor(issue.state)}
+							/>
+						</Grid>
+						<Grid item xs zeroMinWidth>
+							<Typography
+								variant="subtitle1"
+								sx={{ overflowWrap: 'break-word' }}
+							>
+								{issue.title}
+							</Typography>
+						</Grid>
 					</Grid>
-					<Grid item xs zeroMinWidth>
-						<Typography variant="subtitle1" sx={{ overflowWrap: 'break-word' }}>
-							{issue.title}
-						</Typography>
+					<Grid container columnGap={1}>
+						<Grid container item xs zeroMinWidth>
+							<Typography variant="body2">{issue.repositoryName}</Typography>
+							<Typography
+								variant="body2"
+								sx={{ ml: 1, '::before': { content: '"#"' } }}
+							>
+								{issue.number}
+							</Typography>
+						</Grid>
 					</Grid>
-				</Grid>
-				<Grid container columnGap={1}>
-					<Grid container item xs zeroMinWidth>
-						<Typography variant="body2">{issue.repositoryName}</Typography>
-						<Typography
-							variant="body2"
-							sx={{ ml: 1, '::before': { content: '"#"' } }}
-						>
-							{issue.number}
-						</Typography>
-					</Grid>
-				</Grid>
-			</CardContent>
-		</CardActionArea>
-	</Card>
-);
+				</CardContent>
+			</CardActionArea>
+		</Card>
+	);
+};
 
 const findIssueIcon = (state: IssueState): IconDefinition => {
 	switch (state.type) {

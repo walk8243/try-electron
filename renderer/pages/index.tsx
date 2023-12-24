@@ -11,6 +11,7 @@ import type { UserInfo } from '../../types/User';
 
 import { Box, Grid } from '@mui/material';
 import { ColorModeContext } from '../context/ColorModeContext';
+import { IssueContext, IssueDispatchContext } from '../context/IssueContext';
 import {
 	IssueFilterContext,
 	IssueFilterDispatchContext,
@@ -23,9 +24,10 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Menu from '../components/Menu';
 import IssueList from '../components/IssueList';
-import Issue from '../components/Issue';
+import Viewer from '../components/Viewer';
 import { background } from '../styles/colors/common';
 import text from '../styles/colors/text';
+import type { Issue } from '../../types/Issue';
 
 const IndexPage = () => {
 	useEffect(() => {
@@ -39,7 +41,9 @@ const IndexPage = () => {
 			</Head>
 			<IssueFilterContextProvider>
 				<UserInfoContextProvider>
-					<MainComponent />
+					<IssueContextProvider>
+						<MainComponent />
+					</IssueContextProvider>
 				</UserInfoContextProvider>
 			</IssueFilterContextProvider>
 		</>
@@ -47,7 +51,6 @@ const IndexPage = () => {
 };
 
 const MainComponent = () => {
-	const [issueUrl, setIssueUrl] = useState('');
 	const colorMode = useContext(ColorModeContext);
 
 	return (
@@ -73,10 +76,10 @@ const MainComponent = () => {
 					<Menu />
 				</Grid>
 				<Grid item sx={{ width: 350, height: '100%', overflowY: 'hidden' }}>
-					<IssueList issueUrlHandler={setIssueUrl} />
+					<IssueList />
 				</Grid>
 				<Grid item>
-					<Issue url={issueUrl} />
+					<Viewer />
 				</Grid>
 			</Grid>
 			<Footer />
@@ -109,6 +112,21 @@ const IssueFilterContextProvider = ({ children }: { children: ReactNode }) => {
 				{children}
 			</IssueFilterDispatchContext.Provider>
 		</IssueFilterContext.Provider>
+	);
+};
+
+const IssueContextProvider = ({ children }: { children: ReactNode }) => {
+	const [issue, dispatch] = useReducer<Reducer<Issue | null, Issue>>(
+		(_prevIssue, currentIssue) => currentIssue,
+		null,
+	);
+
+	return (
+		<IssueContext.Provider value={issue}>
+			<IssueDispatchContext.Provider value={dispatch}>
+				{children}
+			</IssueDispatchContext.Provider>
+		</IssueContext.Provider>
 	);
 };
 
