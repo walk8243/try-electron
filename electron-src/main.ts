@@ -24,6 +24,8 @@ import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 
+const IssueGainInterval = 300000 as const; // 5分
+
 export const main = async () => {
 	const mainWindow = setupMainWindow();
 	const storeDataFlag = checkStoreData();
@@ -38,14 +40,9 @@ export const main = async () => {
 	setupModalWindow(mainWindow, webview, storeDataFlag.isInvalid());
 	setupResizedSetting(mainWindow, webview);
 
-	setInterval(
-		() => {
-			gainGithubIssues().then((issues) =>
-				mainWindow.webContents.send('app:pushIssues', issues),
-			);
-		},
-		5 * 60 * 1000,
-	);
+	setInterval(() => {
+		gainGithubIssues();
+	}, IssueGainInterval);
 
 	await announceUpdate(mainWindow);
 	await setupDevtools();
@@ -77,7 +74,7 @@ const setupMainWindow = () => {
 		store.onDidChange('issueData', (data) => {
 			log.debug('蓄積しているデータが更新されました');
 			if (!data) return;
-			mainWindow.webContents.send('app:pushUpdatedAt', data.updatedAt ?? {});
+			mainWindow.webContents.send('app:pushUpdatedAt', data.updatedAt);
 			mainWindow.webContents.send('app:pushIssues', data.issues ?? []);
 		});
 	});

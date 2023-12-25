@@ -60,6 +60,16 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 		.then(translateIssues);
 };
 
+export const gainPrReviews = async (repository: string, prNumber: number) => {
+	const results = await accessGithub({
+		path: `repos/${repository}/pulls/${prNumber}/reviews`,
+	});
+	if (!Array.isArray(results)) {
+		throw new Error('GitHub APIからのPRのレビューのresponseが異常値です');
+	}
+	return results;
+};
+
 export const checkStoreData = () => {
 	const githubSetting = store.get('githubSetting');
 	return githubSetting?.baseUrl && githubSetting?.token
