@@ -104,6 +104,23 @@ export const store = new Store<{
 									},
 								},
 							},
+							reviewers: {
+								type: 'array',
+								items: {
+									type: 'object',
+									properties: {
+										login: {
+											type: 'string',
+										},
+										avatarUrl: {
+											type: 'string',
+										},
+										state: {
+											type: 'string',
+										},
+									},
+								},
+							},
 							updated_at: {
 								type: 'string',
 							},

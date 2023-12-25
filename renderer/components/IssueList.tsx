@@ -139,7 +139,24 @@ const IssueCard = ({ issue }: { issue: Issue }) => {
 									sx={{ width: 20, height: 20 }}
 								/>
 							</Grid>
-							<Grid item xs zeroMinWidth></Grid>
+							<Grid
+								container
+								item
+								xs
+								zeroMinWidth
+								direction="row-reverse"
+								columnGap={0.5}
+							>
+								{issue.reviewers.map((reviewer) => (
+									<Grid item key={reviewer.login}>
+										<Avatar
+											alt={reviewer.login}
+											src={reviewer.avatarUrl}
+											sx={{ width: 20, height: 20 }}
+										/>
+									</Grid>
+								))}
+							</Grid>
 						</Grid>
 						<Grid container columnGap={1}>
 							<Grid container item xs zeroMinWidth>
