@@ -1,8 +1,11 @@
+import { app } from 'electron';
 import Store from 'electron-store';
+import semver from 'semver';
 import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
 
 export const store = new Store<{
+	appVersion: string;
 	githubSetting: { baseUrl: string; token: string };
 	userInfo: UserInfo;
 	issueData: {
@@ -11,6 +14,9 @@ export const store = new Store<{
 	};
 }>({
 	schema: {
+		appVersion: {
+			type: 'string',
+		},
 		githubSetting: {
 			type: 'object',
 			properties: {
@@ -131,3 +137,11 @@ export const store = new Store<{
 		},
 	},
 });
+
+if (
+	!store.get('appVersion') ||
+	semver.gt(app.getVersion(), store.get('appVersion'))
+) {
+	store.delete('userInfo');
+	store.delete('issueData');
+}
