@@ -8,6 +8,7 @@ import { safeUnreachable } from '../utils/typescript';
 import type { Issue, IssueState } from '../../types/Issue';
 
 import {
+	Avatar,
 	Card,
 	CardActionArea,
 	CardContent,
@@ -112,31 +113,44 @@ const IssueCard = ({ issue }: { issue: Issue }) => {
 		<Card sx={{ width: '100%', m: 0.5 }}>
 			<CardActionArea onClick={handleClick}>
 				<CardContent>
-					<Grid container columnGap={1}>
-						<Grid item pt="2px">
-							<FontAwesomeIcon
-								icon={findIssueIcon(issue.state)}
-								color={findIssueStateColor(issue.state)}
-							/>
+					<Grid container direction="column" rowGap={1}>
+						<Grid container columnGap={1}>
+							<Grid item pt="2px">
+								<FontAwesomeIcon
+									icon={findIssueIcon(issue.state)}
+									color={findIssueStateColor(issue.state)}
+								/>
+							</Grid>
+							<Grid item xs zeroMinWidth>
+								<Typography
+									variant="subtitle1"
+									color="inherit"
+									sx={{ overflowWrap: 'break-word' }}
+								>
+									{issue.title}
+								</Typography>
+							</Grid>
 						</Grid>
-						<Grid item xs zeroMinWidth>
-							<Typography
-								variant="subtitle1"
-								sx={{ overflowWrap: 'break-word' }}
-							>
-								{issue.title}
-							</Typography>
+						<Grid container columnGap={1}>
+							<Grid item>
+								<Avatar
+									alt={issue.creator?.login}
+									src={issue.creator?.avatarUrl}
+									sx={{ width: 20, height: 20 }}
+								/>
+							</Grid>
+							<Grid item xs zeroMinWidth></Grid>
 						</Grid>
-					</Grid>
-					<Grid container columnGap={1}>
-						<Grid container item xs zeroMinWidth>
-							<Typography variant="body2">{issue.repositoryName}</Typography>
-							<Typography
-								variant="body2"
-								sx={{ ml: 1, '::before': { content: '"#"' } }}
-							>
-								{issue.number}
-							</Typography>
+						<Grid container columnGap={1}>
+							<Grid container item xs zeroMinWidth>
+								<Typography variant="body2">{issue.repositoryName}</Typography>
+								<Typography
+									variant="body2"
+									sx={{ ml: 1, '::before': { content: '"#"' } }}
+								>
+									{issue.number}
+								</Typography>
+							</Grid>
 						</Grid>
 					</Grid>
 				</CardContent>

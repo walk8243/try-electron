@@ -8,7 +8,7 @@ export interface Issue {
 	state: IssueState;
 	labels: IssueLabel[];
 	reactions: number;
-	user: string | null;
+	creator: UserInfo | null;
 	updatedAt: string;
 }
 
@@ -20,4 +20,9 @@ export interface IssueLabel {
 	key: string | null;
 	text: string;
 	color: string | null;
+}
+
+export interface UserInfo {
+	login: string;
+	avatarUrl: string;
 }

@@ -21,7 +21,9 @@ export const translateIssue = (issue: GithubIssue): Issue => ({
 	state: translateIssueState(issue),
 	labels: translateIssueLabels(issue.labels),
 	reactions: issue.reactions ? issue.reactions.total_count : 0,
-	user: issue.user ? issue.user.login : null,
+	creator: issue.user
+		? { login: issue.user.login, avatarUrl: issue.user.avatar_url }
+		: null,
 	updatedAt: issue.updated_at,
 });
 

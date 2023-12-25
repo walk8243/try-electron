@@ -93,8 +93,16 @@ export const store = new Store<{
 							reactions: {
 								type: 'number',
 							},
-							user: {
-								type: 'string',
+							creator: {
+								type: 'object',
+								properties: {
+									login: {
+										type: 'string',
+									},
+									avatarUrl: {
+										type: 'string',
+									},
+								},
 							},
 							updated_at: {
 								type: 'string',
