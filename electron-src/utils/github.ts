@@ -11,6 +11,8 @@ import type {
 	GithubUserInfo,
 	GithubIssue,
 	GithubRelease,
+	GithubPrReview,
+	GithubFullIssueData,
 } from '../types/GitHub';
 import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
@@ -18,11 +20,13 @@ import type { Issue } from '../../types/Issue';
 export const githubAppSettings: {
 	readonly filterTypes: readonly IssueFilterType[];
 	readonly perPage: number;
-	readonly terms: { value: number; unit: dayjs.ManipulateType };
+	readonly targetTerm: { value: number; unit: dayjs.ManipulateType };
+	readonly retentionTerm: { value: number; unit: dayjs.ManipulateType };
 } = {
 	filterTypes: ['assigned', 'created', 'mentioned'],
 	perPage: 100,
-	terms: { value: 3, unit: 'month' },
+	targetTerm: { value: 1, unit: 'month' },
+	retentionTerm: { value: 3, unit: 'month' },
 } as const;
 const latestReleaseUrl =
 	'https://api.github.com/repos/walk8243/amethyst-electron/releases/latest';
@@ -43,21 +47,44 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 		),
 	)
 		.then((values) => {
-			return values
-				.reduce((acc, cur) => acc.concat(cur), [])
-				.reduce((acc: GithubIssue[], cur: GithubIssue) => {
-					if (acc.every((issue) => issue.node_id !== cur.node_id)) {
-						acc.push(cur);
-					}
-					return acc;
-				}, []);
+			return values.flat().reduce((acc: GithubIssue[], cur: GithubIssue) => {
+				if (!acc.some((issue) => issue.node_id === cur.node_id)) {
+					acc.push(cur);
+				}
+				return acc;
+			}, []);
 		})
 		.then((issues) =>
 			issues.toSorted((a, b) =>
 				dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1,
 			),
 		)
+		.then((issues) => {
+			return Promise.all(
+				issues.map(async (issue): Promise<GithubFullIssueData> => {
+					if (issue.pull_request && issue.repository) {
+						const reviews = await gainPrReviews(
+							issue.repository.full_name,
+							issue.number,
+						);
+						return { issue, reviews };
+					}
+
+					return { issue, reviews: [] };
+				}),
+			);
+		})
 		.then(translateIssues);
+};
+
+export const gainPrReviews = async (repository: string, prNumber: number) => {
+	const results = await accessGithub({
+		path: `repos/${repository}/pulls/${prNumber}/reviews`,
+	});
+	if (!isPrReviewsType(results)) {
+		throw new Error('GitHub APIからのPRのレビューのresponseが異常値です');
+	}
+	return results;
 };
 
 export const checkStoreData = () => {
@@ -230,6 +257,24 @@ const isReleaseType = (target: unknown): target is GithubRelease => {
 		'html_url' in target &&
 		'body' in target &&
 		'created_at' in target
+	);
+};
+const isPrReviewsType = (target: unknown): target is GithubPrReview[] => {
+	if (!Array.isArray(target)) {
+		return false;
+	}
+
+	return target.every((review) => isPrReviewType(review));
+};
+const isPrReviewType = (target: unknown): target is GithubPrReview => {
+	if (target === null || typeof target !== 'object') {
+		return false;
+	}
+	return (
+		'id' in target &&
+		'node_id' in target &&
+		'user' in target &&
+		'state' in target
 	);
 };
 

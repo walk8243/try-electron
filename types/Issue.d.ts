@@ -8,7 +8,8 @@ export interface Issue {
 	state: IssueState;
 	labels: IssueLabel[];
 	reactions: number;
-	user: string | null;
+	creator: UserInfo | null;
+	reviews: Review[];
 	updatedAt: string;
 }
 
@@ -20,4 +21,15 @@ export interface IssueLabel {
 	key: string | null;
 	text: string;
 	color: string | null;
+}
+
+export interface UserInfo {
+	login: string;
+	avatarUrl: string;
+}
+
+export interface Review {
+	login: string;
+	avatarUrl: string;
+	state: 'APPROVED' | 'CHANGES_REQUESTED' | 'COMMENTED';
 }

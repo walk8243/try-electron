@@ -1,7 +1,13 @@
-import type { Issue, IssueLabel, IssueState } from '../../types/Issue';
+import type { Issue, IssueLabel, IssueState, Review } from '../../types/Issue';
 import type { UserInfo } from '../../types/User';
 import type { RecordValue } from '../../types/Utility';
-import type { GithubUserInfo, GithubIssue, GithubLabel } from '../types/GitHub';
+import type {
+	GithubUserInfo,
+	GithubIssue,
+	GithubLabel,
+	GithubFullIssueData,
+	GithubPrReview,
+} from '../types/GitHub';
 
 export const translateUserInfo = (userInfo: GithubUserInfo): UserInfo => ({
 	login: userInfo.login,
@@ -9,9 +15,12 @@ export const translateUserInfo = (userInfo: GithubUserInfo): UserInfo => ({
 	name: userInfo.name,
 });
 
-export const translateIssues = (issues: GithubIssue[]): Issue[] =>
-	issues.map(translateIssue);
-export const translateIssue = (issue: GithubIssue): Issue => ({
+export const translateIssues = (data: GithubFullIssueData[]): Issue[] =>
+	data.map(translateIssue);
+export const translateIssue = ({
+	issue,
+	reviews,
+}: GithubFullIssueData): Issue => ({
 	id: issue.id,
 	key: issue.node_id,
 	number: issue.number,
@@ -21,7 +30,10 @@ export const translateIssue = (issue: GithubIssue): Issue => ({
 	state: translateIssueState(issue),
 	labels: translateIssueLabels(issue.labels),
 	reactions: issue.reactions ? issue.reactions.total_count : 0,
-	user: issue.user ? issue.user.login : null,
+	creator: issue.user
+		? { login: issue.user.login, avatarUrl: issue.user.avatar_url }
+		: null,
+	reviews: translateIssueReviews(reviews, issue.user?.node_id),
 	updatedAt: issue.updated_at,
 });
 
@@ -69,4 +81,28 @@ const translateIssueLabel = (label: string | GithubLabel): IssueLabel => {
 		text: label.name,
 		color: label.color,
 	};
+};
+
+const translateIssueReviews = (
+	reviews: GithubPrReview[],
+	authorId: string = '',
+): Review[] => {
+	const users = reviews
+		.map((review) => review.user.node_id)
+		.filter((nodeId) => nodeId !== authorId)
+		.reduce<string[]>((acc, cur) => {
+			if (!acc.some((val) => val === cur)) {
+				acc.push(cur);
+			}
+			return acc;
+		}, []);
+	reviews.reverse();
+
+	return users
+		.map((user) => reviews.find((review) => review.user.node_id === user)!)
+		.map((review) => ({
+			login: review.user.login,
+			avatarUrl: review.user.avatar_url,
+			state: review.state,
+		}));
 };

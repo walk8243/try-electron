@@ -9,8 +9,16 @@ import {
 	viewLatestRelease,
 } from './utils/github';
 import { store } from './utils/store';
+import { Issue } from '../types/Issue';
 
-let latestIssueGainTime: dayjs.Dayjs | null = null;
+let latestIssueGainTime: dayjs.Dayjs = ((date: string) => {
+	return date
+		? dayjs(date)
+		: dayjs().subtract(
+				githubAppSettings.targetTerm.value,
+				githubAppSettings.targetTerm.unit,
+			);
+})(store.get('issueData')?.updatedAt);
 
 export const gainGithubAllData = async (isBoot: boolean) => {
 	log.debug('main.gainGithubAllData を実行します');
@@ -40,9 +48,13 @@ export const gainGithubUser = async () => {
 export const gainGithubIssues = async () => {
 	log.debug('main.gainGithubIssues を実行します');
 	const now = dayjs();
-	const issues = await gainIssues(
-		now.subtract(githubAppSettings.terms.value, githubAppSettings.terms.unit),
-	);
+	const issues = await gainIssues(latestIssueGainTime);
+
+	latestIssueGainTime = now;
+	store.set('issueData', {
+		updatedAt: now.toISOString(),
+		issues: joinIssueData(issues),
+	});
 
 	if (
 		latestIssueGainTime &&
@@ -54,9 +66,7 @@ export const gainGithubIssues = async () => {
 		});
 		notification.show();
 	}
-	latestIssueGainTime = now;
 
-	store.set('issueData', { updatedAt: now.toISOString(), issues });
 	return issues;
 };
 
@@ -68,6 +78,14 @@ export const checkUpdate = async () => {
 		latestRelease: latestRelease.tag,
 	});
 	return semver.gt(latestRelease.tag, currentVersion);
+};
+
+const joinIssueData = (issues: Issue[]) => {
+	return issues.concat(
+		(store.get('issueData')?.issues ?? []).filter(
+			(issue) => !issues.some((i) => i.key === issue.key),
+		),
+	);
 };
 
 const showErrorDialog = () => {

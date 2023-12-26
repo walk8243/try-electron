@@ -74,8 +74,8 @@ export const fromFilterType = (type: IssueFilterTypes): IssueFilter => {
 };
 
 const checkOwnIssue = (issue: Issue, user: UserInfo | null) => {
-	if (!issue.user || !user) {
+	if (!issue.creator || !user) {
 		return false;
 	}
-	return issue.user === user.login;
+	return issue.creator.login === user.login;
 };

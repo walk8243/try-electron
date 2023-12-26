@@ -1,27 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
-import type { MouseEvent } from 'react';
 import { ColorModeContext } from '../context/ColorModeContext';
-import { IssueDispatchContext } from '../context/IssueContext';
 import { IssueFilterContext } from '../context/IssueFilterContext';
 import { UserInfoContext } from '../context/UserContext';
-import { safeUnreachable } from '../utils/typescript';
-import type { Issue, IssueState } from '../../types/Issue';
+import type { Issue } from '../../types/Issue';
 
-import {
-	Card,
-	CardActionArea,
-	CardContent,
-	Grid,
-	Typography,
-} from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	IconDefinition,
-	faCodePullRequest,
-	faSpinner,
-} from '@fortawesome/free-solid-svg-icons';
-import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { Heading } from './Heading';
+import { IssueCard } from './IssueCard';
 import surface from '../styles/colors/surface';
 
 const numberFormat = Intl.NumberFormat('ja-JP');
@@ -98,76 +85,6 @@ const IssueCards = ({ issues }: { issues: Issue[] | null }) => {
 				))}
 		</Grid>
 	);
-};
-
-const IssueCard = ({ issue }: { issue: Issue }) => {
-	const dispatch = useContext(IssueDispatchContext);
-	const handleClick = (e: MouseEvent) => {
-		dispatch(issue);
-		window.electron?.issue(issue.url);
-		e.preventDefault();
-	};
-
-	return (
-		<Card sx={{ width: '100%', m: 0.5 }}>
-			<CardActionArea onClick={handleClick}>
-				<CardContent>
-					<Grid container columnGap={1}>
-						<Grid item pt="2px">
-							<FontAwesomeIcon
-								icon={findIssueIcon(issue.state)}
-								color={findIssueStateColor(issue.state)}
-							/>
-						</Grid>
-						<Grid item xs zeroMinWidth>
-							<Typography
-								variant="subtitle1"
-								sx={{ overflowWrap: 'break-word' }}
-							>
-								{issue.title}
-							</Typography>
-						</Grid>
-					</Grid>
-					<Grid container columnGap={1}>
-						<Grid container item xs zeroMinWidth>
-							<Typography variant="body2">{issue.repositoryName}</Typography>
-							<Typography
-								variant="body2"
-								sx={{ ml: 1, '::before': { content: '"#"' } }}
-							>
-								{issue.number}
-							</Typography>
-						</Grid>
-					</Grid>
-				</CardContent>
-			</CardActionArea>
-		</Card>
-	);
-};
-
-const findIssueIcon = (state: IssueState): IconDefinition => {
-	switch (state.type) {
-		case 'issue':
-			return faCircleDot;
-		case 'pull-request':
-			return faCodePullRequest;
-	}
-
-	safeUnreachable(state);
-};
-const findIssueStateColor = (state: IssueState): string => {
-	switch (state.state) {
-		case 'open':
-			return 'green';
-		case 'closed':
-			return 'red';
-		case 'merged':
-			return 'purple';
-		case 'draft':
-			return 'gray';
-	}
-
-	safeUnreachable(state);
 };
 
 export default IssueList;

@@ -82,3 +82,15 @@ export interface GithubRelease {
 	body: string;
 	created_at: string;
 }
+
+export interface GithubPrReview {
+	id: number;
+	node_id: string;
+	user: GithubUserMinimumInfo;
+	state: 'APPROVED' | 'CHANGES_REQUESTED' | 'COMMENTED';
+}
+
+type GithubFullIssueData = {
+	issue: GithubIssue;
+	reviews: GithubPrReview[];
+};
