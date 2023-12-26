@@ -18,11 +18,13 @@ import type { Issue } from '../../types/Issue';
 export const githubAppSettings: {
 	readonly filterTypes: readonly IssueFilterType[];
 	readonly perPage: number;
-	readonly terms: { value: number; unit: dayjs.ManipulateType };
+	readonly targetTerm: { value: number; unit: dayjs.ManipulateType };
+	readonly retentionTerm: { value: number; unit: dayjs.ManipulateType };
 } = {
 	filterTypes: ['assigned', 'created', 'mentioned'],
 	perPage: 100,
-	terms: { value: 3, unit: 'month' },
+	targetTerm: { value: 1, unit: 'month' },
+	retentionTerm: { value: 3, unit: 'month' },
 } as const;
 const latestReleaseUrl =
 	'https://api.github.com/repos/walk8243/amethyst-electron/releases/latest';

@@ -15,8 +15,8 @@ let latestIssueGainTime: dayjs.Dayjs = ((date: string) => {
 	return date
 		? dayjs(date)
 		: dayjs().subtract(
-				githubAppSettings.terms.value,
-				githubAppSettings.terms.unit,
+				githubAppSettings.targetTerm.value,
+				githubAppSettings.targetTerm.unit,
 			);
 })(store.get('issueData')?.updatedAt);
 
