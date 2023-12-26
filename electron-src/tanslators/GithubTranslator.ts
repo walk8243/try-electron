@@ -33,7 +33,7 @@ export const translateIssue = ({
 	creator: issue.user
 		? { login: issue.user.login, avatarUrl: issue.user.avatar_url }
 		: null,
-	reviews: translateIssueReviews(reviews),
+	reviews: translateIssueReviews(reviews, issue.user?.node_id),
 	updatedAt: issue.updated_at,
 });
 
@@ -83,9 +83,13 @@ const translateIssueLabel = (label: string | GithubLabel): IssueLabel => {
 	};
 };
 
-const translateIssueReviews = (reviews: GithubPrReview[]): Review[] => {
+const translateIssueReviews = (
+	reviews: GithubPrReview[],
+	authorId: string = '',
+): Review[] => {
 	const users = reviews
 		.map((review) => review.user.node_id)
+		.filter((nodeId) => nodeId !== authorId)
 		.reduce<string[]>((acc, cur) => {
 			if (!acc.some((val) => val === cur)) {
 				acc.push(cur);
