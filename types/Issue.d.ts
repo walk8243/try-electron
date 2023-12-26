@@ -9,7 +9,7 @@ export interface Issue {
 	labels: IssueLabel[];
 	reactions: number;
 	creator: UserInfo | null;
-	reviewers: Reviewer[];
+	reviews: Review[];
 	updatedAt: string;
 }
 
@@ -28,7 +28,7 @@ export interface UserInfo {
 	avatarUrl: string;
 }
 
-export interface Reviewer {
+export interface Review {
 	login: string;
 	avatarUrl: string;
 	state: 'APPROVED' | 'CHANGES_REQUESTED' | 'COMMENTED';

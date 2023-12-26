@@ -1,4 +1,4 @@
-import type { Issue, IssueLabel, IssueState } from '../../types/Issue';
+import type { Issue, IssueLabel, IssueState, Review } from '../../types/Issue';
 import type { UserInfo } from '../../types/User';
 import type { RecordValue } from '../../types/Utility';
 import type {
@@ -6,6 +6,7 @@ import type {
 	GithubIssue,
 	GithubLabel,
 	GithubFullIssueData,
+	GithubPrReview,
 } from '../types/GitHub';
 
 export const translateUserInfo = (userInfo: GithubUserInfo): UserInfo => ({
@@ -32,11 +33,7 @@ export const translateIssue = ({
 	creator: issue.user
 		? { login: issue.user.login, avatarUrl: issue.user.avatar_url }
 		: null,
-	reviewers: reviews.map((review) => ({
-		login: review.user.login,
-		avatarUrl: review.user.avatar_url,
-		state: review.state,
-	})),
+	reviews: translateIssueReviews(reviews),
 	updatedAt: issue.updated_at,
 });
 
@@ -85,3 +82,10 @@ const translateIssueLabel = (label: string | GithubLabel): IssueLabel => {
 		color: label.color,
 	};
 };
+
+const translateIssueReviews = (reviews: GithubPrReview[]): Review[] =>
+	reviews.map((review) => ({
+		login: review.user.login,
+		avatarUrl: review.user.avatar_url,
+		state: review.state,
+	}));

@@ -47,14 +47,12 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 		),
 	)
 		.then((values) => {
-			return values
-				.reduce((acc, cur) => acc.concat(cur), [])
-				.reduce((acc: GithubIssue[], cur: GithubIssue) => {
-					if (acc.every((issue) => issue.node_id !== cur.node_id)) {
-						acc.push(cur);
-					}
-					return acc;
-				}, []);
+			return values.flat().reduce((acc: GithubIssue[], cur: GithubIssue) => {
+				if (!acc.some((issue) => issue.node_id === cur.node_id)) {
+					acc.push(cur);
+				}
+				return acc;
+			}, []);
 		})
 		.then((issues) =>
 			issues.toSorted((a, b) =>

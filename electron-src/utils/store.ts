@@ -110,7 +110,7 @@ export const store = new Store<{
 									},
 								},
 							},
-							reviewers: {
+							reviews: {
 								type: 'array',
 								items: {
 									type: 'object',

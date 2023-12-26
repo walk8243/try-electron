@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import type { MouseEvent } from 'react';
 import { IssueDispatchContext } from '../context/IssueContext';
 import { safeUnreachable } from '../utils/typescript';
-import type { Issue, IssueState, Reviewer } from '../../types/Issue';
+import type { Issue, IssueState, Review } from '../../types/Issue';
 
 import {
 	Avatar,
@@ -66,9 +66,9 @@ export const IssueCard = ({ issue }: { issue: Issue }) => {
 								direction="row-reverse"
 								columnGap={0.5}
 							>
-								{issue.reviewers.map((reviewer) => (
-									<Grid item key={reviewer.login}>
-										<ReviewerAvatar reviewer={reviewer} />
+								{issue.reviews.map((review) => (
+									<Grid item key={review.login}>
+										<ReviewerAvatar review={review} />
 									</Grid>
 								))}
 							</Grid>
@@ -91,17 +91,17 @@ export const IssueCard = ({ issue }: { issue: Issue }) => {
 	);
 };
 
-const ReviewerAvatar = ({ reviewer }: { reviewer: Reviewer }) => {
+const ReviewerAvatar = ({ review }: { review: Review }) => {
 	return (
 		<Badge
-			color={findIssueReviewStateIcon(reviewer.state)}
+			color={findIssueReviewStateIcon(review.state)}
 			overlap="circular"
 			anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 			variant="dot"
 		>
 			<Avatar
-				alt={reviewer.login}
-				src={reviewer.avatarUrl}
+				alt={review.login}
+				src={review.avatarUrl}
 				sx={{ width: 20, height: 20 }}
 			/>
 		</Badge>
@@ -132,7 +132,7 @@ const findIssueStateColor = (state: IssueState): string => {
 
 	safeUnreachable(state);
 };
-const findIssueReviewStateIcon = (state: Reviewer['state']) => {
+const findIssueReviewStateIcon = (state: Review['state']) => {
 	switch (state) {
 		case 'APPROVED':
 			return 'success';
