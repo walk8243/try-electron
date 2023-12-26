@@ -50,7 +50,7 @@ export const IssueCard = ({ issue }: { issue: Issue }) => {
 								</Typography>
 							</Grid>
 						</Grid>
-						<Grid container columnGap={1}>
+						<Grid container columnGap={2}>
 							<Grid item>
 								<Avatar
 									alt={issue.creator?.login}
@@ -64,7 +64,7 @@ export const IssueCard = ({ issue }: { issue: Issue }) => {
 								xs
 								zeroMinWidth
 								direction="row-reverse"
-								columnGap={0.5}
+								columnGap={1}
 							>
 								{issue.reviews.map((review) => (
 									<Grid item key={review.login}>
