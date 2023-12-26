@@ -3,6 +3,7 @@ import type { PaletteMode, PaletteOptions } from '@mui/material';
 import { error } from '../styles/colors/error';
 import { primary } from '../styles/colors/primary';
 import { secondary } from '../styles/colors/secondary';
+import { grey } from '@mui/material/colors';
 
 export const ColorModeContext = createContext<PaletteMode>('light');
 export const ColorModeDispatchContext = createContext<Dispatch<PaletteMode>>(
@@ -26,6 +27,12 @@ export const colorSetting: PaletteOptions = {
 		main: error.key,
 		light: error.light.main,
 		dark: error.dark.main,
+		contrastText: '#fff',
+	},
+	ordinarily: {
+		main: grey[500],
+		light: grey[300],
+		dark: grey[700],
 		contrastText: '#fff',
 	},
 };
