@@ -49,7 +49,6 @@ export const gainGithubIssues = async () => {
 	log.debug('main.gainGithubIssues を実行します');
 	const now = dayjs();
 	const issues = await gainIssues(latestIssueGainTime);
-	log.verbose('gainGithubIssues:', issues);
 
 	latestIssueGainTime = now;
 	store.set('issueData', {
