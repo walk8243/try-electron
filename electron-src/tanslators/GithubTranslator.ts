@@ -1,7 +1,12 @@
 import type { Issue, IssueLabel, IssueState } from '../../types/Issue';
 import type { UserInfo } from '../../types/User';
 import type { RecordValue } from '../../types/Utility';
-import type { GithubUserInfo, GithubIssue, GithubLabel } from '../types/GitHub';
+import type {
+	GithubUserInfo,
+	GithubIssue,
+	GithubLabel,
+	GithubFullIssueData,
+} from '../types/GitHub';
 
 export const translateUserInfo = (userInfo: GithubUserInfo): UserInfo => ({
 	login: userInfo.login,
@@ -9,9 +14,12 @@ export const translateUserInfo = (userInfo: GithubUserInfo): UserInfo => ({
 	name: userInfo.name,
 });
 
-export const translateIssues = (issues: GithubIssue[]): Issue[] =>
-	issues.map(translateIssue);
-export const translateIssue = (issue: GithubIssue): Issue => ({
+export const translateIssues = (data: GithubFullIssueData[]): Issue[] =>
+	data.map(translateIssue);
+export const translateIssue = ({
+	issue,
+	reviews,
+}: GithubFullIssueData): Issue => ({
 	id: issue.id,
 	key: issue.node_id,
 	number: issue.number,
@@ -24,7 +32,11 @@ export const translateIssue = (issue: GithubIssue): Issue => ({
 	creator: issue.user
 		? { login: issue.user.login, avatarUrl: issue.user.avatar_url }
 		: null,
-	reviewers: [],
+	reviewers: reviews.map((review) => ({
+		login: review.user.login,
+		avatarUrl: review.user.avatar_url,
+		state: review.state,
+	})),
 	updatedAt: issue.updated_at,
 });
 

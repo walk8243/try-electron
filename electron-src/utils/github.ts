@@ -11,6 +11,8 @@ import type {
 	GithubUserInfo,
 	GithubIssue,
 	GithubRelease,
+	GithubPrReview,
+	GithubFullIssueData,
 } from '../types/GitHub';
 import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
@@ -59,6 +61,21 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 				dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1,
 			),
 		)
+		.then((issues) => {
+			return Promise.all(
+				issues.map(async (issue): Promise<GithubFullIssueData> => {
+					if (issue.pull_request && issue.repository) {
+						const reviews = await gainPrReviews(
+							issue.repository.full_name,
+							issue.number,
+						);
+						return { issue, reviews };
+					}
+
+					return { issue, reviews: [] };
+				}),
+			);
+		})
 		.then(translateIssues);
 };
 
@@ -66,7 +83,7 @@ export const gainPrReviews = async (repository: string, prNumber: number) => {
 	const results = await accessGithub({
 		path: `repos/${repository}/pulls/${prNumber}/reviews`,
 	});
-	if (!Array.isArray(results)) {
+	if (!isPrReviewsType(results)) {
 		throw new Error('GitHub APIからのPRのレビューのresponseが異常値です');
 	}
 	return results;
@@ -242,6 +259,24 @@ const isReleaseType = (target: unknown): target is GithubRelease => {
 		'html_url' in target &&
 		'body' in target &&
 		'created_at' in target
+	);
+};
+const isPrReviewsType = (target: unknown): target is GithubPrReview[] => {
+	if (!Array.isArray(target)) {
+		return false;
+	}
+
+	return target.every((review) => isPrReviewType(review));
+};
+const isPrReviewType = (target: unknown): target is GithubPrReview => {
+	if (target === null || typeof target !== 'object') {
+		return false;
+	}
+	return (
+		'id' in target &&
+		'node_id' in target &&
+		'user' in target &&
+		'state' in target
 	);
 };
 
