@@ -83,9 +83,22 @@ const translateIssueLabel = (label: string | GithubLabel): IssueLabel => {
 	};
 };
 
-const translateIssueReviews = (reviews: GithubPrReview[]): Review[] =>
-	reviews.map((review) => ({
-		login: review.user.login,
-		avatarUrl: review.user.avatar_url,
-		state: review.state,
-	}));
+const translateIssueReviews = (reviews: GithubPrReview[]): Review[] => {
+	const users = reviews
+		.map((review) => review.user.node_id)
+		.reduce<string[]>((acc, cur) => {
+			if (!acc.some((val) => val === cur)) {
+				acc.push(cur);
+			}
+			return acc;
+		}, []);
+	reviews.reverse();
+
+	return users
+		.map((user) => reviews.find((review) => review.user.node_id === user)!)
+		.map((review) => ({
+			login: review.user.login,
+			avatarUrl: review.user.avatar_url,
+			state: review.state,
+		}));
+};
