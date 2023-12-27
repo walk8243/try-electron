@@ -74,6 +74,9 @@ const IssueCards = ({ issues }: { issues: Issue[] | null }) => {
 	return (
 		<Grid
 			container
+			alignContent="flex-start"
+			alignItems="flex-start"
+			rowGap={1}
 			p={1}
 			bgcolor={surface.container[colorMode].main}
 			sx={{ overflowY: 'auto' }}
@@ -81,7 +84,9 @@ const IssueCards = ({ issues }: { issues: Issue[] | null }) => {
 			{issues
 				.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
 				.map((issue) => (
-					<IssueCard key={issue.key} issue={issue} />
+					<Grid item key={issue.key} xs={12}>
+						<IssueCard issue={issue} />
+					</Grid>
 				))}
 		</Grid>
 	);
