@@ -84,14 +84,16 @@ const Filters = () => {
 	return (
 		<Grid container item width="100%">
 			<Grid item width="100%">
-				<Typography variant="subtitle1">Library</Typography>
-				<List sx={{ px: 2 }}>
+				<Typography variant="subtitle1" mb={1}>
+					Library
+				</Typography>
+				<List sx={{ px: 2, py: 0 }}>
 					{issueFilters.map((filter) => (
-						<ListItem key={filter.type} sx={{ p: 0 }}>
+						<ListItem key={filter.type} sx={{ my: 1, p: 0 }}>
 							<ListItemButton
 								onClick={(_e) => issueFilterDispatch(filter)}
 								selected={filter.type === issueFilter.type}
-								sx={{ p: '3px' }}
+								sx={{ p: '3px', borderRadius: 1 }}
 							>
 								<ListItemIcon sx={{ minWidth: 'initial', mr: 2 }}>
 									<FontAwesomeIcon icon={filter.icon} />
