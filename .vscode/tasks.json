@@ -34,6 +34,50 @@
 				"showReuseMessage": true,
 				"clear": false
 			}
+		},
+		{
+			"type": "npm",
+			"script": "lint",
+			"problemMatcher": [],
+			"label": "lint",
+			"detail": "lint",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"type": "npm",
+			"script": "type-check",
+			"problemMatcher": [],
+			"label": "type-check",
+			"detail": "type-check",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "check",
+			"problemMatcher": [],
+			"dependsOrder": "sequence",
+			"dependsOn": ["lint", "type-check"],
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
 		}
 	]
 }
