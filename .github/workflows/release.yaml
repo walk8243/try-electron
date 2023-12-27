@@ -7,6 +7,8 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   TAG_ID: ${{ github.event.release.tag_name }}
+  ELECTRON_VER: ''
+  BREW_SHA: ''
 
 jobs:
   note:
@@ -51,7 +53,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
-      - run: gh release upload ${{ env.TAG_ID }} "dist\amethyst-${{ env.TAG_ID }}-win.msi"
+      - run: gh release upload ${{ env.TAG_ID }} 'dist\amethyst-${{ env.TAG_ID }}-win.msi'
 
   macos:
     runs-on: macos-latest
@@ -63,6 +65,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run dist
-      - run: shasum -a 256 "dist/amethyst-${TAG_ID}-mac.zip"
-      - run: gh release upload $TAG_ID "dist/amethyst-${TAG_ID}-mac.dmg"
-      - run: gh release upload $TAG_ID "dist/amethyst-${TAG_ID}-mac.zip"
+      - run: echo "BREW_SHA=$(shasum -a 256 'dist/amethyst-${{ env.TAG_ID }}-mac.zip' | awk '{ print $1 }')" >> $GITHUB_ENV
+      - run: gh release upload $TAG_ID 'dist/amethyst-${{ env.TAG_ID }}-mac.dmg'
+      - run: gh release upload $TAG_ID 'dist/amethyst-${{ env.TAG_ID }}-mac.zip'
+      - name: Homebrew update
+        run: |
+          gh workflow run main.yml --repo walk8243/nodejs-terminal \
+            -f version=${{ env.TAG_ID }} \
+            -f sha256=${{ env.BREW_SHA }}
+    env:
+      GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
