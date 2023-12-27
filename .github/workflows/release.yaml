@@ -70,8 +70,11 @@ jobs:
       - run: gh release upload $TAG_ID 'dist/amethyst-${{ env.TAG_ID }}-mac.zip'
       - name: Homebrew update
         run: |
-          gh workflow run main.yml --repo walk8243/nodejs-terminal \
+          gh workflow run main.yml --repo walk8243/homebrew-cask \
+            -f type=brew \
+            -f cask=amethyst \
             -f version=${{ env.TAG_ID }} \
-            -f sha256=${{ env.BREW_SHA }}
+            -f sha256=${{ env.BREW_SHA }} \
+            -f url=${{ github.event.release.html_url }}
     env:
       GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
