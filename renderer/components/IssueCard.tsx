@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import type { MouseEvent } from 'react';
-import { IssueDispatchContext } from '../context/IssueContext';
+import { IssueContext, IssueDispatchContext } from '../context/IssueContext';
 import { safeUnreachable } from '../utils/typescript';
 import type { Issue, IssueState, Review } from '../../types/Issue';
 
@@ -21,6 +21,7 @@ import {
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 
 export const IssueCard = ({ issue }: { issue: Issue }) => {
+	const selectedIssue = useContext(IssueContext);
 	const dispatch = useContext(IssueDispatchContext);
 	const handleClick = (e: MouseEvent) => {
 		dispatch(issue);
@@ -29,7 +30,10 @@ export const IssueCard = ({ issue }: { issue: Issue }) => {
 	};
 
 	return (
-		<Card sx={{ width: '100%', m: 0.5 }}>
+		<Card
+			raised={issue.key === selectedIssue?.key}
+			sx={{ width: '100%', m: 0.5 }}
+		>
 			<CardActionArea onClick={handleClick}>
 				<CardContent>
 					<Grid container direction="column" rowGap={1}>
