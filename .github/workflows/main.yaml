@@ -26,4 +26,4 @@ jobs:
       - uses: actions/checkout@v4
       - run: ls ${{ github.workspace }}
       - run: shasum -a 256 package.json
-      - run: hashFiles('package.json')
+      - run: echo ${{ hashFiles('package.json') }}
