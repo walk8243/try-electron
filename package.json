@@ -1,6 +1,6 @@
 {
   "name": "amethyst",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "関係しているGitHubのIssuesを表示・管理するデスクトップアプリ",
   "main": "main/index.js",
   "scripts": {
@@ -15,7 +15,8 @@
     "dist": "npm run build && electron-builder",
     "type-check": "tsc -p ./renderer/tsconfig.json && tsc -p ./electron-src/tsconfig.json",
     "lint": "eslint electron-src/ renderer/ types/ --ext .ts,.tsx",
-    "lint:fix": "eslint electron-src/ renderer/ types/ --fix --ext .ts,.tsx"
+    "lint:fix": "eslint electron-src/ renderer/ types/ --fix --ext .ts,.tsx",
+    "verup": "npm version --no-git-tag-version"
   },
   "keywords": [
     "electron",

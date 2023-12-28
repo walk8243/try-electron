@@ -53,13 +53,16 @@ const translateIssueState = (issue: GithubIssue): IssueState => {
 const translatePullRequestState = (
 	issue: GithubIssue,
 ): RecordValue<Extract<IssueState, { type: 'pull-request' }>, 'state'> => {
-	if (issue.draft) {
-		return 'draft';
-	}
 	if (issue.pull_request?.merged_at) {
 		return 'merged';
 	}
-	return issue.state;
+	if (issue.state === 'closed') {
+		return 'closed';
+	}
+	if (issue.draft) {
+		return 'draft';
+	}
+	return 'open';
 };
 
 const translateIssueLabels = (
