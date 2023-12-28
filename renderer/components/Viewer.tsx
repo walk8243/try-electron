@@ -37,11 +37,16 @@ const Viewer = () => {
 
 const IssueUrlBar = () => {
 	const [url, setUrl] = useState<string | null>(null);
-	const handleBack = () => {
-		window.electron?.goBack();
-	};
-	const handleForward = () => {
-		window.electron?.goForward();
+	const [canGo, setCanGo] = useState<{ back: boolean; forward: boolean }>({
+		back: false,
+		forward: false,
+	});
+	const handleHistory = async (direction: 'back' | 'forward') => {
+		const result = (await window.electron?.history(direction)) ?? {
+			canGoBack: false,
+			canGoForward: false,
+		};
+		setCanGo({ back: result.canGoBack, forward: result.canGoForward });
 	};
 	const handleReload = () => {
 		window.electron?.reload();
@@ -52,7 +57,10 @@ const IssueUrlBar = () => {
 	};
 
 	useEffect(() => {
-		window.electron?.load(setUrl);
+		window.electron?.load(({ url, canGoBack, canGoForward }) => {
+			setUrl(url);
+			setCanGo({ back: canGoBack, forward: canGoForward });
+		});
 	}, []);
 
 	return (
@@ -61,12 +69,20 @@ const IssueUrlBar = () => {
 				Issue URLバー
 			</Heading>
 			<Grid item>
-				<IconButton onClick={handleBack} size="small">
+				<IconButton
+					onClick={() => handleHistory('back')}
+					size="small"
+					disabled={!canGo.back}
+				>
 					<FontAwesomeIcon icon={faArrowLeft} />
 				</IconButton>
 			</Grid>
 			<Grid item>
-				<IconButton onClick={handleForward} size="small">
+				<IconButton
+					onClick={() => handleHistory('forward')}
+					size="small"
+					disabled={!canGo.forward}
+				>
 					<FontAwesomeIcon icon={faArrowRight} />
 				</IconButton>
 			</Grid>

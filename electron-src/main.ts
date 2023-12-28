@@ -91,21 +91,32 @@ const setupWebview = (mainWindow: BrowserWindow) => {
 	ipcMain.on('browser:open', (_event, url: string) => {
 		shell.openExternal(url);
 	});
-	ipcMain.handle('browser:back', (_event) => {
-		webview.webContents.goBack();
-	});
-	ipcMain.handle('browser:forward', (_event) => {
-		webview.webContents.goForward();
-	});
 	ipcMain.handle('browser:reload', (_event) => {
 		webview.webContents.reload();
+	});
+	ipcMain.handle('browser:history', (_event, ope: 'back' | 'forward') => {
+		if (ope === 'back') {
+			webview.webContents.goBack();
+		}
+		if (ope === 'forward') {
+			webview.webContents.goForward();
+		}
+
+		return {
+			canGoBack: webview.webContents.canGoBack(),
+			canGoForward: webview.webContents.canGoForward(),
+		};
 	});
 	ipcMain.on('browser:copy', (_event, url: string) => {
 		clipboard.writeText(url);
 	});
 
 	webview.webContents.on('did-finish-load', () => {
-		mainWindow.webContents.send('browser:load', webview.webContents.getURL());
+		mainWindow.webContents.send('browser:load', {
+			url: webview.webContents.getURL(),
+			canGoBack: webview.webContents.canGoBack(),
+			canGoForward: webview.webContents.canGoForward(),
+		});
 	});
 	return webview;
 };
