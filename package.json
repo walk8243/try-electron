@@ -15,7 +15,8 @@
     "dist": "npm run build && electron-builder",
     "type-check": "tsc -p ./renderer/tsconfig.json && tsc -p ./electron-src/tsconfig.json",
     "lint": "eslint electron-src/ renderer/ types/ --ext .ts,.tsx",
-    "lint:fix": "eslint electron-src/ renderer/ types/ --fix --ext .ts,.tsx"
+    "lint:fix": "eslint electron-src/ renderer/ types/ --fix --ext .ts,.tsx",
+    "verup": "git version patch --no-git-tag-version"
   },
   "keywords": [
     "electron",
