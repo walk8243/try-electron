@@ -6,11 +6,18 @@ declare global {
 		electron: {
 			issue: (url: string) => Promise<void>;
 			open: (url: string) => void;
-			goBack: () => void;
-			goForward: () => void;
 			reload: () => void;
+			history: (
+				ope: 'back' | 'forward',
+			) => Promise<{ canGoBack: boolean; canGoForward: boolean }>;
 			copy: (url: string) => void;
-			load: (callback: (url: string) => void) => void;
+			load: (
+				callback: (value: {
+					url: string;
+					canGoBack: boolean;
+					canGoForward: boolean;
+				}) => void,
+			) => void;
 			ready: () => void;
 			pushUser: (callback: (user: UserInfo) => void) => void;
 			pushIssues: (callback: (issues: Issue[]) => void) => void;
