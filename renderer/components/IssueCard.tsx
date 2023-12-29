@@ -19,6 +19,7 @@ import {
 	faCodePullRequest,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
+import { githubColor } from '../styles/colors/github';
 
 export const IssueCard = ({ issue }: { issue: Issue }) => {
 	const selectedIssue = useContext(IssueContext);
@@ -122,16 +123,22 @@ const findIssueIcon = (state: IssueState): IconDefinition => {
 
 	safeUnreachable(state);
 };
-const findIssueStateColor = (state: IssueState): string => {
+const findIssueStateColor = (state: IssueState) => {
 	switch (state.state) {
 		case 'open':
-			return 'green';
+			return githubColor.open;
 		case 'closed':
-			return 'red';
+			switch (state.type) {
+				case 'issue':
+					return githubColor.merged;
+				case 'pull-request':
+					return githubColor.closed;
+			}
+			break;
 		case 'merged':
-			return 'purple';
+			return githubColor.merged;
 		case 'draft':
-			return 'gray';
+			return githubColor.draft;
 	}
 
 	safeUnreachable(state);

@@ -8,6 +8,7 @@ declare module '@mui/material/styles' {
 		ordinarily?: PaletteOptions['primary'];
 	}
 }
+
 declare module '@mui/material/Badge' {
 	interface BadgePropsColorOverrides {
 		ordinarily: true;
