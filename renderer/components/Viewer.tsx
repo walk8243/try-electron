@@ -145,6 +145,9 @@ const IssueUrlBar = () => {
 						},
 					}}
 					onChange={(event) => setSearch(event.target.value)}
+					onKeyDown={(event) => {
+						if (event.key === 'Enter') handleSearch('next');
+					}}
 					value={search}
 				/>
 			</Grid>
