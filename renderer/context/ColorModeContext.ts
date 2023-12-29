@@ -1,9 +1,9 @@
 import { Dispatch, createContext } from 'react';
 import type { PaletteMode, PaletteOptions } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { error } from '../styles/colors/error';
 import { primary } from '../styles/colors/primary';
 import { secondary } from '../styles/colors/secondary';
-import { grey } from '@mui/material/colors';
 
 export const ColorModeContext = createContext<PaletteMode>('light');
 export const ColorModeDispatchContext = createContext<Dispatch<PaletteMode>>(
