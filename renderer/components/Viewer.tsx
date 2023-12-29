@@ -81,7 +81,7 @@ const IssueUrlBar = () => {
 			container
 			component="section"
 			display="grid"
-			gridTemplateColumns="auto auto auto 1fr auto auto"
+			gridTemplateColumns="auto auto auto minmax(300px, 1fr) auto auto"
 			columnGap={2}
 			p={2}
 		>

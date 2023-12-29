@@ -23,7 +23,13 @@ export const UrlBar = ({ url }: { url: string | null }) => {
 				backgroundColor: surface[colorMode].main,
 			}}
 		>
-			<Typography color={surface[colorMode].on} textAlign="left">
+			<Typography
+				color={surface[colorMode].on}
+				textAlign="left"
+				textOverflow="ellipsis"
+				overflow="hidden"
+				noWrap
+			>
 				{url}
 			</Typography>
 		</ButtonBase>
