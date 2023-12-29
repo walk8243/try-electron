@@ -110,6 +110,16 @@ const setupWebview = (mainWindow: BrowserWindow) => {
 	ipcMain.on('browser:copy', (_event, url: string) => {
 		clipboard.writeText(url);
 	});
+	ipcMain.handle(
+		'browser:search',
+		async (_event, query: string, direction: 'next' | 'back') => {
+			if (!query) {
+				webview.webContents.stopFindInPage('clearSelection');
+				return;
+			}
+			webview.webContents.findInPage(query, { forward: direction === 'next' });
+		},
+	);
 
 	webview.webContents.on('did-finish-load', () => {
 		mainWindow.webContents.send('browser:load', {
