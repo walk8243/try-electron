@@ -13,12 +13,12 @@ import {
 	Grid,
 	Typography,
 } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	IconDefinition,
 	faCodePullRequest,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
-import { FontIcon } from './FontIcon';
 import { githubColor } from '../styles/colors/github';
 
 export const IssueCard = ({ issue }: { issue: Issue }) => {
@@ -40,7 +40,7 @@ export const IssueCard = ({ issue }: { issue: Issue }) => {
 					<Grid container direction="column" rowGap={1}>
 						<Grid container columnGap={1}>
 							<Grid item pt="2px">
-								<FontIcon
+								<FontAwesomeIcon
 									icon={findIssueIcon(issue.state)}
 									color={findIssueStateColor(issue.state)}
 								/>
@@ -128,7 +128,13 @@ const findIssueStateColor = (state: IssueState) => {
 		case 'open':
 			return githubColor.open;
 		case 'closed':
-			return githubColor.closed;
+			switch (state.type) {
+				case 'issue':
+					return githubColor.merged;
+				case 'pull-request':
+					return githubColor.closed;
+			}
+			break;
 		case 'merged':
 			return githubColor.merged;
 		case 'draft':
