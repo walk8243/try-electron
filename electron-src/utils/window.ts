@@ -8,6 +8,8 @@ export const createMain = () => {
 	const mainWindow = new BrowserWindow({
 		width: 1500,
 		height: 800,
+		minWidth: 1300,
+		minHeight: 600,
 		show: false,
 		webPreferences: {
 			nodeIntegration: false,

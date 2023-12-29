@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld('electron', {
 	history: (ope: 'back' | 'forward') =>
 		ipcRenderer.invoke('browser:history', ope),
 	copy: (url: string) => ipcRenderer.send('browser:copy', url),
+	search: (query: string, direction: 'next' | 'back') =>
+		ipcRenderer.invoke('browser:search', query, direction),
 	load: (
 		callback: (value: {
 			url: string;

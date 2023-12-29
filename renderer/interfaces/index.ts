@@ -11,6 +11,7 @@ declare global {
 				ope: 'back' | 'forward',
 			) => Promise<{ canGoBack: boolean; canGoForward: boolean }>;
 			copy: (url: string) => void;
+			search: (query: string, direction: 'next' | 'back') => Promise<void>;
 			load: (
 				callback: (value: {
 					url: string;
