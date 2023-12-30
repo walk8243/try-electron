@@ -35,6 +35,6 @@ https://(Domain)/api/v3/
 ![auth](../img/auth.png)
 
 <div class="nav">
-  <a href="install.html" class="nav__btn nav__btn--back">インストール方法</a>
+  <a href="{{ '/detail/install.html' | relative_url }}" class="nav__btn nav__btn--back">インストール方法</a>
   <p class="nav__btn nav__btn--empty"></p>
 </div>

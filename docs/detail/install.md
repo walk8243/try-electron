@@ -35,6 +35,6 @@ msiexec.exe /x "$env:userprofile\Downloads\amethyst-0.0.0-win.msi"
 ```
 
 <div class="nav">
-  <a href="../" class="nav__btn nav__btn--back">トップ</a>
-  <a href="setup.html" class="nav__btn nav__btn--next">初期設定</a>
+  <a href="{{ '/' | relative_url }}" class="nav__btn nav__btn--back">トップ</a>
+  <a href="{{ '/detail/setup.html' | relative_url }}" class="nav__btn nav__btn--next">初期設定</a>
 </div>
