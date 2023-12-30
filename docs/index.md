@@ -3,8 +3,6 @@ layout: default
 is_project_header: true
 ---
 
-@import "{{ site.theme }}";
-
 <div class="top-layout">
 <p class="img-box">
   <img alt="application icon" src="img/icon_200.png" />
