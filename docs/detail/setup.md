@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # 初期設定
 
 使用するには、GitHub Tokenが必要になります。

@@ -1,4 +1,6 @@
-# Amethyst
+---
+layout: default
+---
 
 自身が関係しているGitHubのPRやIssueを表示して、コメントするためのデスクトップアプリ。
 

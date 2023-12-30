@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # 開発者向け
 
 VSCode用の設定は作成済みです。
