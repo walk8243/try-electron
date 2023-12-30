@@ -1,5 +1,6 @@
 ---
 layout: default
+is_project_header: true
 ---
 
 # 開発者向け
@@ -69,3 +70,8 @@ Figmaを用いて画面デザインを作成しています。
 デザインシステムはMaterialDesignです。
 
 [amethyst-electron – Figma](https://www.figma.com/file/yQLWa7vdPFTJxUUPtUGsmj/amethyst-electron?type=design&node-id=54702%3A25457&mode=design&t=dnEOwMbSyArYYupx-1)
+
+<div class="nav">
+  <a href="{{ '/' | relative_url }}" class="nav__btn nav__btn--back">トップ</a>
+  <p class="nav__btn nav__btn--empty"></p>
+</div>

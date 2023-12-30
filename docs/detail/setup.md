@@ -1,5 +1,6 @@
 ---
 layout: default
+is_project_header: false
 ---
 
 # 初期設定
@@ -32,3 +33,8 @@ https://(Domain)/api/v3/
 最低限必要な権限は以下になります。
 
 ![auth](../img/auth.png)
+
+<div class="nav">
+  <a href="{{ '/detail/install.html' | relative_url }}" class="nav__btn nav__btn--back">インストール方法</a>
+  <p class="nav__btn nav__btn--empty"></p>
+</div>
