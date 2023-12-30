@@ -18,6 +18,7 @@
     "lint:fix": "eslint electron-src/ renderer/ types/ --fix --ext .ts,.tsx",
     "verup": "npm version --no-git-tag-version"
   },
+  "homepage": "https://walk8243.github.io/amethyst-electron/",
   "keywords": [
     "electron",
     "github",
