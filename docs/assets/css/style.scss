@@ -1,8 +1,9 @@
 ---
 ---
 
-$section-headings-color: #61337A;
-$header-bg-color: #61337A;
+$key-color: #61337A;
+$section-headings-color: $key-color;
+$header-bg-color: $key-color;
 $header-bg-color-secondary: black;
 @import "{{ site.theme }}";
 
@@ -25,8 +26,8 @@ $header-bg-color-secondary: black;
 		column-gap: 0.5em;
 		align-items: center;
 		color: rgba(255, 255, 255, 0.7);
-		background-color: rgba(97, 51, 122, 0.8);
-		border-color: rgba(97, 51, 122, 0.8);
+		background-color: rgba($key-color, 0.8);
+		border-color: rgba($key-color, 0.8);
 		border-style: solid;
 		border-width: 1px;
 		border-radius: 0.3rem;
@@ -73,7 +74,7 @@ $header-bg-color-secondary: black;
 		&:hover {
 			color: rgba(255, 255, 255, 0.8);
 			text-decoration: none;
-			background-color: rgba(97, 51, 122, 0.6);
+			background-color: rgba($key-color, 0.6);
 		}
 	}
 }
