@@ -2,8 +2,6 @@
 layout: default
 ---
 
-自身が関係しているGitHubのPRやIssueを表示して、コメントするためのデスクトップアプリ。
-
 ![application icon](img/icon_200.png)
 
 - 使い方
