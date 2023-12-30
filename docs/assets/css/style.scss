@@ -1,12 +1,10 @@
 ---
 ---
 
+$section-headings-color: #61337A;
+$header-bg-color: #61337A;
+$header-bg-color-secondary: black;
 @import "{{ site.theme }}";
-
-.page-header {
-	background-color: #61337A;
-    background-image: linear-gradient(15deg, black, transparent);
-}
 
 .top-layout {
 	@media screen and (min-width: 64em) {
