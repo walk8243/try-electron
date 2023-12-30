@@ -27,7 +27,7 @@
 		align-items: center;
 		color: rgba(255, 255, 255, 0.7);
 		background-color: rgba(97, 51, 122, 0.8);
-		border-color: rgba(255, 255, 255, 0.2);
+		border-color: rgba(97, 51, 122, 0.8);
 		border-style: solid;
 		border-width: 1px;
 		border-radius: 0.3rem;
@@ -74,8 +74,7 @@
 		&:hover {
 			color: rgba(255, 255, 255, 0.8);
 			text-decoration: none;
-			background-color: rgba(255, 255, 255, 0.2);
-			border-color: rgba(255, 255, 255, 0.3);
+			background-color: rgba(97, 51, 122, 0.6);
 		}
 	}
 }
