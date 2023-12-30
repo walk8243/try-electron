@@ -72,6 +72,6 @@ Figmaを用いて画面デザインを作成しています。
 [amethyst-electron – Figma](https://www.figma.com/file/yQLWa7vdPFTJxUUPtUGsmj/amethyst-electron?type=design&node-id=54702%3A25457&mode=design&t=dnEOwMbSyArYYupx-1)
 
 <div class="nav">
-  <a href="../" class="btn">Back: トップ</a>
-  <p></p>
+  <a href="../" class="nav__btn nav__btn--back">トップ</a>
+  <p class="nav__btn nav__btn--empty"></p>
 </div>

@@ -10,6 +10,21 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+
+	&__btn {
+		display: block;
+
+		&--next {
+			&::before {
+				content: "Next";
+			}
+		}
+		&--back {
+			&::before {
+				content: "Back";
+			}
+		}
+	}
 }
 
 .img-box {

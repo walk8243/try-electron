@@ -3,6 +3,8 @@ layout: default
 is_project_header: true
 ---
 
+@import "{{ site.theme }}";
+
 <div class="top-layout">
 <p class="img-box">
   <img alt="application icon" src="img/icon_200.png" />
@@ -19,6 +21,6 @@ is_project_header: true
 </div>
 
 <div class="nav">
-  <p></p>
-  <a href="detail/install.html" class="btn">Next: インストール方法</a>
+  <p class="nav__btn nav__btn--empty"></p>
+  <a href="detail/install.html" class="nav__btn">インストール方法</a>
 </div>
