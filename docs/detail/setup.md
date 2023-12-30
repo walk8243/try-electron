@@ -33,3 +33,7 @@ https://(Domain)/api/v3/
 最低限必要な権限は以下になります。
 
 ![auth](../img/auth.png)
+
+<div class="nav">
+  <a href="install.html" class="btn">Back: インストール方法</a>
+</div>

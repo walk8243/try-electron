@@ -33,3 +33,8 @@ msiexec.exe /i "$env:userprofile\Downloads\amethyst-0.0.0-win.msi"
 # アンインストールする場合
 msiexec.exe /x "$env:userprofile\Downloads\amethyst-0.0.0-win.msi"
 ```
+
+<div class="nav">
+  <a href="../" class="btn">Back: トップ</a>
+  <a href="detail/setup.html" class="btn">Next: 初期設定</a>
+</div>
