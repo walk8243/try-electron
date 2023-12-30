@@ -1,5 +1,6 @@
 ---
 layout: default
+is_project_header: true
 ---
 
 # 開発者向け

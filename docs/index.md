@@ -1,5 +1,6 @@
 ---
 layout: default
+is_project_header: true
 ---
 
 ![application icon](img/icon_200.png)

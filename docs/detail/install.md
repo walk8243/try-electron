@@ -1,5 +1,6 @@
 ---
 layout: default
+is_project_header: false
 ---
 
 # インストール方法
