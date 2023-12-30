@@ -139,8 +139,8 @@ export const store = new Store<{
 });
 
 if (
-	!store.get('appVersion') ||
-	semver.gt(app.getVersion(), store.get('appVersion'))
+	semver.major(app.getVersion()) >
+	semver.major(store.get('appVersion', '0.0.0'))
 ) {
 	store.delete('userInfo');
 	store.delete('issueData');
