@@ -20,5 +20,5 @@ is_project_header: true
 
 <div class="nav">
   <p class="nav__btn nav__btn--empty"></p>
-  <a href="detail/install.html" class="nav__btn">インストール方法</a>
+  <a href="detail/install.html" class="nav__btn nav__btn--next">インストール方法</a>
 </div>

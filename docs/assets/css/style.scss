@@ -17,16 +17,36 @@
 	align-items: center;
 
 	&__btn {
-		display: block;
+		display: grid;
+		column-gap: 0.5em;
 
 		&--next {
 			&::before {
+				grid-column: 1 / 3;
+				grid-row: 1 / 2;
+			}
+			&::after {
+				grid-row: 2 / 3;
+			}
+		}
+		&--next {
+			&::before {
 				content: "Next";
+				text-align: left;
+			}
+			&::after {
+				content: ">";
+				grid-column: 2 / 3;
 			}
 		}
 		&--back {
 			&::before {
 				content: "Back";
+				text-align: right;
+			}
+			&::after {
+				content: "<";
+				grid-column: 1 / 2;
 			}
 		}
 	}
