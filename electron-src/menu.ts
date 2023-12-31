@@ -3,6 +3,7 @@ import {
 	BrowserView,
 	ipcMain,
 	Menu,
+	MenuItemConstructorOptions,
 	safeStorage,
 	shell,
 } from 'electron';
@@ -11,6 +12,8 @@ import isDev from 'electron-is-dev';
 import { gainGithubAllData } from './github';
 import { store } from './utils/store';
 import type { SettingData } from './preload/setting';
+
+const isMac = process.platform === ('darwin' as const);
 
 export const createMenu = ({
 	parentWindow,
@@ -26,113 +29,28 @@ export const createMenu = ({
 	const menu = Menu.buildFromTemplate([
 		{
 			label: 'Amethyst',
-			submenu: [
-				{
-					label: 'About Amethyst',
-					click: () => aboutWindow.show(),
-				},
-				{ type: 'separator' },
-				{
-					label: 'Preferences',
-					accelerator: 'CmdOrCtrl+,',
-					click: () => settingWindow.show(),
-				},
-				{ type: 'separator' },
-				{ role: 'services' },
-				{ type: 'separator' },
-				{ role: 'hide' },
-				{ role: 'hideOthers' },
-				{ role: 'unhide' },
-				{ type: 'separator' },
-				{ role: 'quit' },
-			],
+			submenu: appMenu({ settingWindow, aboutWindow }),
 		},
 		{
-			label: 'File',
-			submenu: [{ role: 'close' }],
+			label: 'ファイル',
+			submenu: fileMenu(),
 		},
 		{
-			label: 'Edit',
-			submenu: [
-				{ role: 'undo' },
-				{ role: 'redo' },
-				{ type: 'separator' },
-				{ role: 'cut' },
-				{ role: 'copy' },
-				{ role: 'paste' },
-				{ role: 'pasteAndMatchStyle' },
-				{ role: 'delete' },
-				{ role: 'selectAll' },
-				{ type: 'separator' },
-				{
-					label: 'Speech',
-					submenu: [{ role: 'startSpeaking' }, { role: 'stopSpeaking' }],
-				},
-			],
+			label: '編集',
+			submenu: editMenu(),
 		},
 		{
-			label: 'View',
-			submenu: [
-				{
-					label: 'Reload',
-					accelerator: 'CmdOrCtrl+R',
-					click: () => webview.webContents.reload(),
-				},
-				{
-					label: 'Force Reload',
-					accelerator: 'CmdOrCtrl+Shift+R',
-					click: () => {
-						parentWindow.reload();
-						webview.webContents.reload();
-					},
-				},
-				{
-					label: 'Toggle Developer Tools',
-					enabled: isDev,
-					accelerator: 'CmdOrCtrl+Shift+I',
-					click: (_menuItem, window) => {
-						if (!window) {
-							return;
-						}
-
-						if (window.webContents.isDevToolsOpened()) {
-							window.webContents.closeDevTools();
-						} else {
-							window.webContents.openDevTools({ mode: 'detach' });
-						}
-					},
-				},
-				{ type: 'separator' },
-				{ role: 'resetZoom' },
-				{ role: 'zoomIn' },
-				{ role: 'zoomOut' },
-				{ type: 'separator' },
-				{ role: 'togglefullscreen' },
-			],
+			label: '表示',
+			submenu: viewMenu({ parentWindow, webview }),
 		},
 		{
-			label: 'Window',
-			submenu: [
-				{ role: 'minimize' },
-				{ role: 'zoom' },
-				{ type: 'separator' },
-				{ role: 'front' },
-				{ type: 'separator' },
-				{ role: 'window' },
-				{ role: 'close' },
-			],
+			label: 'ウィンドウ',
+			submenu: windowMenu(),
 		},
 		{
 			role: 'help',
-			submenu: [
-				{ role: 'about' },
-				{
-					label: 'Learn More',
-					click: () => {
-						shell.openExternal('https://electronjs.org');
-					},
-				},
-			],
+			label: 'ヘルプ',
+			submenu: helpMenu(),
 		},
 	]);
 
@@ -168,3 +86,131 @@ export const createMenu = ({
 
 	return menu;
 };
+
+const appMenu = ({
+	settingWindow,
+	aboutWindow,
+}: {
+	settingWindow: BrowserWindow;
+	aboutWindow: BrowserWindow;
+}): MenuItemConstructorOptions[] => [
+	{
+		label: 'Amethystについて',
+		click: () => aboutWindow.show(),
+	},
+	{ type: 'separator' },
+	{
+		label: '環境設定',
+		accelerator: 'CmdOrCtrl+,',
+		click: () => settingWindow.show(),
+	},
+	...appMacMenu,
+	{ type: 'separator' },
+	{ role: 'quit', label: 'Amethystを終了' },
+];
+const appMacMenu: MenuItemConstructorOptions[] = isMac
+	? [
+			{ type: 'separator' },
+			{ role: 'services' },
+			{ type: 'separator' },
+			{ role: 'hide', label: 'Amethystを隠す' },
+			{ role: 'hideOthers', label: 'その他を隠す' },
+			{ role: 'unhide', label: 'すべてを表示', enabled: false },
+		]
+	: [];
+
+const fileMenu = (): MenuItemConstructorOptions[] => [
+	{ role: 'close', label: '閉じる' },
+];
+
+const editMenu = (): MenuItemConstructorOptions[] => [
+	{ role: 'undo', label: '元に戻す', enabled: false },
+	{ role: 'redo', label: 'やり直す', enabled: false },
+	{ type: 'separator' },
+	{ role: 'cut', label: '切り取り', enabled: false },
+	{ role: 'copy', label: 'コピー', enabled: false },
+	{ role: 'paste', label: '貼り付け', enabled: false },
+	{
+		role: 'pasteAndMatchStyle',
+		label: '貼り付けてスタイルを合わせる',
+		enabled: false,
+	},
+	{ role: 'delete', label: '削除', enabled: false },
+	{ role: 'selectAll', label: 'すべて選択', enabled: false },
+	{ type: 'separator' },
+	{
+		label: 'スピーチ',
+		submenu: [
+			{ role: 'startSpeaking', label: '読み上げを開始', enabled: false },
+			{ role: 'stopSpeaking', label: '読み上げを停止', enabled: false },
+		],
+	},
+];
+
+const viewMenu = ({
+	parentWindow,
+	webview,
+}: {
+	parentWindow: BrowserWindow;
+	webview: BrowserView;
+}): MenuItemConstructorOptions[] => [
+	{
+		label: 'Webページを再読み込み',
+		accelerator: 'CmdOrCtrl+R',
+		click: () => webview.webContents.reload(),
+	},
+	{
+		label: 'Issueを再読み込み',
+		accelerator: 'CmdOrCtrl+Shift+R',
+		enabled: false,
+		click: () => parentWindow.reload(),
+	},
+	...viewDevMenu(),
+	{ type: 'separator' },
+	{ role: 'togglefullscreen', label: 'フルスクリーン', enabled: false },
+];
+const viewDevMenu = (): MenuItemConstructorOptions[] =>
+	isDev
+		? [
+				{
+					label: '開発者ツールを開く',
+					accelerator: 'CmdOrCtrl+Shift+I',
+					click: (_menuItem, window) => {
+						if (!window) {
+							return;
+						}
+
+						if (window.webContents.isDevToolsOpened()) {
+							window.webContents.closeDevTools();
+						} else {
+							window.webContents.openDevTools({ mode: 'detach' });
+						}
+					},
+				},
+			]
+		: [];
+
+const windowMenu = (): MenuItemConstructorOptions[] => [
+	{ role: 'minimize', label: '最小化' },
+	...windowMacMenu,
+	{ role: 'close', label: '閉じる' },
+];
+const windowMacMenu: MenuItemConstructorOptions[] = isMac
+	? [
+			{ role: 'zoom', label: '拡大' },
+			{ type: 'separator' },
+			{ role: 'front', label: '手前に移動' },
+			{ type: 'separator' },
+			{ role: 'window', label: 'サブメニュー' },
+		]
+	: [{ type: 'separator' }];
+
+const helpMenu = (): MenuItemConstructorOptions[] => [
+	{ role: 'about', label: 'Electronについて' },
+	{
+		label: 'Electronをもっと知る',
+		click: () => {
+			shell.openExternal('https://electronjs.org');
+		},
+	},
+];
