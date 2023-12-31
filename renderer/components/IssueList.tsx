@@ -45,7 +45,7 @@ const Header = ({ issues }: { issues: Issue[] | null }) => {
 	return (
 		<Grid item p={3} bgcolor={surface.container[colorMode].high} boxShadow={4}>
 			<Heading level={4}>Issue</Heading>
-			<Typography variant="subtitle1">{subtitle}</Typography>
+			<Typography variant="subtitle2">{subtitle}</Typography>
 		</Grid>
 	);
 };
