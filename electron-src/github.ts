@@ -21,6 +21,7 @@ let latestIssueGainTime: dayjs.Dayjs = ((date: string) => {
 			);
 })(store.get('issueData')?.updatedAt);
 let issueTimer: NodeJS.Timeout;
+let isBlockGainIssues: boolean = false;
 
 export const gainGithubAllData = async (isBoot: boolean) => {
 	log.debug('main.gainGithubAllData を実行します');
@@ -49,6 +50,9 @@ export const gainGithubUser = async () => {
 };
 export const gainGithubIssues = async () => {
 	log.debug('main.gainGithubIssues を実行します');
+	if (isBlockGainIssues) return;
+	isBlockGainIssues = true;
+
 	const now = dayjs();
 	const issues = await gainIssues(latestIssueGainTime);
 
@@ -69,6 +73,9 @@ export const gainGithubIssues = async () => {
 		notification.show();
 	}
 
+	setTimeout(() => {
+		isBlockGainIssues = false;
+	}, 5000);
 	return issues;
 };
 
