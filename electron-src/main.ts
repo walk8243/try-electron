@@ -17,14 +17,16 @@ import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
 
-import { checkUpdate, gainGithubAllData, gainGithubIssues } from './github';
+import {
+	checkUpdate,
+	gainGithubAllData,
+	scheduledGainGithubIssues,
+} from './github';
 import { createMenu } from './menu';
 import { checkStoreData } from './utils/github';
 import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
-
-const IssueGainInterval = 300000 as const; // 5分
 
 export const main = async () => {
 	const mainWindow = setupMainWindow();
@@ -40,10 +42,7 @@ export const main = async () => {
 	setupModalWindow(mainWindow, webview, storeDataFlag.isInvalid());
 	setupResizedSetting(mainWindow, webview);
 
-	setInterval(() => {
-		gainGithubIssues();
-	}, IssueGainInterval);
-
+	scheduledGainGithubIssues();
 	await announceUpdate(mainWindow);
 	await setupDevtools();
 };

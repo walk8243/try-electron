@@ -9,7 +9,11 @@ import {
 } from 'electron';
 import isDev from 'electron-is-dev';
 
-import { gainGithubAllData, gainGithubIssues } from './github';
+import {
+	gainGithubAllData,
+	gainGithubIssues,
+	refreshIssueTimer,
+} from './github';
 import { store } from './utils/store';
 import type { SettingData } from './preload/setting';
 
@@ -160,6 +164,7 @@ const viewMenu = ({
 		accelerator: 'CmdOrCtrl+Shift+R',
 		click: () => {
 			gainGithubIssues();
+			refreshIssueTimer();
 		},
 	},
 	...viewDevMenu(),

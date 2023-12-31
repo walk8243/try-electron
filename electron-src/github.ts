@@ -11,6 +11,7 @@ import {
 import { store } from './utils/store';
 import { Issue } from '../types/Issue';
 
+const IssueGainInterval = 300000 as const; // 5分
 let latestIssueGainTime: dayjs.Dayjs = ((date: string) => {
 	return date
 		? dayjs(date)
@@ -19,6 +20,7 @@ let latestIssueGainTime: dayjs.Dayjs = ((date: string) => {
 				githubAppSettings.targetTerm.unit,
 			);
 })(store.get('issueData')?.updatedAt);
+let issueTimer: NodeJS.Timeout;
 
 export const gainGithubAllData = async (isBoot: boolean) => {
 	log.debug('main.gainGithubAllData を実行します');
@@ -68,6 +70,17 @@ export const gainGithubIssues = async () => {
 	}
 
 	return issues;
+};
+
+export const scheduledGainGithubIssues = () => {
+	issueTimer = setInterval(() => {
+		gainGithubIssues();
+	}, IssueGainInterval);
+};
+export const refreshIssueTimer = () => {
+	if (issueTimer) {
+		issueTimer.refresh();
+	}
 };
 
 export const checkUpdate = async () => {
