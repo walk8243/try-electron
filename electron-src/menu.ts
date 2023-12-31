@@ -9,19 +9,21 @@ import {
 } from 'electron';
 import isDev from 'electron-is-dev';
 
-import { gainGithubAllData } from './github';
+import {
+	gainGithubAllData,
+	gainGithubIssues,
+	refreshIssueTimer,
+} from './github';
 import { store } from './utils/store';
 import type { SettingData } from './preload/setting';
 
 const isMac = process.platform === ('darwin' as const);
 
 export const createMenu = ({
-	parentWindow,
 	webview,
 	settingWindow,
 	aboutWindow,
 }: {
-	parentWindow: BrowserWindow;
 	settingWindow: BrowserWindow;
 	aboutWindow: BrowserWindow;
 	webview: BrowserView;
@@ -41,7 +43,7 @@ export const createMenu = ({
 		},
 		{
 			label: '表示',
-			submenu: viewMenu({ parentWindow, webview }),
+			submenu: viewMenu({ webview }),
 		},
 		{
 			label: 'ウィンドウ',
@@ -148,10 +150,8 @@ const editMenu = (): MenuItemConstructorOptions[] => [
 ];
 
 const viewMenu = ({
-	parentWindow,
 	webview,
 }: {
-	parentWindow: BrowserWindow;
 	webview: BrowserView;
 }): MenuItemConstructorOptions[] => [
 	{
@@ -162,8 +162,10 @@ const viewMenu = ({
 	{
 		label: 'Issueを再読み込み',
 		accelerator: 'CmdOrCtrl+Shift+R',
-		enabled: false,
-		click: () => parentWindow.reload(),
+		click: () => {
+			gainGithubIssues();
+			refreshIssueTimer();
+		},
 	},
 	...viewDevMenu(),
 	{ type: 'separator' },
