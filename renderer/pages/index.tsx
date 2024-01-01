@@ -7,6 +7,7 @@ import {
 	useState,
 } from 'react';
 import Head from 'next/head';
+import log from 'electron-log/renderer';
 import type { UserInfo } from '../../types/User';
 
 import { Box, Grid } from '@mui/material';
@@ -18,6 +19,7 @@ import {
 	issueFilterAll,
 	IssueFilter,
 } from '../context/IssueFilterContext';
+import { IssueSupplementMapContext } from '../context/IssueSupplementMapContext';
 import { UserInfoContext } from '../context/UserContext';
 import { Heading } from '../components/Heading';
 import Header from '../components/Header';
@@ -27,7 +29,7 @@ import IssueList from '../components/IssueList';
 import Viewer from '../components/Viewer';
 import { background } from '../styles/colors/common';
 import text from '../styles/colors/text';
-import type { Issue } from '../../types/Issue';
+import type { Issue, IssueSupplementMap } from '../../types/Issue';
 
 const IndexPage = () => {
 	useEffect(() => {
@@ -42,7 +44,9 @@ const IndexPage = () => {
 			<IssueFilterContextProvider>
 				<UserInfoContextProvider>
 					<IssueContextProvider>
-						<MainComponent />
+						<IssueSupplementMapContextProvider>
+							<MainComponent />
+						</IssueSupplementMapContextProvider>
 					</IssueContextProvider>
 				</UserInfoContextProvider>
 			</IssueFilterContextProvider>
@@ -127,6 +131,27 @@ const IssueContextProvider = ({ children }: { children: ReactNode }) => {
 				{children}
 			</IssueDispatchContext.Provider>
 		</IssueContext.Provider>
+	);
+};
+
+const IssueSupplementMapContextProvider = ({
+	children,
+}: {
+	children: ReactNode;
+}) => {
+	const [issueSupplementMap, setIssueSupplementMap] =
+		useState<IssueSupplementMap>({});
+	useEffect(() => {
+		window.electron?.pushIssueSupplementMap((map) => {
+			log.debug('[pushIssueSupplementMap]', map);
+			setIssueSupplementMap(map);
+		});
+	}, []);
+
+	return (
+		<IssueSupplementMapContext.Provider value={issueSupplementMap}>
+			{children}
+		</IssueSupplementMapContext.Provider>
 	);
 };
 

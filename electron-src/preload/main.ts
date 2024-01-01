@@ -1,9 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { UserInfo } from '../../types/User';
-import type { Issue } from '../../types/Issue';
+import type { Issue, IssueSupplementMap } from '../../types/Issue';
 
 contextBridge.exposeInMainWorld('electron', {
-	issue: (url: string) => ipcRenderer.invoke('github:issue', url),
+	issue: (issue: Issue) => ipcRenderer.invoke('github:issue', issue),
 	open: (url: string) => ipcRenderer.send('browser:open', url),
 	reload: () => ipcRenderer.invoke('browser:reload'),
 	history: (ope: 'back' | 'forward') =>
@@ -26,4 +26,8 @@ contextBridge.exposeInMainWorld('electron', {
 		ipcRenderer.on('app:pushIssues', (_event, value) => callback(value)),
 	pushUpdatedAt: (callback: (updatedAt: string) => void) =>
 		ipcRenderer.on('app:pushUpdatedAt', (_event, value) => callback(value)),
+	pushIssueSupplementMap: (callback: (map: IssueSupplementMap) => void) =>
+		ipcRenderer.on('app:pushIssueSupplementMap', (_event, value) =>
+			callback(value),
+		),
 });

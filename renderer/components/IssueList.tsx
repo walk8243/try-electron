@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { ColorModeContext } from '../context/ColorModeContext';
 import { IssueFilterContext } from '../context/IssueFilterContext';
+import { IssueSupplementMapContext } from '../context/IssueSupplementMapContext';
 import { UserInfoContext } from '../context/UserContext';
 import type { Issue } from '../../types/Issue';
 
@@ -54,6 +55,7 @@ const IssueCards = ({ issues }: { issues: Issue[] | null }) => {
 	const colorMode = useContext(ColorModeContext);
 	const userInfo = useContext(UserInfoContext);
 	const issueFilter = useContext(IssueFilterContext);
+	const issueSupplementMap = useContext(IssueSupplementMapContext);
 
 	if (!issues) {
 		return (
@@ -85,7 +87,10 @@ const IssueCards = ({ issues }: { issues: Issue[] | null }) => {
 				.filter((issue) => issueFilter.filter(issue, { user: userInfo }))
 				.map((issue) => (
 					<Grid item key={issue.key} xs={12}>
-						<IssueCard issue={issue} />
+						<IssueCard
+							issue={issue}
+							supplement={issueSupplementMap[issue.key]}
+						/>
 					</Grid>
 				))}
 		</Grid>
