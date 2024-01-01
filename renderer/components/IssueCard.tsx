@@ -2,7 +2,12 @@ import { useContext } from 'react';
 import type { MouseEvent } from 'react';
 import { IssueContext, IssueDispatchContext } from '../context/IssueContext';
 import { safeUnreachable } from '../utils/typescript';
-import type { Issue, IssueState, Review } from '../../types/Issue';
+import type {
+	Issue,
+	IssueState,
+	Review,
+	IssueSupplementMapData,
+} from '../../types/Issue';
 
 import {
 	Avatar,
@@ -20,8 +25,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { githubColor } from '../styles/colors/github';
+import { grey } from '@mui/material/colors';
 
-export const IssueCard = ({ issue }: { issue: Issue }) => {
+export const IssueCard = ({
+	issue,
+	supplement,
+}: {
+	issue: Issue;
+	supplement?: IssueSupplementMapData;
+}) => {
 	const selectedIssue = useContext(IssueContext);
 	const dispatch = useContext(IssueDispatchContext);
 	const handleClick = (e: MouseEvent) => {
@@ -33,7 +45,11 @@ export const IssueCard = ({ issue }: { issue: Issue }) => {
 	return (
 		<Card
 			raised={issue.key === selectedIssue?.key}
-			sx={{ width: '100%', m: 0.5 }}
+			sx={{
+				width: '100%',
+				m: 0.5,
+				...(supplement?.isRead ? { bgcolor: grey[200] } : {}),
+			}}
 		>
 			<CardActionArea onClick={handleClick}>
 				<CardContent>

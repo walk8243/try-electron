@@ -14,9 +14,7 @@ export interface Issue {
 }
 
 export type IssueSupplementMap = {
-	[key in Issue['key']]: {
-		isRead: boolean;
-	};
+	[key in Issue['key']]: IssueSupplementMapData;
 };
 
 export type IssueState =
@@ -38,4 +36,8 @@ export interface Review {
 	login: string;
 	avatarUrl: string;
 	state: 'APPROVED' | 'CHANGES_REQUESTED' | 'COMMENTED';
+}
+
+export interface IssueSupplementMapData {
+	isRead: boolean;
 }
