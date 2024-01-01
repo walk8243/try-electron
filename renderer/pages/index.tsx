@@ -12,7 +12,11 @@ import type { UserInfo } from '../../types/User';
 
 import { Box, Grid } from '@mui/material';
 import { ColorModeContext } from '../context/ColorModeContext';
-import { IssueContext, IssueDispatchContext } from '../context/IssueContext';
+import {
+	IssueListContext,
+	IssueContext,
+	IssueDispatchContext,
+} from '../context/IssueContext';
 import {
 	IssueFilterContext,
 	IssueFilterDispatchContext,
@@ -120,17 +124,24 @@ const IssueFilterContextProvider = ({ children }: { children: ReactNode }) => {
 };
 
 const IssueContextProvider = ({ children }: { children: ReactNode }) => {
+	const [issues, setIssues] = useState<Issue[] | null>(null);
 	const [issue, dispatch] = useReducer<Reducer<Issue | null, Issue>>(
 		(_prevIssue, currentIssue) => currentIssue,
 		null,
 	);
 
+	useEffect(() => {
+		window.electron?.pushIssues((issues) => setIssues(issues));
+	}, []);
+
 	return (
-		<IssueContext.Provider value={issue}>
-			<IssueDispatchContext.Provider value={dispatch}>
-				{children}
-			</IssueDispatchContext.Provider>
-		</IssueContext.Provider>
+		<IssueListContext.Provider value={issues}>
+			<IssueContext.Provider value={issue}>
+				<IssueDispatchContext.Provider value={dispatch}>
+					{children}
+				</IssueDispatchContext.Provider>
+			</IssueContext.Provider>
+		</IssueListContext.Provider>
 	);
 };
 

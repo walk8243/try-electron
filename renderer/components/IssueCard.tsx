@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import type { MouseEvent } from 'react';
+import { ColorModeContext } from '../context/ColorModeContext';
 import { IssueContext, IssueDispatchContext } from '../context/IssueContext';
 import { safeUnreachable } from '../utils/typescript';
 import type {
@@ -25,7 +26,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { githubColor } from '../styles/colors/github';
-import { grey } from '@mui/material/colors';
+import surfaceColor from '../styles/colors/surface';
 
 export const IssueCard = ({
 	issue,
@@ -34,6 +35,7 @@ export const IssueCard = ({
 	issue: Issue;
 	supplement?: IssueSupplementMapData;
 }) => {
+	const colorMode = useContext(ColorModeContext);
 	const selectedIssue = useContext(IssueContext);
 	const dispatch = useContext(IssueDispatchContext);
 	const handleClick = (e: MouseEvent) => {
@@ -48,7 +50,15 @@ export const IssueCard = ({
 			sx={{
 				width: '100%',
 				m: 0.5,
-				...(supplement?.isRead ? { bgcolor: grey[200] } : {}),
+				...(supplement?.isRead
+					? {
+							color: surfaceColor.variant[colorMode].on,
+							bgcolor: surfaceColor.variant[colorMode].main,
+						}
+					: {
+							color: surfaceColor[colorMode].on,
+							bgcolor: surfaceColor[colorMode].main,
+						}),
 			}}
 		>
 			<CardActionArea onClick={handleClick}>

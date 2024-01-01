@@ -4,6 +4,7 @@ import { grey } from '@mui/material/colors';
 import { error } from '../styles/colors/error';
 import { primary } from '../styles/colors/primary';
 import { secondary } from '../styles/colors/secondary';
+import { tertiary } from '../styles/colors/tertiary';
 
 export const ColorModeContext = createContext<PaletteMode>('light');
 export const ColorModeDispatchContext = createContext<Dispatch<PaletteMode>>(
@@ -21,6 +22,12 @@ export const colorSetting: PaletteOptions = {
 		main: secondary.key,
 		light: secondary.light.main,
 		dark: secondary.dark.main,
+		contrastText: '#000',
+	},
+	tertiary: {
+		main: tertiary.key,
+		light: tertiary.light.main,
+		dark: tertiary.dark.main,
 		contrastText: '#000',
 	},
 	error: {

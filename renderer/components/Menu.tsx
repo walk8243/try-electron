@@ -4,11 +4,13 @@ import {
 	ColorModeContext,
 	ColorModeDispatchContext,
 } from '../context/ColorModeContext';
+import { IssueListContext } from '../context/IssueContext';
 import {
 	IssueFilterContext,
 	IssueFilterDispatchContext,
 	issueFilters,
 } from '../context/IssueFilterContext';
+import { IssueSupplementMapContext } from '../context/IssueSupplementMapContext';
 import { UserInfoContext } from '../context/UserContext';
 import type { UserInfo } from '../../types/User';
 
@@ -28,6 +30,7 @@ import { faSun } from '@fortawesome/free-regular-svg-icons';
 import { faMoon } from '@fortawesome/free-solid-svg-icons';
 import { Heading } from './Heading';
 import surface from '../styles/colors/surface';
+import tertiary from '../styles/colors/tertiary';
 
 const Menu = () => {
 	const colorMode = useContext(ColorModeContext);
@@ -48,7 +51,7 @@ const Menu = () => {
 				メニュー
 			</Heading>
 			{userInfo ? <User user={userInfo} /> : <Grid item></Grid>}
-			<Filters />
+			<Filters user={userInfo} />
 			<UpdatedAt />
 		</Grid>
 	);
@@ -77,9 +80,12 @@ const User = ({ user }: { user: UserInfo }) => (
 	</Grid>
 );
 
-const Filters = () => {
+const Filters = ({ user }: { user: UserInfo | null }) => {
+	const colorMode = useContext(ColorModeContext);
 	const issueFilter = useContext(IssueFilterContext);
 	const issueFilterDispatch = useContext(IssueFilterDispatchContext);
+	const issues = useContext(IssueListContext);
+	const issueSupplementMap = useContext(IssueSupplementMapContext);
 
 	return (
 		<Grid container item width="100%">
@@ -99,6 +105,22 @@ const Filters = () => {
 									<FontAwesomeIcon icon={filter.icon} />
 								</ListItemIcon>
 								<ListItemText primary={filter.title} />
+								{issues && user ? (
+									<ListItemText
+										primary={filter.count(issues, issueSupplementMap, { user })}
+										sx={{
+											color: tertiary[colorMode].on,
+											bgcolor: tertiary[colorMode].main,
+											px: 1,
+											borderRadius: 3,
+											minWidth: '1lh',
+											flex: 'initial',
+											textAlign: 'center',
+										}}
+									/>
+								) : (
+									<></>
+								)}
 							</ListItemButton>
 						</ListItem>
 					))}

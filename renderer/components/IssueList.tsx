@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { ColorModeContext } from '../context/ColorModeContext';
+import { IssueListContext } from '../context/IssueContext';
 import { IssueFilterContext } from '../context/IssueFilterContext';
 import { IssueSupplementMapContext } from '../context/IssueSupplementMapContext';
 import { UserInfoContext } from '../context/UserContext';
@@ -15,10 +16,7 @@ import surface from '../styles/colors/surface';
 const numberFormat = Intl.NumberFormat('ja-JP');
 
 const IssueList = () => {
-	const [issues, setIssues] = useState<Issue[] | null>(null);
-	useEffect(() => {
-		window.electron?.pushIssues((issues) => setIssues(() => issues));
-	}, []);
+	const issues = useContext(IssueListContext);
 
 	return (
 		<Grid
