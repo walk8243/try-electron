@@ -2,7 +2,7 @@ import { app } from 'electron';
 import Store from 'electron-store';
 import semver from 'semver';
 import type { UserInfo } from '../../types/User';
-import type { Issue } from '../../types/Issue';
+import type { Issue, IssueSupplementMap } from '../../types/Issue';
 
 export const store = new Store<{
 	appVersion: string;
@@ -12,6 +12,7 @@ export const store = new Store<{
 		updatedAt: string;
 		issues: Issue[];
 	};
+	issueSupplementMap: IssueSupplementMap;
 }>({
 	schema: {
 		appVersion: {
@@ -130,6 +131,20 @@ export const store = new Store<{
 							updated_at: {
 								type: 'string',
 							},
+						},
+					},
+				},
+			},
+		},
+		issueSupplementMap: {
+			type: 'object',
+			patternProperties: {
+				'^(I|PR)_': {
+					type: 'object',
+					properties: {
+						isRead: {
+							type: 'boolean',
+							default: false,
 						},
 					},
 				},

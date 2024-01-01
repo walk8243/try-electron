@@ -66,6 +66,10 @@ const setupMainWindow = () => {
 				store.get('issueData')?.updatedAt ?? '',
 			);
 		}
+		mainWindow.webContents.send(
+			'app:pushIssueSupplementMap',
+			store.get('issueSupplementMap'),
+		);
 
 		store.onDidChange('userInfo', (userInfo) => {
 			mainWindow.webContents.send('app:pushUser', userInfo ?? {});

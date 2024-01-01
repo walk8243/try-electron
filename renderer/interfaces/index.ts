@@ -1,5 +1,5 @@
 import type { UserInfo } from '../../types/User';
-import type { Issue } from '../../types/Issue';
+import type { Issue, IssueSupplementMap } from '../../types/Issue';
 
 declare global {
 	interface Window {
@@ -23,6 +23,9 @@ declare global {
 			pushUser: (callback: (user: UserInfo) => void) => void;
 			pushIssues: (callback: (issues: Issue[]) => void) => void;
 			pushUpdatedAt: (callback: (updatedAt: string) => void) => void;
+			pushIssueSupplementMap: (
+				callback: (map: IssueSupplementMap) => void,
+			) => void;
 		};
 		setting: {
 			display: () => Promise<SettingData>;

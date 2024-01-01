@@ -7,6 +7,7 @@ import {
 	useState,
 } from 'react';
 import Head from 'next/head';
+import log from 'electron-log/renderer';
 import type { UserInfo } from '../../types/User';
 
 import { Box, Grid } from '@mui/material';
@@ -32,6 +33,9 @@ import type { Issue } from '../../types/Issue';
 const IndexPage = () => {
 	useEffect(() => {
 		window.electron?.ready();
+		window.electron?.pushIssueSupplementMap((map) => {
+			log.debug('[pushIssueSupplementMap]', map);
+		});
 	}, []);
 
 	return (

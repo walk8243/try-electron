@@ -13,6 +13,12 @@ export interface Issue {
 	updatedAt: string;
 }
 
+export type IssueSupplementMap = {
+	[key in Issue['key']]: {
+		isRead: boolean;
+	};
+};
+
 export type IssueState =
 	| { type: 'issue'; state: 'open' | 'closed' }
 	| { type: 'pull-request'; state: 'open' | 'draft' | 'merged' | 'closed' };
