@@ -1,4 +1,5 @@
 export const tertiary = {
+	key: '#C17E8F',
 	light: {
 		main: '#815252',
 		on: '#FFFFFF',

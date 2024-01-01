@@ -30,6 +30,7 @@ import { faSun } from '@fortawesome/free-regular-svg-icons';
 import { faMoon } from '@fortawesome/free-solid-svg-icons';
 import { Heading } from './Heading';
 import surface from '../styles/colors/surface';
+import tertiary from '../styles/colors/tertiary';
 
 const Menu = () => {
 	const colorMode = useContext(ColorModeContext);
@@ -80,6 +81,7 @@ const User = ({ user }: { user: UserInfo }) => (
 );
 
 const Filters = ({ user }: { user: UserInfo | null }) => {
+	const colorMode = useContext(ColorModeContext);
 	const issueFilter = useContext(IssueFilterContext);
 	const issueFilterDispatch = useContext(IssueFilterDispatchContext);
 	const issues = useContext(IssueListContext);
@@ -106,6 +108,15 @@ const Filters = ({ user }: { user: UserInfo | null }) => {
 								{issues && user ? (
 									<ListItemText
 										primary={filter.count(issues, issueSupplementMap, { user })}
+										sx={{
+											color: tertiary[colorMode].on,
+											bgcolor: tertiary[colorMode].main,
+											px: 1,
+											borderRadius: 3,
+											minWidth: '1lh',
+											flex: 'initial',
+											textAlign: 'center',
+										}}
 									/>
 								) : (
 									<></>
