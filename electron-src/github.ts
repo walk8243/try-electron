@@ -62,15 +62,9 @@ export const gainGithubIssues = async () => {
 		issues: joinIssueData(issues),
 	});
 
-	if (
-		latestIssueGainTime &&
-		issues.some((issue) => dayjs(issue.updatedAt).isAfter(latestIssueGainTime))
-	) {
-		const notification = new Notification({
-			title: 'Issueが更新されました',
-			body: '更新されたIssue・PRがあります。Issue・PRを確認してください。',
-		});
-		notification.show();
+	if (issues.length > 0) {
+		updateIssueSupplementMap(issues);
+		noticeIssues();
 	}
 
 	setTimeout(() => {
@@ -106,6 +100,23 @@ const joinIssueData = (issues: Issue[]) => {
 			(issue) => !issues.some((i) => i.key === issue.key),
 		),
 	);
+};
+
+const updateIssueSupplementMap = (issues: Issue[]) => {
+	const map = store.get('issueSupplementMap');
+	issues.forEach((issue) => {
+		if (!map[issue.key]) return;
+		map[issue.key].isRead = false;
+	});
+	store.set('issueSupplementMap', map);
+};
+
+const noticeIssues = () => {
+	const notification = new Notification({
+		title: 'Issueが更新されました',
+		body: '更新されたIssue・PRがあります。Issue・PRを確認してください。',
+	});
+	notification.show();
 };
 
 const showErrorDialog = () => {
