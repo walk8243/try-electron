@@ -38,7 +38,7 @@ export const IssueCard = ({
 	const dispatch = useContext(IssueDispatchContext);
 	const handleClick = (e: MouseEvent) => {
 		dispatch(issue);
-		window.electron?.issue(issue.url);
+		window.electron?.issue(issue);
 		e.preventDefault();
 	};
 

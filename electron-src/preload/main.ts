@@ -3,7 +3,7 @@ import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
 
 contextBridge.exposeInMainWorld('electron', {
-	issue: (url: string) => ipcRenderer.invoke('github:issue', url),
+	issue: (issue: Issue) => ipcRenderer.invoke('github:issue', issue),
 	open: (url: string) => ipcRenderer.send('browser:open', url),
 	reload: () => ipcRenderer.invoke('browser:reload'),
 	history: (ope: 'back' | 'forward') =>

@@ -27,6 +27,7 @@ import { checkStoreData } from './utils/github';
 import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
+import type { Issue } from '../types/Issue';
 
 export const main = async () => {
 	const mainWindow = setupMainWindow();
@@ -66,10 +67,12 @@ const setupMainWindow = () => {
 				store.get('issueData')?.updatedAt ?? '',
 			);
 		}
-		mainWindow.webContents.send(
-			'app:pushIssueSupplementMap',
-			store.get('issueSupplementMap'),
-		);
+		if (store.has('issueSupplementMap')) {
+			mainWindow.webContents.send(
+				'app:pushIssueSupplementMap',
+				store.get('issueSupplementMap'),
+			);
+		}
 
 		store.onDidChange('userInfo', (userInfo) => {
 			mainWindow.webContents.send('app:pushUser', userInfo ?? {});
@@ -80,6 +83,10 @@ const setupMainWindow = () => {
 			mainWindow.webContents.send('app:pushUpdatedAt', data.updatedAt);
 			mainWindow.webContents.send('app:pushIssues', data.issues ?? []);
 		});
+		store.onDidChange('issueSupplementMap', (map) => {
+			if (!map) return;
+			mainWindow.webContents.send('app:pushIssueSupplementMap', map);
+		});
 	});
 
 	return mainWindow;
@@ -88,8 +95,9 @@ const setupWebview = (mainWindow: BrowserWindow) => {
 	const webview = windowUtils.createWebview();
 	mainWindow.setBrowserView(webview);
 	windowUtils.putWebview(mainWindow, webview);
-	ipcMain.handle('github:issue', async (_event, url: string) => {
-		webview.webContents.loadURL(url);
+	ipcMain.handle('github:issue', async (_event, issue: Issue) => {
+		store.set(`issueSupplementMap.${issue.key}.isRead`, true);
+		webview.webContents.loadURL(issue.url);
 	});
 	ipcMain.on('browser:open', (_event, url: string) => {
 		shell.openExternal(url);

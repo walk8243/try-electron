@@ -4,7 +4,7 @@ import type { Issue, IssueSupplementMap } from '../../types/Issue';
 declare global {
 	interface Window {
 		electron: {
-			issue: (url: string) => Promise<void>;
+			issue: (issue: Issue) => Promise<void>;
 			open: (url: string) => void;
 			reload: () => void;
 			history: (
