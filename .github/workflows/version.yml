@@ -1,0 +1,36 @@
+name: Package Version UP
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version Category to be updated'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+        default: minor
+
+jobs:
+  verup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup git user
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+      - name: verup
+        run: npm version ${{ inputs.version }}
+      - name: git push
+        run: |
+          git push
+          git push --tags
+    env:
+      GH_TOKEN: ${{ github.token }}
