@@ -6,6 +6,7 @@ import {
 } from '../context/ColorModeContext';
 import { IssueListContext } from '../context/IssueContext';
 import {
+	IssueFilter,
 	IssueFilterContext,
 	IssueFilterDispatchContext,
 	issueFilters,
@@ -81,11 +82,8 @@ const User = ({ user }: { user: UserInfo }) => (
 );
 
 const Filters = ({ user }: { user: UserInfo | null }) => {
-	const colorMode = useContext(ColorModeContext);
 	const issueFilter = useContext(IssueFilterContext);
 	const issueFilterDispatch = useContext(IssueFilterDispatchContext);
-	const issues = useContext(IssueListContext);
-	const issueSupplementMap = useContext(IssueSupplementMapContext);
 
 	return (
 		<Grid container item width="100%">
@@ -105,28 +103,44 @@ const Filters = ({ user }: { user: UserInfo | null }) => {
 									<FontAwesomeIcon icon={filter.icon} />
 								</ListItemIcon>
 								<ListItemText primary={filter.title} />
-								{issues && user ? (
-									<ListItemText
-										primary={filter.count(issues, issueSupplementMap, { user })}
-										sx={{
-											color: tertiary[colorMode].on,
-											bgcolor: tertiary[colorMode].main,
-											px: 1,
-											borderRadius: 3,
-											minWidth: '1lh',
-											flex: 'initial',
-											textAlign: 'center',
-										}}
-									/>
-								) : (
-									<></>
-								)}
+								<UnreadMarker user={user} filter={filter} />
 							</ListItemButton>
 						</ListItem>
 					))}
 				</List>
 			</Grid>
 		</Grid>
+	);
+};
+
+const UnreadMarker = ({
+	user,
+	filter,
+}: {
+	user: UserInfo | null;
+	filter: IssueFilter;
+}) => {
+	const colorMode = useContext(ColorModeContext);
+	const issues = useContext(IssueListContext);
+	const issueSupplementMap = useContext(IssueSupplementMapContext);
+	if (!user || !issues) return <></>;
+
+	const unreadCount = filter.count(issues, issueSupplementMap, { user });
+	if (unreadCount === 0) return <></>;
+
+	return (
+		<ListItemText
+			primary={unreadCount}
+			sx={{
+				color: tertiary[colorMode].on,
+				bgcolor: tertiary[colorMode].main,
+				px: 1,
+				borderRadius: 3,
+				minWidth: '1lh',
+				flex: 'initial',
+				textAlign: 'center',
+			}}
+		/>
 	);
 };
 
