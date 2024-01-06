@@ -68,7 +68,7 @@
     "typescript": "^5.3.3"
   },
   "build": {
-    "artifactName": "${productName}-${version}-${os}.${ext}",
+    "artifactName": "${productName}-v${version}-${os}.${ext}",
     "asar": true,
     "files": [
       "main",
