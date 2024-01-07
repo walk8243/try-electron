@@ -68,28 +68,28 @@ const MainComponent = () => {
 			bgcolor={background[colorMode].main}
 		>
 			<Header />
-			<Grid
-				container
-				component="main"
-				display="grid"
-				gridTemplateColumns="250px 350px 1fr"
-				gridTemplateRows="1fr"
-				height="100%"
-				overflow="hidden"
-			>
-				<Heading level={2} hidden={true}>
+			<Box component="main" height="100%">
+				<Heading level={2} hidden>
 					メイン
 				</Heading>
-				<Grid item sx={{ width: 250 }}>
-					<Menu />
+				<Grid
+					container
+					display="grid"
+					gridTemplateColumns="250px 350px 1fr"
+					height="100%"
+					overflow="hidden"
+				>
+					<Grid item sx={{ width: 250 }}>
+						<Menu />
+					</Grid>
+					<Grid item sx={{ width: 350, height: '100%', overflowY: 'hidden' }}>
+						<IssueList />
+					</Grid>
+					<Grid item>
+						<Viewer />
+					</Grid>
 				</Grid>
-				<Grid item sx={{ width: 350, height: '100%', overflowY: 'hidden' }}>
-					<IssueList />
-				</Grid>
-				<Grid item>
-					<Viewer />
-				</Grid>
-			</Grid>
+			</Box>
 			<Footer />
 		</Box>
 	);

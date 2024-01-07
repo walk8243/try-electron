@@ -36,16 +36,16 @@ const SettingPage = () => {
 	};
 
 	return (
-		<div>
+		<>
 			<Head>
 				<title>設定</title>
 			</Head>
-			<Heading level={1}>設定</Heading>
+			<Heading level={1} hidden>
+				設定
+			</Heading>
 
 			<Box component="section">
-				<Heading level={2} hidden>
-					設定
-				</Heading>
+				<Heading level={2}>設定</Heading>
 				<TableContainer>
 					<Table>
 						<TableBody>
@@ -100,7 +100,7 @@ const SettingPage = () => {
 					</Grid>
 				</Grid>
 			</Box>
-		</div>
+		</>
 	);
 };
 

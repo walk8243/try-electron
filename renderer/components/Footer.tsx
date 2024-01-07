@@ -2,7 +2,7 @@ import { Heading } from './Heading';
 
 const Footer = () => (
 	<footer>
-		<Heading level={2} hidden={true}>
+		<Heading level={2} hidden>
 			フッタ
 		</Heading>
 	</footer>

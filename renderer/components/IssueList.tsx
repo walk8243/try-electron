@@ -6,7 +6,7 @@ import { IssueSupplementMapContext } from '../context/IssueSupplementMapContext'
 import { UserInfoContext } from '../context/UserContext';
 import type { Issue } from '../../types/Issue';
 
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { Heading } from './Heading';
@@ -19,19 +19,21 @@ const IssueList = () => {
 	const issues = useContext(IssueListContext);
 
 	return (
-		<Grid
-			container
-			display="grid"
-			gridTemplateRows="max-content 1fr"
-			rowGap={1}
-			sx={{ height: '100%' }}
-		>
-			<Heading level={3} hidden={true}>
+		<Box component="section" height="100%">
+			<Heading level={3} hidden>
 				Issueリスト
 			</Heading>
-			<Header issues={issues} />
-			<IssueCards issues={issues} />
-		</Grid>
+			<Grid
+				container
+				display="grid"
+				gridTemplateRows="max-content 1fr"
+				rowGap={1}
+				sx={{ height: '100%' }}
+			>
+				<Header issues={issues} />
+				<IssueCards issues={issues} />
+			</Grid>
+		</Box>
 	);
 };
 
