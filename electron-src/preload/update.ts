@@ -1,3 +1,5 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('update', {});
+contextBridge.exposeInMainWorld('update', {
+	version: (tag: string) => ipcRenderer.invoke('update:version', tag),
+});

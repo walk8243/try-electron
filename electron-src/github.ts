@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain, Notification } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Notification } from 'electron';
 import log from 'electron-log/main';
 import dayjs from 'dayjs';
 import semver from 'semver';
@@ -84,14 +84,28 @@ export const refreshIssueTimer = () => {
 	}
 };
 
-export const checkUpdate = async () => {
+export const announceUpdate = async (updateWindow: BrowserWindow) => {
+	const result = await checkUpdate();
+	if (!result.canUpdate) return;
+
+	setImmediate(() => {
+		ipcMain.removeAllListeners('update:version');
+		ipcMain.handle('update:version', () => result.latestRelease);
+		updateWindow.show();
+	});
+};
+const checkUpdate = async () => {
 	const latestRelease = await viewLatestRelease();
 	const currentVersion = app.getVersion();
 	log.verbose('versions:', {
 		appVersion: currentVersion,
 		latestRelease: latestRelease.tag,
 	});
-	return semver.gt(latestRelease.tag, currentVersion);
+	return {
+		canUpdate: semver.gt(latestRelease.tag, currentVersion),
+		appVersion: currentVersion,
+		latestRelease: latestRelease.tag,
+	};
 };
 
 const joinIssueData = (issues: Issue[]) => {

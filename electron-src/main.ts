@@ -17,7 +17,7 @@ import installExtension, {
 } from 'electron-devtools-installer';
 
 import {
-	checkUpdate,
+	announceUpdate,
 	gainGithubAllData,
 	scheduledGainGithubIssues,
 } from './github';
@@ -47,7 +47,7 @@ export const main = async () => {
 	setupResizedSetting(mainWindow, webview);
 
 	scheduledGainGithubIssues();
-	await announceUpdate({ updateWindow });
+	await announceUpdate(updateWindow);
 	await setupDevtools();
 };
 
@@ -191,17 +191,6 @@ const setupResizedSetting = (
 		.on('leave-full-screen', () => {
 			windowUtils.putWebview(mainWindow, webview);
 		});
-};
-const announceUpdate = async ({
-	updateWindow,
-}: {
-	updateWindow: BrowserWindow;
-}) => {
-	if (!(await checkUpdate())) return;
-
-	setImmediate(() => {
-		updateWindow.show();
-	});
 };
 const setupDevtools = async () => {
 	if (isDev) {

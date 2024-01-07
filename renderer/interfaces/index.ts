@@ -37,6 +37,9 @@ declare global {
 			close: () => void;
 			open: (url: string) => void;
 		};
+		update: {
+			version: () => Promise<string>;
+		};
 	}
 }
 

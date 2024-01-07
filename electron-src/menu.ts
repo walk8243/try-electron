@@ -10,6 +10,7 @@ import {
 import isDev from 'electron-is-dev';
 
 import {
+	announceUpdate,
 	gainGithubAllData,
 	gainGithubIssues,
 	refreshIssueTimer,
@@ -224,6 +225,8 @@ const helpMenu = ({
 	{ type: 'separator' },
 	{
 		label: 'Amethystの更新を確認',
-		click: () => updateWindow.show(),
+		click: () => {
+			announceUpdate(updateWindow);
+		},
 	},
 ];

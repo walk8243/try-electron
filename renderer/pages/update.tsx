@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Heading } from '../components/Heading';
 import {
@@ -39,26 +40,36 @@ const HowToUpdate = () => {
 	);
 };
 
-const HowToUpdateForWindows = () => (
-	<Box component="section">
-		<Heading level={3} hidden>
-			Windowsの場合の更新方法
-		</Heading>
+const HowToUpdateForWindows = () => {
+	const [version, setVersion] = useState<{
+		url: string;
+		filename: string;
+	} | null>(null);
+	useEffect(() => {
+		window.update?.version().then((tag) =>
+			setVersion({
+				url: `https://github.com/walk8243/amethyst-electron/releases/download/${tag}/amethyst-${tag}-win.msi`,
+				filename: `amethyst-${tag}-win.msi`,
+			}),
+		);
+	}, []);
 
-		<Grid container justifyContent="center" m={2}>
-			<Grid item>
-				<Button
-					href="https://github.com/walk8243/amethyst-electron/releases/download/v1.2.3/amethyst-v1.2.3-win.msi"
-					variant="contained"
-					color="primary"
-					sx={{ textTransform: 'none' }}
-				>
-					amethyst-v1.2.3-win.msi
-				</Button>
+	return (
+		<Box component="section">
+			<Heading level={3} hidden>
+				Windowsの場合の更新方法
+			</Heading>
+
+			<Grid container justifyContent="center" m={2}>
+				{version ? (
+					<DownloadButton url={version.url} filename={version.filename} />
+				) : (
+					<></>
+				)}
 			</Grid>
-		</Grid>
-	</Box>
-);
+		</Box>
+	);
+};
 
 const HowToUpdateForMac = () => (
 	<Box component="section">
@@ -88,6 +99,25 @@ const HowToUpdateForMac = () => (
 			</Box>
 		</Paper>
 	</Box>
+);
+
+const DownloadButton = ({
+	url,
+	filename,
+}: {
+	url: string;
+	filename: string;
+}) => (
+	<Grid item>
+		<Button
+			href={url}
+			variant="contained"
+			color="primary"
+			sx={{ textTransform: 'none' }}
+		>
+			{filename}
+		</Button>
+	</Grid>
 );
 
 export default UpdatePage;
