@@ -4,7 +4,6 @@ import {
 	BrowserView,
 	BrowserWindow,
 	clipboard,
-	dialog,
 	ipcMain,
 	Menu,
 	session,
@@ -40,11 +39,15 @@ export const main = async () => {
 	}
 
 	const webview = setupWebview(mainWindow);
-	setupModalWindow(mainWindow, webview, storeDataFlag.isInvalid());
+	const { updateWindow } = setupModalWindow(
+		mainWindow,
+		webview,
+		storeDataFlag.isInvalid(),
+	);
 	setupResizedSetting(mainWindow, webview);
 
 	scheduledGainGithubIssues();
-	await announceUpdate(mainWindow);
+	await announceUpdate({ updateWindow });
 	await setupDevtools();
 };
 
@@ -148,10 +151,12 @@ const setupModalWindow = (
 ) => {
 	const settingWindow = windowUtils.createSetting(mainWindow);
 	const aboutWindow = windowUtils.createAbout(mainWindow);
+	const updateWindow = windowUtils.createUpdate(mainWindow);
 	const menu = createMenu({
 		webview,
 		settingWindow,
 		aboutWindow,
+		updateWindow,
 	});
 	Menu.setApplicationMenu(menu);
 	mainWindow.show();
@@ -159,6 +164,12 @@ const setupModalWindow = (
 	if (settingShowFlag) {
 		settingWindow.show();
 	}
+
+	return {
+		settingWindow,
+		aboutWindow,
+		updateWindow,
+	};
 };
 const setupResizedSetting = (
 	mainWindow: BrowserWindow,
@@ -181,14 +192,15 @@ const setupResizedSetting = (
 			windowUtils.putWebview(mainWindow, webview);
 		});
 };
-const announceUpdate = async (mainWindow: BrowserWindow) => {
+const announceUpdate = async ({
+	updateWindow,
+}: {
+	updateWindow: BrowserWindow;
+}) => {
 	if (!(await checkUpdate())) return;
 
 	setImmediate(() => {
-		dialog.showMessageBox(mainWindow, {
-			title: '最新のリリースがあります',
-			message: 'アップデートして最新の機能を体験してください。',
-		});
+		updateWindow.show();
 	});
 };
 const setupDevtools = async () => {

@@ -23,9 +23,11 @@ export const createMenu = ({
 	webview,
 	settingWindow,
 	aboutWindow,
+	updateWindow,
 }: {
 	settingWindow: BrowserWindow;
 	aboutWindow: BrowserWindow;
+	updateWindow: BrowserWindow;
 	webview: BrowserView;
 }): Menu => {
 	const menu = Menu.buildFromTemplate([
@@ -52,7 +54,7 @@ export const createMenu = ({
 		{
 			role: 'help',
 			label: 'ヘルプ',
-			submenu: helpMenu(),
+			submenu: helpMenu({ updateWindow }),
 		},
 	]);
 
@@ -207,12 +209,21 @@ const windowMacMenu: MenuItemConstructorOptions[] = isMac
 		]
 	: [{ type: 'separator' }];
 
-const helpMenu = (): MenuItemConstructorOptions[] => [
+const helpMenu = ({
+	updateWindow,
+}: {
+	updateWindow: BrowserWindow;
+}): MenuItemConstructorOptions[] => [
 	{ role: 'about', label: 'Electronについて' },
 	{
 		label: 'Electronをもっと知る',
 		click: () => {
 			shell.openExternal('https://electronjs.org');
 		},
+	},
+	{ type: 'separator' },
+	{
+		label: 'Amethystの更新を確認',
+		click: () => updateWindow.show(),
 	},
 ];

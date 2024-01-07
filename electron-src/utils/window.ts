@@ -68,6 +68,29 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 	return aboutWindow;
 };
 
+export const createUpdate = (parentWindow: BrowserWindow) => {
+	const updateWindow = new BrowserWindow({
+		title: 'Amethyst Update',
+		parent: parentWindow,
+		modal: true,
+		width: 500,
+		height: 270 + (isMac ? 0 : 27),
+		show: false,
+		resizable: false,
+		fullscreenable: false,
+		autoHideMenuBar: true,
+		webPreferences: {
+			nodeIntegration: false,
+			contextIsolation: true,
+			preload: join(__dirname, '../preload', 'update.js'),
+		},
+	});
+	updateWindow.removeMenu();
+	updateWindow.loadURL(getLoadedUrl('update'));
+
+	return updateWindow;
+};
+
 export const createWebview = () => {
 	const webview = new BrowserView({});
 	webview.webContents.loadURL('https://github.com/');
