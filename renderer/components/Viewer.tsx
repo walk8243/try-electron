@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { ColorModeContext } from '../context/ColorModeContext';
 
 import {
+	Box,
 	Grid,
 	IconButton,
 	InputAdornment,
@@ -26,20 +27,20 @@ const Viewer = () => {
 	const colorMode = useContext(ColorModeContext);
 
 	return (
-		<Grid
-			container
-			component="section"
-			display="grid"
-			gridTemplateRows="max-content 1fr"
-			height="100%"
-			bgcolor={surface[colorMode].main}
-		>
-			<Heading level={3} hidden={true}>
+		<Box component="section" height="100%" bgcolor={surface[colorMode].main}>
+			<Heading level={3} hidden>
 				Issue
 			</Heading>
-			<IssueUrlBar />
-			<Paper></Paper>
-		</Grid>
+			<Grid
+				container
+				display="grid"
+				gridTemplateRows="max-content 1fr"
+				height="100%"
+			>
+				<IssueUrlBar />
+				<Paper></Paper>
+			</Grid>
+		</Box>
 	);
 };
 
@@ -77,86 +78,87 @@ const IssueUrlBar = () => {
 	}, []);
 
 	return (
-		<Grid
-			container
-			component="section"
-			display="grid"
-			gridTemplateColumns="auto auto auto minmax(300px, 1fr) auto auto"
-			columnGap={2}
-			p={2}
-		>
-			<Heading level={4} hidden={true}>
+		<Box component="section">
+			<Heading level={4} hidden>
 				Issue URLバー
 			</Heading>
-			<Grid item>
-				<IconButton
-					onClick={() => handleHistory('back')}
-					size="small"
-					disabled={!canGo.back}
-				>
-					<FontAwesomeIcon icon={faArrowLeft} />
-				</IconButton>
+			<Grid
+				container
+				display="grid"
+				gridTemplateColumns="auto auto auto minmax(300px, 1fr) auto auto"
+				columnGap={2}
+				p={2}
+			>
+				<Grid item>
+					<IconButton
+						onClick={() => handleHistory('back')}
+						size="small"
+						disabled={!canGo.back}
+					>
+						<FontAwesomeIcon icon={faArrowLeft} />
+					</IconButton>
+				</Grid>
+				<Grid item>
+					<IconButton
+						onClick={() => handleHistory('forward')}
+						size="small"
+						disabled={!canGo.forward}
+					>
+						<FontAwesomeIcon icon={faArrowRight} />
+					</IconButton>
+				</Grid>
+				<Grid item>
+					<IconButton onClick={handleReload} size="small">
+						<FontAwesomeIcon icon={faArrowRotateRight} />
+					</IconButton>
+				</Grid>
+				<Grid item>
+					<UrlBar url={url} />
+				</Grid>
+				<Grid container item>
+					<TextField
+						hiddenLabel
+						variant="outlined"
+						size="small"
+						InputProps={{
+							startAdornment: (
+								<InputAdornment position="start">
+									<FontAwesomeIcon icon={faMagnifyingGlass} />
+								</InputAdornment>
+							),
+							endAdornment: (
+								<InputAdornment position="end">
+									<IconButton onClick={() => handleSearch('back')} size="small">
+										<FontAwesomeIcon icon={faAngleUp} />
+									</IconButton>
+									<IconButton onClick={() => handleSearch('next')} size="small">
+										<FontAwesomeIcon icon={faAngleDown} />
+									</IconButton>
+								</InputAdornment>
+							),
+						}}
+						inputProps={{
+							style: {
+								paddingLeft: 0,
+								paddingTop: '4px',
+								paddingBottom: '4px',
+								paddingRight: 0,
+							},
+						}}
+						onChange={(event) => setSearch(event.target.value)}
+						onKeyDown={(event) => {
+							if (event.key === 'Enter') handleSearch('next');
+						}}
+						value={search}
+					/>
+				</Grid>
+				<Grid item>
+					<IconButton onClick={handleOpen} size="small">
+						<FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+					</IconButton>
+				</Grid>
 			</Grid>
-			<Grid item>
-				<IconButton
-					onClick={() => handleHistory('forward')}
-					size="small"
-					disabled={!canGo.forward}
-				>
-					<FontAwesomeIcon icon={faArrowRight} />
-				</IconButton>
-			</Grid>
-			<Grid item>
-				<IconButton onClick={handleReload} size="small">
-					<FontAwesomeIcon icon={faArrowRotateRight} />
-				</IconButton>
-			</Grid>
-			<Grid item>
-				<UrlBar url={url} />
-			</Grid>
-			<Grid container item>
-				<TextField
-					hiddenLabel
-					variant="outlined"
-					size="small"
-					InputProps={{
-						startAdornment: (
-							<InputAdornment position="start">
-								<FontAwesomeIcon icon={faMagnifyingGlass} />
-							</InputAdornment>
-						),
-						endAdornment: (
-							<InputAdornment position="end">
-								<IconButton onClick={() => handleSearch('back')} size="small">
-									<FontAwesomeIcon icon={faAngleUp} />
-								</IconButton>
-								<IconButton onClick={() => handleSearch('next')} size="small">
-									<FontAwesomeIcon icon={faAngleDown} />
-								</IconButton>
-							</InputAdornment>
-						),
-					}}
-					inputProps={{
-						style: {
-							paddingLeft: 0,
-							paddingTop: '4px',
-							paddingBottom: '4px',
-							paddingRight: 0,
-						},
-					}}
-					onChange={(event) => setSearch(event.target.value)}
-					onKeyDown={(event) => {
-						if (event.key === 'Enter') handleSearch('next');
-					}}
-					value={search}
-				/>
-			</Grid>
-			<Grid item>
-				<IconButton onClick={handleOpen} size="small">
-					<FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-				</IconButton>
-			</Grid>
-		</Grid>
+		</Box>
 	);
 };
 

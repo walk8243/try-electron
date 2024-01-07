@@ -93,7 +93,7 @@ const ButtonArea = () => {
 				ボタン配置領域
 			</Heading>
 
-			<Grid container my={3} justifyContent="center">
+			<Grid container justifyContent="center">
 				<Grid item>
 					<Button variant="outlined" onClick={handleClose}>
 						閉じる

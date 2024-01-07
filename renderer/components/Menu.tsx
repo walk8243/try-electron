@@ -17,6 +17,7 @@ import type { UserInfo } from '../../types/User';
 
 import {
 	Avatar,
+	Box,
 	Grid,
 	IconButton,
 	List,
@@ -38,23 +39,27 @@ const Menu = () => {
 	const userInfo = useContext(UserInfoContext);
 
 	return (
-		<Grid
-			container
+		<Box
 			component="section"
-			display="grid"
-			gridTemplateRows="60px 1fr max-content"
-			rowGap={6}
 			height="100%"
 			p={4}
 			bgcolor={surface.container[colorMode].high}
 		>
-			<Heading level={3} hidden={true}>
+			<Heading level={3} hidden>
 				メニュー
 			</Heading>
-			{userInfo ? <User user={userInfo} /> : <Grid item></Grid>}
-			<Filters user={userInfo} />
-			<UpdatedAt />
-		</Grid>
+			<Grid
+				container
+				display="grid"
+				gridTemplateRows="60px 1fr max-content"
+				rowGap={6}
+				height="100%"
+			>
+				{userInfo ? <User user={userInfo} /> : <Grid item></Grid>}
+				<Filters user={userInfo} />
+				<UpdatedAt />
+			</Grid>
+		</Box>
 	);
 };
 

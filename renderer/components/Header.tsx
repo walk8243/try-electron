@@ -2,7 +2,7 @@ import { Heading } from './Heading';
 
 const Header = () => (
 	<header>
-		<Heading level={2} hidden={true}>
+		<Heading level={2} hidden>
 			ヘッダ
 		</Heading>
 	</header>
