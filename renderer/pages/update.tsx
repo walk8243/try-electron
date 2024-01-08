@@ -15,6 +15,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClipboard } from '@fortawesome/free-regular-svg-icons';
 import codeColor from '../styles/colors/code';
+import type { UpdateStatus } from '../../types/Update';
 
 const UpdatePage = () => (
 	<Box sx={{ maxHeight: '100vh', overflow: 'hidden' }}>
@@ -39,32 +40,58 @@ const UpdatePage = () => (
 );
 
 const UpdateInfo = () => {
-	const [tag, setTag] = useState('');
+	const [status, setStatus] = useState<UpdateStatus | null>(null);
 	useEffect(() => {
 		window.update?.version().then((version) => {
-			setTag(version);
+			setStatus(version);
 		});
 	}, []);
 
+	return (
+		<Box component="section">
+			<Heading level={3} hidden>
+				更新情報
+			</Heading>
+
+			<Grid container m={2} mt={0} width="auto" rowGap={1}>
+				<Grid item width="100%">
+					{status === null || status.canUpdate ? (
+						<Alert severity="warning">
+							<Typography>最新バージョンに更新してください</Typography>
+						</Alert>
+					) : (
+						<Alert severity="success">
+							<Typography>最新バージョンです</Typography>
+						</Alert>
+					)}
+				</Grid>
+				<Grid item width="100%">
+					{status === null ? (
+						<></>
+					) : (
+						<UpdateInfoContent tag={status.latestRelease} />
+					)}
+				</Grid>
+			</Grid>
+		</Box>
+	);
+};
+const UpdateInfoContent = ({ tag }: { tag: string }) => {
 	const handleClick = () => {
 		window.update?.openRelease();
 	};
 
 	return (
-		<Box component="section">
-			<Heading level={3}>更新情報</Heading>
-
-			<Alert severity="info" sx={{ m: 2 }}>
-				<Typography>現在の最新バージョンは {tag} です。</Typography>
-				<Typography>
-					詳細は
-					<Link component="button" onClick={handleClick}>
-						Release Notes
-					</Link>
-					をご覧ください。
-				</Typography>
-			</Alert>
-		</Box>
+		<Alert severity="info">
+			<Typography>現在の最新バージョンは {tag} です。</Typography>
+			<Typography>
+				詳細は
+				<Link component="button" onClick={handleClick}>
+					Release Notes
+				</Link>
+				をご覧ください。
+			</Typography>
+		</Alert>
 	);
 };
 

@@ -16,7 +16,8 @@ import {
 	viewLatestRelease,
 } from './utils/github';
 import { store } from './utils/store';
-import { Issue } from '../types/Issue';
+import type { Issue } from '../types/Issue';
+import type { UpdateStatus } from '../types/Update';
 
 const IssueGainInterval = 300000 as const; // 5分
 let latestIssueGainTime: dayjs.Dayjs = ((date: string) => {
@@ -98,7 +99,7 @@ export const announceUpdate = async (
 	const result = await checkUpdate();
 
 	ipcMain.removeHandler('update:version');
-	ipcMain.handle('update:version', (_event) => result.latestRelease);
+	ipcMain.handle('update:version', (_event) => result);
 
 	ipcMain.removeAllListeners('update:download');
 	ipcMain.removeAllListeners('update:openRelease');
@@ -120,7 +121,7 @@ export const announceUpdate = async (
 		updateWindow.show();
 	});
 };
-const checkUpdate = async () => {
+const checkUpdate = async (): Promise<UpdateStatus> => {
 	const latestRelease = await viewLatestRelease();
 	const currentVersion = app.getVersion();
 	log.verbose('versions:', {

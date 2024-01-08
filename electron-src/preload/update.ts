@@ -1,7 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import type { UpdateStatus } from '../../types/Update';
 
 contextBridge.exposeInMainWorld('update', {
-	version: (tag: string) => ipcRenderer.invoke('update:version', tag),
+	version: (status: UpdateStatus) =>
+		ipcRenderer.invoke('update:version', status),
 	download: () => ipcRenderer.send('update:download'),
 	copy: (command: string) => ipcRenderer.send('update:copy', command),
 	openRelease: () => ipcRenderer.send('update:openRelease'),
