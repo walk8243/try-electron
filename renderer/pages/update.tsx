@@ -27,6 +27,8 @@ const UpdatePage = () => (
 
 			<HowToUpdate />
 		</Box>
+
+		<ButtonArea />
 	</Box>
 );
 
@@ -90,5 +92,27 @@ const HowToUpdateForMac = () => (
 		</Paper>
 	</Box>
 );
+
+const ButtonArea = () => {
+	const handleClose = () => {
+		window.update?.close();
+	};
+
+	return (
+		<Box component="section" my={3}>
+			<Heading level={2} hidden>
+				ボタン配置領域
+			</Heading>
+
+			<Grid container justifyContent="center">
+				<Grid item>
+					<Button variant="outlined" onClick={handleClose}>
+						閉じる
+					</Button>
+				</Grid>
+			</Grid>
+		</Box>
+	);
+};
 
 export default UpdatePage;

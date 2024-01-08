@@ -54,6 +54,7 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 		height: 270 + (isMac ? 0 : 27),
 		show: false,
 		resizable: false,
+		closable: false,
 		fullscreenable: false,
 		autoHideMenuBar: true,
 		webPreferences: {
@@ -77,6 +78,7 @@ export const createUpdate = (parentWindow: BrowserWindow) => {
 		height: 270 + (isMac ? 0 : 27),
 		show: false,
 		resizable: false,
+		closable: false,
 		fullscreenable: false,
 		autoHideMenuBar: true,
 		webPreferences: {

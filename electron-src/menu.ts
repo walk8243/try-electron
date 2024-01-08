@@ -87,6 +87,9 @@ export const createMenu = ({
 		})
 		.on('about:close', (_event: Electron.IpcMainEvent) => {
 			aboutWindow.hide();
+		})
+		.on('update:close', (_event: Electron.IpcMainEvent) => {
+			updateWindow.hide();
 		});
 
 	return menu;

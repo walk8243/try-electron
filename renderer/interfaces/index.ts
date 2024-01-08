@@ -40,6 +40,7 @@ declare global {
 		update: {
 			version: () => Promise<string>;
 			download: () => void;
+			close: () => void;
 		};
 	}
 }
