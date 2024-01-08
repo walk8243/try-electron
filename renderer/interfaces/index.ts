@@ -1,5 +1,6 @@
 import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
+import type { UpdateStatus } from '../../types/Update';
 
 declare global {
 	interface Window {
@@ -36,6 +37,14 @@ declare global {
 			version: () => Promise<string>;
 			close: () => void;
 			open: (url: string) => void;
+		};
+		update: {
+			version: () => Promise<UpdateStatus>;
+			download: () => void;
+			copy: (command: string) => void;
+			openRelease: () => void;
+			openLink: (url: string) => void;
+			close: () => void;
 		};
 	}
 }

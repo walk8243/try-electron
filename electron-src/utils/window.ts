@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { BrowserWindow, BrowserView } from 'electron';
+import { BrowserWindow, BrowserView, clipboard, ipcMain } from 'electron';
 import { getLoadedUrl } from './render';
 
 const isMac = process.platform === ('darwin' as const);
@@ -32,6 +32,7 @@ export const createSetting = (parentWindow: BrowserWindow) => {
 		resizable: false,
 		closable: false,
 		fullscreenable: false,
+		minimizable: false,
 		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: false,
@@ -54,7 +55,9 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 		height: 270 + (isMac ? 0 : 27),
 		show: false,
 		resizable: false,
+		closable: false,
 		fullscreenable: false,
+		minimizable: false,
 		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: false,
@@ -66,6 +69,35 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 	aboutWindow.loadURL(getLoadedUrl('about'));
 
 	return aboutWindow;
+};
+
+export const createUpdate = (parentWindow: BrowserWindow) => {
+	const updateWindow = new BrowserWindow({
+		title: 'Amethyst Update',
+		parent: parentWindow,
+		modal: true,
+		width: 500,
+		height: 645 + (isMac ? 0 : 27),
+		show: false,
+		resizable: false,
+		closable: false,
+		fullscreenable: false,
+		minimizable: false,
+		autoHideMenuBar: true,
+		webPreferences: {
+			nodeIntegration: false,
+			contextIsolation: true,
+			preload: join(__dirname, '../preload', 'update.js'),
+		},
+	});
+	updateWindow.removeMenu();
+	updateWindow.loadURL(getLoadedUrl('update'));
+
+	ipcMain.on('update:copy', (_event, command: string) => {
+		clipboard.writeText(command);
+	});
+
+	return updateWindow;
 };
 
 export const createWebview = () => {

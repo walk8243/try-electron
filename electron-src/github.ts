@@ -1,4 +1,11 @@
-import { app, dialog, ipcMain, Notification } from 'electron';
+import {
+	app,
+	BrowserWindow,
+	dialog,
+	ipcMain,
+	Notification,
+	shell,
+} from 'electron';
 import log from 'electron-log/main';
 import dayjs from 'dayjs';
 import semver from 'semver';
@@ -9,7 +16,8 @@ import {
 	viewLatestRelease,
 } from './utils/github';
 import { store } from './utils/store';
-import { Issue } from '../types/Issue';
+import type { Issue } from '../types/Issue';
+import type { UpdateStatus } from '../types/Update';
 
 const IssueGainInterval = 300000 as const; // 5分
 let latestIssueGainTime: dayjs.Dayjs = ((date: string) => {
@@ -84,14 +92,47 @@ export const refreshIssueTimer = () => {
 	}
 };
 
-export const checkUpdate = async () => {
+export const announceUpdate = async (
+	updateWindow: BrowserWindow,
+	isForceShow: boolean = true,
+) => {
+	const result = await checkUpdate();
+
+	ipcMain.removeHandler('update:version');
+	ipcMain.handle('update:version', (_event) => result);
+
+	ipcMain.removeAllListeners('update:download');
+	ipcMain.removeAllListeners('update:openRelease');
+	ipcMain.on('update:download', () => {
+		log.debug('[update:download] MSIファイルのダウンロードを開始します');
+		updateWindow.webContents.downloadURL(
+			`https://github.com/walk8243/amethyst-electron/releases/download/${result.latestRelease}/amethyst-${result.latestRelease}-win.msi`,
+		);
+	});
+	ipcMain.on('update:openRelease', () => {
+		log.debug('[update:openRelease] リリースページを開きます');
+		shell.openExternal(
+			`https://github.com/walk8243/amethyst-electron/releases/tag/${result.latestRelease}`,
+		);
+	});
+
+	if (!isForceShow && !result.canUpdate) return;
+	setImmediate(() => {
+		updateWindow.show();
+	});
+};
+const checkUpdate = async (): Promise<UpdateStatus> => {
 	const latestRelease = await viewLatestRelease();
 	const currentVersion = app.getVersion();
 	log.verbose('versions:', {
 		appVersion: currentVersion,
 		latestRelease: latestRelease.tag,
 	});
-	return semver.gt(latestRelease.tag, currentVersion);
+	return {
+		canUpdate: semver.gt(latestRelease.tag, currentVersion),
+		appVersion: currentVersion,
+		latestRelease: latestRelease.tag,
+	};
 };
 
 const joinIssueData = (issues: Issue[]) => {
