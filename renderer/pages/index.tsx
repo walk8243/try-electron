@@ -45,6 +45,10 @@ const IndexPage = () => {
 			<Head>
 				<title>Amethyst</title>
 			</Head>
+			<Heading level={1} hidden>
+				Amethyst
+			</Heading>
+
 			<IssueFilterContextProvider>
 				<UserInfoContextProvider>
 					<IssueContextProvider>

@@ -1,4 +1,11 @@
-import { app, BrowserWindow, dialog, ipcMain, Notification } from 'electron';
+import {
+	app,
+	BrowserWindow,
+	dialog,
+	ipcMain,
+	Notification,
+	shell,
+} from 'electron';
 import log from 'electron-log/main';
 import dayjs from 'dayjs';
 import semver from 'semver';
@@ -90,11 +97,21 @@ export const announceUpdate = async (
 ) => {
 	const result = await checkUpdate();
 
+	ipcMain.removeHandler('update:version');
+	ipcMain.handle('update:version', (_event) => result.latestRelease);
+
 	ipcMain.removeAllListeners('update:download');
+	ipcMain.removeAllListeners('update:openRelease');
 	ipcMain.on('update:download', () => {
 		log.debug('[update:download] MSIファイルのダウンロードを開始します');
 		updateWindow.webContents.downloadURL(
 			`https://github.com/walk8243/amethyst-electron/releases/download/${result.latestRelease}/amethyst-${result.latestRelease}-win.msi`,
+		);
+	});
+	ipcMain.on('update:openRelease', () => {
+		log.debug('[update:openRelease] リリースページを開きます');
+		shell.openExternal(
+			`https://github.com/walk8243/amethyst-electron/releases/tag/${result.latestRelease}`,
 		);
 	});
 
