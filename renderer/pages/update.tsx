@@ -115,7 +115,14 @@ const HowToUpdateForWindows = () => {
 };
 
 const HowToUpdateForMac = () => {
+	const commands = [
+		'brew update',
+		'brew upgrade --cask @walk8243/cask/amethyst',
+	];
 	const colorMode = useContext(ColorModeContext);
+	const handleClick = () => {
+		window.update?.copy(commands.join('\n'));
+	};
 
 	return (
 		<Box component="section">
@@ -139,15 +146,15 @@ const HowToUpdateForMac = () => {
 						}}
 					>
 						<Box component="code">
-							<Typography>brew update</Typography>
-							<Typography>
-								brew upgrade --cask @walk8243/cask/amethyst
-							</Typography>
+							{commands.map((command, i) => (
+								<Typography key={i}>{command}</Typography>
+							))}
 						</Box>
 						<Box
 							sx={{ position: 'absolute', top: 0, right: 0, lineHeight: '1em' }}
 						>
 							<IconButton
+								onClick={handleClick}
 								sx={{ fontSize: 'inherit', color: codeColor[colorMode].on }}
 							>
 								<FontAwesomeIcon icon={faClipboard} />

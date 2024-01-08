@@ -40,6 +40,7 @@ declare global {
 		update: {
 			version: () => Promise<string>;
 			download: () => void;
+			copy: (command: string) => void;
 			openRelease: () => void;
 			openLink: (url: string) => void;
 			close: () => void;

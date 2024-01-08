@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { BrowserWindow, BrowserView } from 'electron';
+import { BrowserWindow, BrowserView, clipboard, ipcMain } from 'electron';
 import { getLoadedUrl } from './render';
 
 const isMac = process.platform === ('darwin' as const);
@@ -92,6 +92,10 @@ export const createUpdate = (parentWindow: BrowserWindow) => {
 	});
 	updateWindow.removeMenu();
 	updateWindow.loadURL(getLoadedUrl('update'));
+
+	ipcMain.on('update:copy', (_event, command: string) => {
+		clipboard.writeText(command);
+	});
 
 	return updateWindow;
 };
