@@ -32,6 +32,7 @@ export const createSetting = (parentWindow: BrowserWindow) => {
 		resizable: false,
 		closable: false,
 		fullscreenable: false,
+		minimizable: false,
 		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: false,
@@ -56,6 +57,7 @@ export const createAbout = (parentWindow: BrowserWindow) => {
 		resizable: false,
 		closable: false,
 		fullscreenable: false,
+		minimizable: false,
 		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: false,
@@ -75,12 +77,12 @@ export const createUpdate = (parentWindow: BrowserWindow) => {
 		parent: parentWindow,
 		modal: true,
 		width: 500,
-		// height: 270 + (isMac ? 0 : 27),
-		height: 600,
+		height: 640 + (isMac ? 0 : 27),
 		show: false,
 		resizable: false,
 		closable: false,
 		fullscreenable: false,
+		minimizable: false,
 		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: false,

@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { Heading } from '../components/Heading';
 import { ColorModeContext } from '../context/ColorModeContext';
 import {
+	Alert,
 	Box,
 	Button,
 	Grid,
@@ -16,7 +17,7 @@ import { faClipboard } from '@fortawesome/free-regular-svg-icons';
 import codeColor from '../styles/colors/code';
 
 const UpdatePage = () => (
-	<Box sx={{ overflow: 'hidden' }}>
+	<Box sx={{ maxHeight: '100vh', overflow: 'hidden' }}>
 		<Head>
 			<title>Amethyst Update</title>
 		</Head>
@@ -53,14 +54,16 @@ const UpdateInfo = () => {
 		<Box component="section">
 			<Heading level={3}>更新情報</Heading>
 
-			<Typography>現在の最新バージョンは {tag} です。</Typography>
-			<Typography>
-				詳細は
-				<Link component="button" onClick={handleClick}>
-					Release Notes
-				</Link>
-				をご覧ください。
-			</Typography>
+			<Alert severity="info" sx={{ m: 2 }}>
+				<Typography>現在の最新バージョンは {tag} です。</Typography>
+				<Typography>
+					詳細は
+					<Link component="button" onClick={handleClick}>
+						Release Notes
+					</Link>
+					をご覧ください。
+				</Typography>
+			</Alert>
 		</Box>
 	);
 };
@@ -72,18 +75,13 @@ const HowToUpdate = () => {
 				更新方法
 			</Heading>
 
-			<HowToUpdateSwitch />
+			<Box display="grid" rowGap={2}>
+				<HowToUpdateForWindows />
+				<HowToUpdateForMac />
+				<HowToUpdateForOther />
+			</Box>
 		</Box>
 	);
-};
-const HowToUpdateSwitch = () => {
-	if (process.platform === 'win32') {
-		return <HowToUpdateForWindows />;
-	}
-	if (process.platform === 'darwin') {
-		return <HowToUpdateForMac />;
-	}
-	return <HowToUpdateForOther />;
 };
 
 const HowToUpdateForWindows = () => {
@@ -93,9 +91,7 @@ const HowToUpdateForWindows = () => {
 
 	return (
 		<Box component="section">
-			<Heading level={4} hidden>
-				Windowsの場合の更新方法
-			</Heading>
+			<Heading level={4}>Windowsの場合の更新方法</Heading>
 
 			<Grid container justifyContent="center" m={2} width="auto">
 				<Grid item width="100%">
@@ -123,9 +119,7 @@ const HowToUpdateForMac = () => {
 
 	return (
 		<Box component="section">
-			<Heading level={4} hidden>
-				MacOSの場合の更新方法
-			</Heading>
+			<Heading level={4}>MacOSの場合の更新方法</Heading>
 
 			<Grid container justifyContent="center" m={2} width="auto">
 				<Grid item width="100%">
@@ -175,14 +169,14 @@ const HowToUpdateForOther = () => {
 
 	return (
 		<Box component="section">
-			<Heading level={4} hidden>
-				その他の場合の更新方法
-			</Heading>
+			<Heading level={4}>その他の場合の更新方法</Heading>
 
-			<Typography>
-				以下ドキュメントを参考に、ご自身でビルドしなおしてください。
-			</Typography>
 			<Grid container justifyContent="center" m={2} width="auto">
+				<Grid item width="100%">
+					<Typography>
+						以下ドキュメントを参考に、ご自身でビルドしなおしてください。
+					</Typography>
+				</Grid>
 				<Grid item>
 					<Button
 						variant="contained"
