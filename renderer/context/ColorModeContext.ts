@@ -12,6 +12,7 @@ export const ColorModeDispatchContext = createContext<Dispatch<PaletteMode>>(
 );
 
 export const colorSetting: PaletteOptions = {
+	contrastThreshold: 4.5,
 	primary: {
 		main: primary.key,
 		light: primary.light.main,

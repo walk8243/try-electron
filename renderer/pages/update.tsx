@@ -1,5 +1,7 @@
+import { useContext } from 'react';
 import Head from 'next/head';
 import { Heading } from '../components/Heading';
+import { ColorModeContext } from '../context/ColorModeContext';
 import {
 	Box,
 	Button,
@@ -10,6 +12,7 @@ import {
 } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClipboard } from '@fortawesome/free-regular-svg-icons';
+import codeColor from '../styles/colors/code';
 
 const UpdatePage = () => (
 	<Box sx={{ overflow: 'hidden' }}>
@@ -63,35 +66,41 @@ const HowToUpdateForWindows = () => {
 	);
 };
 
-const HowToUpdateForMac = () => (
-	<Box component="section">
-		<Heading level={3} hidden>
-			MacOSの場合の更新方法
-		</Heading>
+const HowToUpdateForMac = () => {
+	const colorMode = useContext(ColorModeContext);
 
-		<Paper
-			elevation={0}
-			sx={{
-				position: 'relative',
-				m: 2,
-				p: 1,
-				color: '#939bc1',
-				bgcolor: 'navy',
-				borderRadius: 1,
-			}}
-		>
-			<Box component="code">
-				<Typography>brew update</Typography>
-				<Typography>brew upgrade --cask @walk8243/cask/amethyst</Typography>
-			</Box>
-			<Box sx={{ position: 'absolute', top: 5, right: 5, lineHeight: '1em' }}>
-				<IconButton color="primary" sx={{ fontSize: 'inherit' }}>
-					<FontAwesomeIcon icon={faClipboard} />
-				</IconButton>
-			</Box>
-		</Paper>
-	</Box>
-);
+	return (
+		<Box component="section">
+			<Heading level={3} hidden>
+				MacOSの場合の更新方法
+			</Heading>
+
+			<Paper
+				elevation={0}
+				sx={{
+					position: 'relative',
+					m: 2,
+					p: 1,
+					color: codeColor[colorMode].on,
+					bgcolor: codeColor[colorMode].main,
+					borderRadius: 1,
+				}}
+			>
+				<Box component="code">
+					<Typography>brew update</Typography>
+					<Typography>brew upgrade --cask @walk8243/cask/amethyst</Typography>
+				</Box>
+				<Box sx={{ position: 'absolute', top: 5, right: 5, lineHeight: '1em' }}>
+					<IconButton
+						sx={{ fontSize: 'inherit', color: codeColor[colorMode].on }}
+					>
+						<FontAwesomeIcon icon={faClipboard} />
+					</IconButton>
+				</Box>
+			</Paper>
+		</Box>
+	);
+};
 
 const ButtonArea = () => {
 	const handleClose = () => {
