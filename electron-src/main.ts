@@ -47,7 +47,7 @@ export const main = async () => {
 	setupResizedSetting(mainWindow, webview);
 
 	scheduledGainGithubIssues();
-	await announceUpdate(updateWindow);
+	await announceUpdate(updateWindow, false);
 	await setupDevtools();
 };
 

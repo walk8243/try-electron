@@ -84,13 +84,22 @@ export const refreshIssueTimer = () => {
 	}
 };
 
-export const announceUpdate = async (updateWindow: BrowserWindow) => {
+export const announceUpdate = async (
+	updateWindow: BrowserWindow,
+	isForceShow: boolean = true,
+) => {
 	const result = await checkUpdate();
-	if (!result.canUpdate) return;
 
+	ipcMain.removeAllListeners('update:download');
+	ipcMain.on('update:download', () => {
+		log.debug('[update:download] MSIファイルのダウンロードを開始します');
+		updateWindow.webContents.downloadURL(
+			`https://github.com/walk8243/amethyst-electron/releases/download/${result.latestRelease}/amethyst-${result.latestRelease}-win.msi`,
+		);
+	});
+
+	if (!isForceShow && !result.canUpdate) return;
 	setImmediate(() => {
-		ipcMain.removeAllListeners('update:version');
-		ipcMain.handle('update:version', () => result.latestRelease);
 		updateWindow.show();
 	});
 };
