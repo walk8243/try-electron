@@ -144,7 +144,7 @@ const HowToUpdateForWindows = () => {
 const HowToUpdateForMac = () => {
 	const commands = [
 		'brew update',
-		'brew upgrade --cask @walk8243/cask/amethyst',
+		'brew upgrade --cask walk8243/cask/amethyst',
 	];
 	const colorMode = useContext(ColorModeContext);
 	const handleClick = () => {
