@@ -10,11 +10,11 @@ import {
 import isDev from 'electron-is-dev';
 
 import {
-	announceUpdate,
 	gainGithubAllData,
 	gainGithubIssues,
 	refreshIssueTimer,
 } from './github';
+import { announceUpdate } from './utils/release';
 import { store } from './utils/store';
 import type { SettingData } from './preload/setting';
 

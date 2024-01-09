@@ -16,13 +16,10 @@ import installExtension, {
 	REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
 
-import {
-	announceUpdate,
-	gainGithubAllData,
-	scheduledGainGithubIssues,
-} from './github';
+import { gainGithubAllData, scheduledGainGithubIssues } from './github';
 import { createMenu } from './menu';
 import { checkStoreData } from './utils/github';
+import { announceUpdate } from './utils/release';
 import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
