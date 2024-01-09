@@ -118,9 +118,20 @@ const HowToUpdateForWindows = () => {
 
 	return (
 		<Box component="section">
-			<Heading level={4}>Windowsの場合の更新方法</Heading>
+			<Heading level={4} hidden>
+				Windowsの場合の更新方法
+			</Heading>
 
-			<Grid container justifyContent="center" m={2} width="auto">
+			<Typography variant="subtitle1">Windowsの場合</Typography>
+			<Grid
+				container
+				justifyContent="center"
+				mt={1}
+				mr={2}
+				ml={2}
+				mb={2}
+				width="auto"
+			>
 				<Grid item width="100%">
 					<Typography>
 						以下のボタンから最新のMSIファイルをダウンロードしてください。
@@ -142,10 +153,10 @@ const HowToUpdateForWindows = () => {
 };
 
 const HowToUpdateForMac = () => {
-	const commands = [
-		'brew update',
-		'brew upgrade --cask walk8243/cask/amethyst',
-	];
+	const commands = Object.freeze([
+		{ id: 1, value: 'brew update' },
+		{ id: 2, value: 'brew upgrade --cask walk8243/cask/amethyst' },
+	]);
 	const colorMode = useContext(ColorModeContext);
 	const handleClick = () => {
 		window.update?.copy(commands.join('\n'));
@@ -153,9 +164,20 @@ const HowToUpdateForMac = () => {
 
 	return (
 		<Box component="section">
-			<Heading level={4}>MacOSの場合の更新方法</Heading>
+			<Heading level={4} hidden>
+				MacOSの場合の更新方法
+			</Heading>
 
-			<Grid container justifyContent="center" m={2} width="auto">
+			<Typography variant="subtitle1">MacOSの場合</Typography>
+			<Grid
+				container
+				justifyContent="center"
+				mt={1}
+				mr={2}
+				ml={2}
+				mb={2}
+				width="auto"
+			>
 				<Grid item width="100%">
 					<Typography>
 						HomebrewのCaskファイルを読み込みなおして、Amethystをアップデートしてください。
@@ -173,8 +195,8 @@ const HowToUpdateForMac = () => {
 						}}
 					>
 						<Box component="code">
-							{commands.map((command, i) => (
-								<Typography key={i}>{command}</Typography>
+							{commands.map((command) => (
+								<Typography key={command.id}>{command.value}</Typography>
 							))}
 						</Box>
 						<Box
@@ -203,9 +225,20 @@ const HowToUpdateForOther = () => {
 
 	return (
 		<Box component="section">
-			<Heading level={4}>その他の場合の更新方法</Heading>
+			<Heading level={4} hidden>
+				その他の場合の更新方法
+			</Heading>
 
-			<Grid container justifyContent="center" m={2} width="auto">
+			<Typography variant="subtitle1">その他の場合</Typography>
+			<Grid
+				container
+				justifyContent="center"
+				mt={1}
+				mr={2}
+				ml={2}
+				mb={2}
+				width="auto"
+			>
 				<Grid item width="100%">
 					<Typography>
 						以下ドキュメントを参考に、ご自身でビルドしなおしてください。
