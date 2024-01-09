@@ -77,7 +77,7 @@ export const createUpdate = (parentWindow: BrowserWindow) => {
 		parent: parentWindow,
 		modal: true,
 		width: 500,
-		height: 645 + (isMac ? 0 : 27),
+		height: 640,
 		show: false,
 		resizable: false,
 		closable: false,
