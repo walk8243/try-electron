@@ -5,12 +5,12 @@ import { main } from './main';
 
 log.initialize({ preload: true });
 log.eventLogger.startLogging({});
-if (isDev) {
+if (!isDev) {
 	log.transports.file.level = 'info';
 }
 
 app.on('ready', () => {
-	log.verbose('App is ready');
+	log.info('App is ready');
 	main();
 });
 
