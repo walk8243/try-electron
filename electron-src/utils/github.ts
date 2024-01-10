@@ -128,7 +128,7 @@ const accessGithub = async ({
 }): Promise<unknown> => {
 	const url = new URL(path, getBaseUrl());
 	url.search = new URLSearchParams(query ?? {}).toString();
-	log.verbose('[accessGithub URL]', url.href);
+	log.debug('[accessGithub URL]', url.href);
 	const response = await net.fetch(url.href, {
 		headers: {
 			Accept: 'application/vnd.github+json',

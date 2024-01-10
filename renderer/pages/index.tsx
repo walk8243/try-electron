@@ -7,7 +7,6 @@ import {
 	useState,
 } from 'react';
 import Head from 'next/head';
-import log from 'electron-log/renderer';
 import type { UserInfo } from '../../types/User';
 
 import { Box, Grid } from '@mui/material';
@@ -158,7 +157,6 @@ const IssueSupplementMapContextProvider = ({
 		useState<IssueSupplementMap>({});
 	useEffect(() => {
 		window.electron?.pushIssueSupplementMap((map) => {
-			log.debug('[pushIssueSupplementMap]', map);
 			setIssueSupplementMap(map);
 		});
 	}, []);

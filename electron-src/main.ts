@@ -75,15 +75,17 @@ const setupMainWindow = () => {
 		}
 
 		store.onDidChange('userInfo', (userInfo) => {
+			log.debug('蓄積しているUserInfoが更新されました');
 			mainWindow.webContents.send('app:pushUser', userInfo ?? {});
 		});
 		store.onDidChange('issueData', (data) => {
-			log.debug('蓄積しているデータが更新されました');
+			log.verbose('蓄積しているIssueDataが更新されました');
 			if (!data) return;
 			mainWindow.webContents.send('app:pushUpdatedAt', data.updatedAt);
 			mainWindow.webContents.send('app:pushIssues', data.issues ?? []);
 		});
 		store.onDidChange('issueSupplementMap', (map) => {
+			log.debug('蓄積しているIssueの追加データが更新されました');
 			if (!map) return;
 			mainWindow.webContents.send('app:pushIssueSupplementMap', map);
 		});
