@@ -39,6 +39,7 @@ export const announceUpdate = async (
 	if (!isForceShow && !result.canUpdate) return;
 	setImmediate(() => {
 		log.debug('アップデートの通知を表示します');
+		updateWindow.reload();
 		updateWindow.show();
 	});
 };
