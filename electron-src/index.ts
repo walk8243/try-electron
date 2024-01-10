@@ -15,3 +15,6 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', app.quit);
+app.on('will-quit', () => {
+	log.info('App is quitting');
+});
