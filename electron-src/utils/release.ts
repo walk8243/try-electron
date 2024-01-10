@@ -11,7 +11,12 @@ export const announceUpdate = async (
 	updateWindow: BrowserWindow,
 	isForceShow: boolean = true,
 ) => {
+	log.debug('Amethystのアップデートを確認します');
 	const result = await checkUpdate();
+
+	if (result.canUpdate) {
+		log.verbose('Amethystのアップデートが可能です');
+	}
 
 	ipcMain.removeHandler('update:version');
 	ipcMain.handle('update:version', (_event) => result);
@@ -33,6 +38,7 @@ export const announceUpdate = async (
 
 	if (!isForceShow && !result.canUpdate) return;
 	setImmediate(() => {
+		log.debug('アップデートの通知を表示します');
 		updateWindow.show();
 	});
 };
