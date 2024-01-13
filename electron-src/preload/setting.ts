@@ -6,4 +6,8 @@ contextBridge.exposeInMainWorld('setting', {
 	cancel: () => ipcRenderer.send('setting:cancel'),
 });
 
+contextBridge.exposeInMainWorld('error', {
+	error: (error: Error) => ipcRenderer.send('error', error),
+});
+
 export type SettingData = { baseUrl: string; token?: string };

@@ -18,7 +18,8 @@ export class ErrorBoundary extends Component<
 	}
 
 	componentDidCatch(error: Error, _errorInfo: unknown) {
-		log.error(error.message);
+		log.error(`${error.name}: ${error.message}`);
+		window.error?.error(error);
 	}
 
 	render() {

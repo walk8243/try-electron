@@ -46,6 +46,9 @@ declare global {
 			openLink: (url: string) => void;
 			close: () => void;
 		};
+		error: {
+			error: (error: Error) => void;
+		};
 	}
 }
 

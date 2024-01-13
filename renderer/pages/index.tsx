@@ -24,7 +24,6 @@ import {
 } from '../context/IssueFilterContext';
 import { IssueSupplementMapContext } from '../context/IssueSupplementMapContext';
 import { UserInfoContext } from '../context/UserContext';
-import ErrorBoundary from '../components/ErrorBoundary';
 import { Heading } from '../components/Heading';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -53,9 +52,7 @@ const IndexPage = () => {
 				<UserInfoContextProvider>
 					<IssueContextProvider>
 						<IssueSupplementMapContextProvider>
-							<ErrorBoundary>
-								<MainComponent />
-							</ErrorBoundary>
+							<MainComponent />
 						</IssueSupplementMapContextProvider>
 					</IssueContextProvider>
 				</UserInfoContextProvider>

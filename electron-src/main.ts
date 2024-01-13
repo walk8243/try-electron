@@ -4,6 +4,7 @@ import {
 	BrowserView,
 	BrowserWindow,
 	clipboard,
+	dialog,
 	ipcMain,
 	Menu,
 	session,
@@ -50,45 +51,21 @@ export const main = async () => {
 
 const setupMainWindow = () => {
 	const mainWindow = windowUtils.createMain();
+	const logPath = join(
+		app.getPath('userData'),
+		windowUtils.isMac ? `Logs/${app.name}` : `${app.name}/logs`,
+		'main.log',
+	);
 	ipcMain.handle('app:version', () => `v${app.getVersion()}`);
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
-
-		if (store.has('userInfo')) {
-			mainWindow.webContents.send('app:pushUser', store.get('userInfo'));
-		}
-		if (store.has('issueData')) {
-			mainWindow.webContents.send(
-				'app:pushIssues',
-				store.get('issueData')?.issues ?? [],
-			);
-			mainWindow.webContents.send(
-				'app:pushUpdatedAt',
-				store.get('issueData')?.updatedAt ?? '',
-			);
-		}
-		if (store.has('issueSupplementMap')) {
-			mainWindow.webContents.send(
-				'app:pushIssueSupplementMap',
-				store.get('issueSupplementMap'),
-			);
-		}
-
-		store.onDidChange('userInfo', (userInfo) => {
-			log.debug('蓄積しているUserInfoが更新されました');
-			mainWindow.webContents.send('app:pushUser', userInfo ?? {});
-		});
-		store.onDidChange('issueData', (data) => {
-			log.verbose('蓄積しているIssueDataが更新されました');
-			if (!data) return;
-			mainWindow.webContents.send('app:pushUpdatedAt', data.updatedAt);
-			mainWindow.webContents.send('app:pushIssues', data.issues ?? []);
-		});
-		store.onDidChange('issueSupplementMap', (map) => {
-			log.debug('蓄積しているIssueの追加データが更新されました');
-			if (!map) return;
-			mainWindow.webContents.send('app:pushIssueSupplementMap', map);
-		});
+		sendMainData(mainWindow);
+	});
+	ipcMain.on('error', (_event, _error: Error) => {
+		dialog.showErrorBox(
+			'Window側でエラーが発生しました',
+			`ログファイル: ${logPath} を確認してください`,
+		);
 	});
 
 	return mainWindow;
@@ -198,4 +175,42 @@ const setupDevtools = async () => {
 			join(app.getPath('userData'), 'extensions', REACT_DEVELOPER_TOOLS.id),
 		);
 	}
+};
+
+const sendMainData = (mainWindow: BrowserWindow) => {
+	if (store.has('userInfo')) {
+		mainWindow.webContents.send('app:pushUser', store.get('userInfo'));
+	}
+	if (store.has('issueData')) {
+		mainWindow.webContents.send(
+			'app:pushIssues',
+			store.get('issueData')?.issues ?? [],
+		);
+		mainWindow.webContents.send(
+			'app:pushUpdatedAt',
+			store.get('issueData')?.updatedAt ?? '',
+		);
+	}
+	if (store.has('issueSupplementMap')) {
+		mainWindow.webContents.send(
+			'app:pushIssueSupplementMap',
+			store.get('issueSupplementMap'),
+		);
+	}
+
+	store.onDidChange('userInfo', (userInfo) => {
+		log.debug('蓄積しているUserInfoが更新されました');
+		mainWindow.webContents.send('app:pushUser', userInfo ?? {});
+	});
+	store.onDidChange('issueData', (data) => {
+		log.verbose('蓄積しているIssueDataが更新されました');
+		if (!data) return;
+		mainWindow.webContents.send('app:pushUpdatedAt', data.updatedAt);
+		mainWindow.webContents.send('app:pushIssues', data.issues ?? []);
+	});
+	store.onDidChange('issueSupplementMap', (map) => {
+		log.debug('蓄積しているIssueの追加データが更新されました');
+		if (!map) return;
+		mainWindow.webContents.send('app:pushIssueSupplementMap', map);
+	});
 };
