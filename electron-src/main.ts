@@ -26,6 +26,9 @@ import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 import type { Issue } from '../types/Issue';
 
+const BUG_REPORT_ISSUE_URL =
+	'https://github.com/walk8243/amethyst-electron/issues/new?labels=bug&template=bug_report.md';
+
 export const main = async () => {
 	const mainWindow = setupMainWindow();
 	const storeDataFlag = checkStoreData();
@@ -42,6 +45,7 @@ export const main = async () => {
 		webview,
 		storeDataFlag.isInvalid(),
 	);
+	setupErrorHandling(webview);
 	setupResizedSetting(mainWindow, webview);
 
 	scheduledGainGithubIssues();
@@ -51,21 +55,10 @@ export const main = async () => {
 
 const setupMainWindow = () => {
 	const mainWindow = windowUtils.createMain();
-	const logPath = join(
-		app.getPath('userData'),
-		windowUtils.isMac ? `Logs/${app.name}` : `${app.name}/logs`,
-		'main.log',
-	);
 	ipcMain.handle('app:version', () => `v${app.getVersion()}`);
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
 		sendMainData(mainWindow);
-	});
-	ipcMain.on('error', (_event, _error: Error) => {
-		dialog.showErrorBox(
-			'Window側でエラーが発生しました',
-			`ログファイル: ${logPath} を確認してください`,
-		);
 	});
 
 	return mainWindow;
@@ -146,6 +139,20 @@ const setupModalWindow = (
 		aboutWindow,
 		updateWindow,
 	};
+};
+const setupErrorHandling = (webview: BrowserView) => {
+	const logPath = join(
+		app.getPath('userData'),
+		windowUtils.isMac ? `Logs/${app.name}` : `${app.name}/logs`,
+		'main.log',
+	);
+	ipcMain.on('error', (_event, _error: Error) => {
+		webview.webContents.loadURL(BUG_REPORT_ISSUE_URL);
+		dialog.showErrorBox(
+			'Window側でエラーが発生しました',
+			`ログファイル: ${logPath} を確認してください`,
+		);
+	});
 };
 const setupResizedSetting = (
 	mainWindow: BrowserWindow,
