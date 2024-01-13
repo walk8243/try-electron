@@ -7,5 +7,6 @@ contextBridge.exposeInMainWorld('about', {
 });
 
 contextBridge.exposeInMainWorld('error', {
-	error: (error: Error) => ipcRenderer.send('error', error),
+	throw: (error: Error) => ipcRenderer.send('error:throw', error),
+	getPath: () => ipcRenderer.invoke('error:path'),
 });

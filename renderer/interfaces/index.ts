@@ -47,7 +47,8 @@ declare global {
 			close: () => void;
 		};
 		error: {
-			error: (error: Error) => void;
+			throw: (error: Error) => void;
+			getPath: () => Promise<string>;
 		};
 	}
 }

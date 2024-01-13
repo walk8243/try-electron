@@ -143,16 +143,17 @@ const setupModalWindow = (
 const setupErrorHandling = (webview: BrowserView) => {
 	const logPath = join(
 		app.getPath('userData'),
-		windowUtils.isMac ? `Logs/${app.name}` : `${app.name}/logs`,
+		windowUtils.isMac ? `Logs/${app.name}` : 'logs',
 		'main.log',
 	);
-	ipcMain.on('error', (_event, _error: Error) => {
+	ipcMain.on('error:throw', (_event, _error: Error) => {
 		webview.webContents.loadURL(BUG_REPORT_ISSUE_URL);
 		dialog.showErrorBox(
 			'Window側でエラーが発生しました',
-			`ログファイル: ${logPath} を確認してください`,
+			'エラー内容のご報告にご協力をどうかお願い致します。',
 		);
 	});
+	ipcMain.handle('error:path', () => logPath);
 };
 const setupResizedSetting = (
 	mainWindow: BrowserWindow,

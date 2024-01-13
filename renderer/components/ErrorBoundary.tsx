@@ -1,6 +1,7 @@
+import { Component, useEffect, useState } from 'react';
 import log from 'electron-log';
-import { Component } from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { Heading } from './Heading';
 
 export class ErrorBoundary extends Component<
 	{ children: React.ReactNode },
@@ -18,7 +19,7 @@ export class ErrorBoundary extends Component<
 
 	componentDidCatch(error: Error, _errorInfo: unknown) {
 		log.error(`${error.name}: ${error.message}`);
-		window.error?.error(error);
+		window.error?.throw(error);
 	}
 
 	render() {
@@ -31,24 +32,31 @@ export class ErrorBoundary extends Component<
 }
 
 const ErrorFallback = ({ error }: { error: Error | null }) => (
-	<Grid
-		container
+	<Box
+		component="section"
 		width="100vw"
 		maxWidth="600px"
-		height="100%"
-		justifyContent="center"
+		height="100vh"
 		sx={{ overflow: 'hidden' }}
 	>
-		<Grid item width="100%">
-			<Typography variant="h1">エラーが発生しました。</Typography>
-			<Typography variant="subtitle1">
-				GitHubのIssueまでご報告をお願い致します
-			</Typography>
-		</Grid>
-		<Grid item width="100%">
+		<Heading level={1} hidden>
+			エラー表示
+		</Heading>
+		<Box
+			display="grid"
+			height="100%"
+			gridTemplateRows="max-content 1fr max-content"
+		>
+			<Box mx={2} my={1}>
+				<Heading level={2}>エラーが発生しました。</Heading>
+				<Typography variant="subtitle1">
+					GitHubのIssueまでご報告をお願い致します
+				</Typography>
+			</Box>
 			<ErrorFallbackStack error={error} />
-		</Grid>
-	</Grid>
+			<LogPath />
+		</Box>
+	</Box>
 );
 
 const ErrorFallbackStack = ({ error }: { error: Error | null }) => {
@@ -59,6 +67,21 @@ const ErrorFallbackStack = ({ error }: { error: Error | null }) => {
 	return (
 		<Box m={2}>
 			<Typography component="pre">{error.stack}</Typography>
+		</Box>
+	);
+};
+
+const LogPath = () => {
+	const [path, setPath] = useState<string>('');
+	useEffect(() => {
+		window.error?.getPath().then((value) => setPath(value));
+	}, [window.error]);
+
+	return (
+		<Box mx={2} my={1} height="1lh">
+			<Typography overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+				LogFile: {path}
+			</Typography>
 		</Box>
 	);
 };
