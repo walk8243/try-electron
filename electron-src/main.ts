@@ -4,7 +4,6 @@ import {
 	BrowserView,
 	BrowserWindow,
 	clipboard,
-	dialog,
 	ipcMain,
 	Menu,
 	session,
@@ -19,15 +18,13 @@ import installExtension, {
 
 import { gainGithubAllData, scheduledGainGithubIssues } from './github';
 import { createMenu } from './menu';
+import { handleErrorDisplay } from './utils/error';
 import { checkStoreData } from './utils/github';
 import { announceUpdate } from './utils/release';
 import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 import type { Issue } from '../types/Issue';
-
-const BUG_REPORT_ISSUE_URL =
-	'https://github.com/walk8243/amethyst-electron/issues/new?labels=bug&template=bug_report.md';
 
 export const main = async () => {
 	const mainWindow = setupMainWindow();
@@ -45,7 +42,7 @@ export const main = async () => {
 		webview,
 		storeDataFlag.isInvalid(),
 	);
-	setupErrorHandling(webview);
+	setupErrorHandling(mainWindow, webview);
 	setupResizedSetting(mainWindow, webview);
 
 	scheduledGainGithubIssues();
@@ -140,18 +137,22 @@ const setupModalWindow = (
 		updateWindow,
 	};
 };
-const setupErrorHandling = (webview: BrowserView) => {
+const setupErrorHandling = (
+	mainWindow: BrowserWindow,
+	webview: BrowserView,
+) => {
 	const logPath = join(
 		app.getPath('userData'),
 		windowUtils.isMac ? `Logs/${app.name}` : 'logs',
 		'main.log',
 	);
-	ipcMain.on('error:throw', (_event, _error: Error) => {
-		webview.webContents.loadURL(BUG_REPORT_ISSUE_URL);
-		dialog.showErrorBox(
-			'Window側でエラーが発生しました',
-			'エラー内容のご報告にご協力をどうかお願い致します。',
-		);
+	log.errorHandler.startCatching({
+		onError: ({ error }) => {
+			handleErrorDisplay({ error, mainWindow, webview });
+		},
+	});
+	ipcMain.on('error:throw', (_event, error: Error) => {
+		handleErrorDisplay({ error, mainWindow, webview });
 	});
 	ipcMain.handle('error:path', () => logPath);
 };

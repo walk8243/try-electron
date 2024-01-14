@@ -1,5 +1,4 @@
 import { Component, useEffect, useState } from 'react';
-import log from 'electron-log';
 import { Box, Typography } from '@mui/material';
 import { Heading } from './Heading';
 
@@ -18,7 +17,6 @@ export class ErrorBoundary extends Component<
 	}
 
 	componentDidCatch(error: Error, _errorInfo: unknown) {
-		log.error(`${error.name}: ${error.message}`);
 		window.error?.throw(error);
 	}
 
@@ -51,6 +49,9 @@ const ErrorFallback = ({ error }: { error: Error | null }) => (
 				<Heading level={2}>エラーが発生しました。</Heading>
 				<Typography variant="subtitle1">
 					GitHubのIssueまでご報告をお願い致します
+				</Typography>
+				<Typography variant="subtitle1">
+					復帰はアプリを再起動してください
 				</Typography>
 			</Box>
 			<ErrorFallbackStack error={error} />
