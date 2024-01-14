@@ -3,6 +3,7 @@ import log from 'electron-log/main';
 
 const CREATE_ISSUE_URL =
 	'https://github.com/walk8243/amethyst-electron/issues/new?template=bug_report.md&labels=bug';
+let alreadyError: boolean = false;
 
 export const handleErrorDisplay = ({
 	error,
@@ -15,6 +16,11 @@ export const handleErrorDisplay = ({
 }) => {
 	log.error(`${error.name}: ${error.message}`);
 	sendError(error, mainWindow);
+	if (alreadyError) {
+		return;
+	}
+
+	alreadyError = true;
 	viewReportIssue(webview);
 	showErrorDialog(mainWindow);
 };
