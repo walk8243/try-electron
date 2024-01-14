@@ -48,6 +48,7 @@ declare global {
 		};
 		error: {
 			throw: (error: Error) => void;
+			show: (callback: (value: Error) => void) => void;
 			getPath: () => Promise<string>;
 		};
 	}

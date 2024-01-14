@@ -14,8 +14,12 @@ export const handleErrorDisplay = ({
 	webview: BrowserView;
 }) => {
 	log.error(`${error.name}: ${error.message}`);
+	sendError(error, mainWindow);
 	viewReportIssue(webview);
 	showErrorDialog(mainWindow);
+};
+const sendError = (error: Error, mainWindow: BrowserWindow) => {
+	mainWindow.webContents.send('error:show', error);
 };
 const viewReportIssue = (webview: BrowserView) => {
 	webview.webContents.loadURL(CREATE_ISSUE_URL);

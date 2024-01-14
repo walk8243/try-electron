@@ -147,11 +147,16 @@ const setupErrorHandling = (
 		'main.log',
 	);
 	log.errorHandler.startCatching({
-		onError: ({ error }) => {
+		onError: ({ error, processType }) => {
+			if (processType === 'renderer') {
+				return;
+			}
+			log.debug('mainプロセスでエラーが発生しました', error.stack);
 			handleErrorDisplay({ error, mainWindow, webview });
 		},
 	});
 	ipcMain.on('error:throw', (_event, error: Error) => {
+		log.debug('rendererプロセスでエラーが発生しました', error.stack);
 		handleErrorDisplay({ error, mainWindow, webview });
 	});
 	ipcMain.handle('error:path', () => logPath);

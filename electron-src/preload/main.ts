@@ -34,5 +34,7 @@ contextBridge.exposeInMainWorld('electron', {
 
 contextBridge.exposeInMainWorld('error', {
 	throw: (error: Error) => ipcRenderer.send('error:throw', error),
+	show: (callback: (error: Error) => void) =>
+		ipcRenderer.on('error:show', (_event, error) => callback(error)),
 	getPath: () => ipcRenderer.invoke('error:path'),
 });
