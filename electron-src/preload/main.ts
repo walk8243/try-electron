@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
+import type { ErrorData } from '../../types/Error';
 
 contextBridge.exposeInMainWorld('electron', {
 	issue: (issue: Issue) => ipcRenderer.invoke('github:issue', issue),
@@ -33,8 +34,8 @@ contextBridge.exposeInMainWorld('electron', {
 });
 
 contextBridge.exposeInMainWorld('error', {
-	throw: (error: Error) => ipcRenderer.send('error:throw', error),
-	show: (callback: (error: Error) => void) =>
+	throw: (error: ErrorData) => ipcRenderer.send('error:throw', error),
+	show: (callback: (error: ErrorData) => void) =>
 		ipcRenderer.on('error:show', (_event, error) => callback(error)),
 	getPath: () => ipcRenderer.invoke('error:path'),
 });

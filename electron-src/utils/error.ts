@@ -1,5 +1,6 @@
 import { BrowserView, BrowserWindow, dialog } from 'electron';
 import log from 'electron-log/main';
+import { ErrorData } from '../../types/Error';
 
 const CREATE_ISSUE_URL =
 	'https://github.com/walk8243/amethyst-electron/issues/new?template=bug_report.md&labels=bug';
@@ -10,7 +11,7 @@ export const handleErrorDisplay = ({
 	mainWindow,
 	webview,
 }: {
-	error: Error;
+	error: ErrorData;
 	mainWindow: BrowserWindow;
 	webview: BrowserView;
 }) => {
@@ -24,7 +25,7 @@ export const handleErrorDisplay = ({
 	viewReportIssue(webview);
 	showErrorDialog(mainWindow);
 };
-const sendError = (error: Error, mainWindow: BrowserWindow) => {
+const sendError = (error: ErrorData, mainWindow: BrowserWindow) => {
 	mainWindow.webContents.send('error:show', error);
 };
 const viewReportIssue = (webview: BrowserView) => {

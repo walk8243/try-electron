@@ -10,7 +10,11 @@ export class ErrorBoundary extends Component<
 	}
 
 	static getDerivedStateFromError(error: Error) {
-		window.error?.throw(error);
+		window.error?.throw({
+			name: error.name,
+			message: error.message,
+			stack: error.stack ?? `${error.name}: ${error.message}`,
+		});
 		return {};
 	}
 

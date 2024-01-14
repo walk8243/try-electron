@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import type { ErrorData } from '../../types/Error';
 
 contextBridge.exposeInMainWorld('about', {
 	version: () => ipcRenderer.invoke('app:version'),
@@ -7,6 +8,6 @@ contextBridge.exposeInMainWorld('about', {
 });
 
 contextBridge.exposeInMainWorld('error', {
-	throw: (error: Error) => ipcRenderer.send('error:throw', error),
+	throw: (error: ErrorData) => ipcRenderer.send('error:throw', error),
 	getPath: () => ipcRenderer.invoke('error:path'),
 });

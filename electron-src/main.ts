@@ -25,6 +25,7 @@ import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 import type { Issue } from '../types/Issue';
+import type { ErrorData } from '../types/Error';
 
 export const main = async () => {
 	const mainWindow = setupMainWindow();
@@ -152,10 +153,18 @@ const setupErrorHandling = (
 				return;
 			}
 			log.debug('mainプロセスでエラーが発生しました', error.stack);
-			handleErrorDisplay({ error, mainWindow, webview });
+			handleErrorDisplay({
+				error: {
+					name: error.name,
+					message: error.message,
+					stack: error.stack ?? `${error.name}: ${error.message}`,
+				},
+				mainWindow,
+				webview,
+			});
 		},
 	});
-	ipcMain.on('error:throw', (_event, error: Error) => {
+	ipcMain.on('error:throw', (_event, error: ErrorData) => {
 		log.debug('rendererプロセスでエラーが発生しました', error.stack);
 		handleErrorDisplay({ error, mainWindow, webview });
 	});
