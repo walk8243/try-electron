@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { BrowserWindow, BrowserView, clipboard, ipcMain } from 'electron';
 import { getLoadedUrl } from './render';
 
-const isMac = process.platform === ('darwin' as const);
+export const isMac = process.platform === 'darwin';
 
 export const createMain = () => {
 	const mainWindow = new BrowserWindow({

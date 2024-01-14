@@ -1,6 +1,7 @@
 import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
 import type { UpdateStatus } from '../../types/Update';
+import type { ErrorData } from '../../types/Error';
 
 declare global {
 	interface Window {
@@ -45,6 +46,11 @@ declare global {
 			openRelease: () => void;
 			openLink: (url: string) => void;
 			close: () => void;
+		};
+		error: {
+			throw: (error: ErrorData) => void;
+			show: (callback: (value: ErrorData) => void) => void;
+			getPath: () => Promise<string>;
 		};
 	}
 }

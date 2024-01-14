@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { UpdateStatus } from '../../types/Update';
+import type { ErrorData } from '../../types/Error';
 
 contextBridge.exposeInMainWorld('update', {
 	version: (status: UpdateStatus) =>
@@ -9,4 +10,9 @@ contextBridge.exposeInMainWorld('update', {
 	openRelease: () => ipcRenderer.send('update:openRelease'),
 	openLink: (url: string) => ipcRenderer.send('browser:open', url),
 	close: () => ipcRenderer.send('update:close'),
+});
+
+contextBridge.exposeInMainWorld('error', {
+	throw: (error: ErrorData) => ipcRenderer.send('error:throw', error),
+	getPath: () => ipcRenderer.invoke('error:path'),
 });

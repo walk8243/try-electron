@@ -16,9 +16,8 @@ import {
 } from './github';
 import { announceUpdate } from './utils/release';
 import { store } from './utils/store';
+import { isMac } from './utils/window';
 import type { SettingData } from './preload/setting';
-
-const isMac = process.platform === ('darwin' as const);
 
 export const createMenu = ({
 	webview,
