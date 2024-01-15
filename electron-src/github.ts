@@ -44,27 +44,29 @@ export const gainGithubUser = async () => {
 };
 export const gainGithubIssues = async () => {
 	log.debug('main.gainGithubIssues を実行します');
-	if (isBlockGainIssues) return;
-	isBlockGainIssues = true;
+	try {
+		if (isBlockGainIssues) return;
+		isBlockGainIssues = true;
 
-	const now = dayjs();
-	const issues = await gainIssues(latestIssueGainTime);
+		const now = dayjs();
+		const issues = await gainIssues(latestIssueGainTime);
 
-	latestIssueGainTime = now;
-	store.set('issueData', {
-		updatedAt: now.toISOString(),
-		issues: joinIssueData(issues),
-	});
+		latestIssueGainTime = now;
+		store.set('issueData', {
+			updatedAt: now.toISOString(),
+			issues: joinIssueData(issues),
+		});
 
-	if (issues.length > 0) {
-		updateIssueSupplementMap(issues);
-		noticeIssues();
+		if (issues.length > 0) {
+			updateIssueSupplementMap(issues);
+			noticeIssues();
+		}
+		return issues;
+	} finally {
+		setTimeout(() => {
+			isBlockGainIssues = false;
+		}, 5000);
 	}
-
-	setTimeout(() => {
-		isBlockGainIssues = false;
-	}, 5000);
-	return issues;
 };
 
 export const scheduledGainGithubIssues = () => {
