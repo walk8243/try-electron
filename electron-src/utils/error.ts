@@ -29,7 +29,9 @@ const sendError = (error: ErrorData, mainWindow: BrowserWindow) => {
 	mainWindow.webContents.send('error:show', error);
 };
 const viewReportIssue = (webview: BrowserView) => {
-	webview.webContents.loadURL(CREATE_ISSUE_URL);
+	webview.webContents.loadURL(CREATE_ISSUE_URL).catch((error) => {
+		log.error('エラー報告用のIssueを表示できませんでした', error);
+	});
 };
 const showErrorDialog = (mainWindow: BrowserWindow) => {
 	dialog.showMessageBox(mainWindow, {

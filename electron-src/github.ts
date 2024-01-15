@@ -22,9 +22,7 @@ export const gainGithubAllData = async (isBoot: boolean) => {
 	try {
 		await Promise.all([gainGithubUser(), gainGithubIssues()]);
 	} catch (error) {
-		log.error(
-			new Error('GitHub APIからのデータ取得に失敗しました', { cause: error }),
-		);
+		log.error('GitHub APIからのデータ取得に失敗しました', error);
 		if (isBoot) {
 			ipcMain.once('app:ready', () => {
 				showErrorDialog();
@@ -44,32 +42,36 @@ export const gainGithubUser = async () => {
 };
 export const gainGithubIssues = async () => {
 	log.debug('main.gainGithubIssues を実行します');
-	if (isBlockGainIssues) return;
-	isBlockGainIssues = true;
+	try {
+		if (isBlockGainIssues) return;
+		isBlockGainIssues = true;
 
-	const now = dayjs();
-	const issues = await gainIssues(latestIssueGainTime);
+		const now = dayjs();
+		const issues = await gainIssues(latestIssueGainTime);
 
-	latestIssueGainTime = now;
-	store.set('issueData', {
-		updatedAt: now.toISOString(),
-		issues: joinIssueData(issues),
-	});
+		latestIssueGainTime = now;
+		store.set('issueData', {
+			updatedAt: now.toISOString(),
+			issues: joinIssueData(issues),
+		});
 
-	if (issues.length > 0) {
-		updateIssueSupplementMap(issues);
-		noticeIssues();
+		if (issues.length > 0) {
+			updateIssueSupplementMap(issues);
+			noticeIssues();
+		}
+		return issues;
+	} finally {
+		setTimeout(() => {
+			isBlockGainIssues = false;
+		}, 5000);
 	}
-
-	setTimeout(() => {
-		isBlockGainIssues = false;
-	}, 5000);
-	return issues;
 };
 
 export const scheduledGainGithubIssues = () => {
 	issueTimer = setInterval(() => {
-		gainGithubIssues();
+		gainGithubIssues().catch((error) => {
+			log.warn('Issueの定期取得に失敗しました', error);
+		});
 	}, IssueGainInterval);
 };
 export const refreshIssueTimer = () => {
