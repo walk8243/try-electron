@@ -6,8 +6,10 @@ import {
 	MenuItemConstructorOptions,
 	safeStorage,
 	shell,
+	dialog,
 } from 'electron';
 import isDev from 'electron-is-dev';
+import log from 'electron-log/main';
 
 import {
 	gainGithubAllData,
@@ -168,8 +170,14 @@ const viewMenu = ({
 		label: 'Issueを再読み込み',
 		accelerator: 'CmdOrCtrl+Shift+R',
 		click: () => {
-			gainGithubIssues();
-			refreshIssueTimer();
+			gainGithubIssues()
+				.then((_issues) => {
+					refreshIssueTimer();
+				})
+				.catch((error) => {
+					log.warn('Issueの手動取得に失敗しました', error);
+					dialog.showErrorBox('Issueの取得に失敗しました', error.message);
+				});
 		},
 	},
 	...viewDevMenu(),

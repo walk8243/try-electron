@@ -22,9 +22,7 @@ export const gainGithubAllData = async (isBoot: boolean) => {
 	try {
 		await Promise.all([gainGithubUser(), gainGithubIssues()]);
 	} catch (error) {
-		log.error(
-			new Error('GitHub APIからのデータ取得に失敗しました', { cause: error }),
-		);
+		log.error('GitHub APIからのデータ取得に失敗しました', error);
 		if (isBoot) {
 			ipcMain.once('app:ready', () => {
 				showErrorDialog();
@@ -71,7 +69,9 @@ export const gainGithubIssues = async () => {
 
 export const scheduledGainGithubIssues = () => {
 	issueTimer = setInterval(() => {
-		gainGithubIssues();
+		gainGithubIssues().catch((error) => {
+			log.warn('Issueの定期取得に失敗しました', error);
+		});
 	}, IssueGainInterval);
 };
 export const refreshIssueTimer = () => {
