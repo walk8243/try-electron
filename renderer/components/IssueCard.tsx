@@ -176,6 +176,7 @@ const findIssueReviewStateIcon = (state: Review['state']) => {
 		case 'CHANGES_REQUESTED':
 			return 'error';
 		case 'COMMENTED':
+		case 'PENDING':
 			return 'ordinarily';
 	}
 
