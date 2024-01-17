@@ -5,10 +5,6 @@ export default function Document() {
 		<Html>
 			<Head>
 				<meta charSet="utf-8" />
-				<link
-					rel="stylesheet"
-					href="https://unpkg.com/modern-css-reset/dist/reset.min.css"
-				/>
 			</Head>
 			<body>
 				<Main />

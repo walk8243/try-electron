@@ -60,6 +60,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
+    "modern-css-reset": "^1.4.0",
     "next": "^14.0.4",
     "png2icons": "^2.0.1",
     "prettier": "^3.2.2",
