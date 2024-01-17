@@ -177,6 +177,8 @@ const findIssueReviewStateIcon = (state: Review['state']) => {
 			return 'error';
 		case 'COMMENTED':
 			return 'ordinarily';
+		case 'PENDING':
+			return 'default';
 	}
 
 	safeUnreachable(state);
