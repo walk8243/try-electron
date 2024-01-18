@@ -28,7 +28,7 @@ https://(Domain)/api/v3/
 
 使用するには、GitHub Tokenが必要になります。
 
-こちら https://github.com/settings/tokens からTokenを取得してください。
+[https://github.com/settings/tokens](https://github.com/settings/tokens) からTokenを取得してください。
 
 最低限必要な権限は以下になります。
 
