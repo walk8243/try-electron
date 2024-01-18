@@ -3,9 +3,11 @@ layout: default
 is_project_header: true
 ---
 
-<p class="img-box">
-  <img alt="app image" src="img/figma.png" />
-</p>
+<div class="app-image">
+  <p class="img-box">
+    <img alt="app image" src="img/figma.png" />
+  </p>
+</div>
 
 <div class="top-layout">
   <p class="img-box">
