@@ -11,8 +11,8 @@ Homebrew Caskを用意しています。
 以下のコマンドにて、インストールしてください。
 
 ```sh
-brew tap --cask @walk8243/cask
-brew install --cask @walk8243/cask/amethyst
+brew tap walk8243/cask
+brew install --cask walk8243/cask/amethyst
 ```
 
 インストール後、起動するためには **システム設定** > **プライバシーとセキュリティ** でAmethystを許可してください。
