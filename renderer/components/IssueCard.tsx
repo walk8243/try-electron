@@ -1,5 +1,7 @@
 import { useContext } from 'react';
 import type { MouseEvent } from 'react';
+import dayjs from 'dayjs';
+import RelativeTime from 'dayjs/plugin/relativeTime';
 import { ColorModeContext } from '../context/ColorModeContext';
 import { IssueContext, IssueDispatchContext } from '../context/IssueContext';
 import { safeUnreachable } from '../utils/typescript';
@@ -27,6 +29,8 @@ import {
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { githubColor } from '../styles/colors/github';
 import surfaceColor from '../styles/colors/surface';
+
+dayjs.extend(RelativeTime);
 
 export const IssueCard = ({
 	issue,
@@ -112,6 +116,11 @@ export const IssueCard = ({
 									sx={{ ml: 1, '::before': { content: '"#"' } }}
 								>
 									{issue.number}
+								</Typography>
+							</Grid>
+							<Grid item>
+								<Typography variant="body2">
+									{dayjs(issue.updatedAt).fromNow()}
 								</Typography>
 							</Grid>
 						</Grid>
