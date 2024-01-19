@@ -53,10 +53,12 @@ export const main = async () => {
 
 const setupMainWindow = () => {
 	const mainWindow = windowUtils.createMain();
+	let isFirst = true;
 	ipcMain.handle('app:version', () => `v${app.getVersion()}`);
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
-		sendMainData(mainWindow);
+		sendMainData(mainWindow, isFirst);
+		isFirst = false;
 	});
 
 	return mainWindow;
@@ -201,7 +203,7 @@ const setupDevtools = async () => {
 	}
 };
 
-const sendMainData = (mainWindow: BrowserWindow) => {
+const sendMainData = (mainWindow: BrowserWindow, isFirst: boolean) => {
 	if (store.has('userInfo')) {
 		mainWindow.webContents.send('app:pushUser', store.get('userInfo'));
 	}
@@ -222,6 +224,7 @@ const sendMainData = (mainWindow: BrowserWindow) => {
 		);
 	}
 
+	if (!isFirst) return;
 	store.onDidChange('userInfo', (userInfo) => {
 		log.debug('蓄積しているUserInfoが更新されました');
 		mainWindow.webContents.send('app:pushUser', userInfo ?? {});
