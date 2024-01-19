@@ -22,11 +22,13 @@ import { isMac } from './utils/window';
 import type { SettingData } from './preload/setting';
 
 export const createMenu = ({
+	mainWindow,
 	webview,
 	settingWindow,
 	aboutWindow,
 	updateWindow,
 }: {
+	mainWindow: BrowserWindow;
 	settingWindow: BrowserWindow;
 	aboutWindow: BrowserWindow;
 	updateWindow: BrowserWindow;
@@ -47,7 +49,7 @@ export const createMenu = ({
 		},
 		{
 			label: '表示',
-			submenu: viewMenu({ webview }),
+			submenu: viewMenu({ mainWindow, webview }),
 		},
 		{
 			label: 'ウィンドウ',
@@ -157,8 +159,10 @@ const editMenu = (): MenuItemConstructorOptions[] => [
 ];
 
 const viewMenu = ({
+	mainWindow,
 	webview,
 }: {
+	mainWindow: BrowserWindow;
 	webview: BrowserView;
 }): MenuItemConstructorOptions[] => [
 	{
@@ -178,6 +182,14 @@ const viewMenu = ({
 					log.warn('Issueの手動取得に失敗しました', error);
 					dialog.showErrorBox('Issueの取得に失敗しました', error.message);
 				});
+		},
+	},
+	{
+		label: 'Amethystを再読み込み',
+		accelerator: 'CmdOrCtrl+Shift+Alt+R',
+		click: () => {
+			mainWindow.webContents.reload();
+			webview.webContents.reload();
 		},
 	},
 	...viewDevMenu(),

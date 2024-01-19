@@ -120,6 +120,7 @@ const setupModalWindow = (
 	const aboutWindow = windowUtils.createAbout(mainWindow);
 	const updateWindow = windowUtils.createUpdate(mainWindow);
 	const menu = createMenu({
+		mainWindow,
 		webview,
 		settingWindow,
 		aboutWindow,
