@@ -22,7 +22,7 @@ export type IssueState =
 	| { type: 'pull-request'; state: 'open' | 'draft' | 'merged' | 'closed' };
 
 export interface IssueLabel {
-	key: string | null;
+	key: string;
 	text: string;
 	color: string | null;
 }
