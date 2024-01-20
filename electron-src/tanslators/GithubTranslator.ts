@@ -73,7 +73,7 @@ const translateIssueLabels = (
 const translateIssueLabel = (label: string | GithubLabel): IssueLabel => {
 	if (typeof label === 'string') {
 		return {
-			key: null,
+			key: label,
 			text: label,
 			color: null,
 		};
