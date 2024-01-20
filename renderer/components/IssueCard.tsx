@@ -7,9 +7,10 @@ import { IssueContext, IssueDispatchContext } from '../context/IssueContext';
 import { safeUnreachable } from '../utils/typescript';
 import type {
 	Issue,
+	IssueLabel,
 	IssueState,
-	Review,
 	IssueSupplementMapData,
+	Review,
 } from '../../types/Issue';
 
 import {
@@ -18,9 +19,12 @@ import {
 	Card,
 	CardActionArea,
 	CardContent,
+	Chip,
 	Grid,
+	PaletteMode,
 	Typography,
 } from '@mui/material';
+import { alpha, getContrastRatio } from '@mui/material/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	IconDefinition,
@@ -109,6 +113,13 @@ export const IssueCard = ({
 							</Grid>
 						</Grid>
 						<Grid container columnGap={1}>
+							{issue.labels.map((label) => (
+								<Grid item key={label.key}>
+									<IssueLabel label={label} mode={colorMode} />
+								</Grid>
+							))}
+						</Grid>
+						<Grid container columnGap={1}>
 							<Grid container item xs zeroMinWidth>
 								<Typography variant="body2">{issue.repositoryName}</Typography>
 								<Typography
@@ -145,6 +156,32 @@ const ReviewerAvatar = ({ review }: { review: Review }) => {
 				sx={{ width: 20, height: 20 }}
 			/>
 		</Badge>
+	);
+};
+const IssueLabel = ({
+	label,
+	mode,
+}: {
+	label: IssueLabel;
+	mode: PaletteMode;
+}) => {
+	const color = label.color ? `#${label.color}` : '#000';
+	const bgColor = alpha(color, mode === 'dark' ? 0.9 : 0.67);
+	const textColor =
+		getContrastRatio(color, surfaceColor[mode].main) > 4.5
+			? surfaceColor[mode].main
+			: surfaceColor[mode].on;
+
+	return (
+		<Chip
+			label={label.text}
+			size="small"
+			sx={{
+				color: textColor,
+				backgroundColor: bgColor,
+				border: `1px solid ${color}`,
+			}}
+		/>
 	);
 };
 
