@@ -56,21 +56,7 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 				dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1,
 			),
 		)
-		.then((issues) => {
-			return Promise.all(
-				issues.map(async (issue): Promise<GithubFullIssueData> => {
-					if (issue.pull_request && issue.repository) {
-						const reviews = await gainPrReviews(
-							issue.repository.full_name,
-							issue.number,
-						);
-						return { issue, reviews };
-					}
-
-					return { issue, reviews: [] };
-				}),
-			);
-		})
+		.then((issues) => Promise.all(issues.map(addIssueSupplement)))
 		.then(translateIssues);
 };
 
@@ -117,6 +103,27 @@ const gainFilterdIssues = async (
 		}
 	}
 	return issues;
+};
+
+const addIssueSupplement = async (
+	issue: GithubIssue,
+): Promise<GithubFullIssueData> => {
+	if (issue.pull_request && issue.repository) {
+		try {
+			const reviews = await gainPrReviews(
+				issue.repository.full_name,
+				issue.number,
+			);
+			return { issue, reviews };
+		} catch (error) {
+			log.info(
+				`PR[${issue.repository.full_name}#${issue.number}]のレビューの取得に失敗しました`,
+				error,
+			);
+		}
+	}
+
+	return { issue, reviews: [] };
 };
 
 const accessGithub = async ({
