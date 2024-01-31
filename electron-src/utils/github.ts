@@ -1,6 +1,7 @@
 import { net, safeStorage } from 'electron';
 import log from 'electron-log/main';
 import dayjs from 'dayjs';
+import PQueue from 'p-queue';
 import {
 	translateUserInfo,
 	translateIssues,
@@ -15,6 +16,12 @@ import type {
 } from '../types/GitHub';
 import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
+
+const queue = new PQueue({
+	concurrency: 2, // 並列処理数
+	interval: 60 * 1000, // 制約期間
+	intervalCap: 20, // 制約期間内の処理回数
+});
 
 export const githubAppSettings: {
 	readonly filterTypes: readonly IssueFilterType[];
@@ -133,9 +140,22 @@ const accessGithub = async ({
 	path: string;
 	query?: Record<string, string>;
 }): Promise<unknown> => {
-	const url = new URL(path, getBaseUrl());
-	url.search = new URLSearchParams(query ?? {}).toString();
-	log.debug('[accessGithub URL]', url.href);
+	return new Promise((resolve, reject) => {
+		queue.add(async () => {
+			try {
+				const url = new URL(path, getBaseUrl());
+				url.search = new URLSearchParams(query ?? {}).toString();
+				log.debug('[accessGithub URL]', url.href);
+
+				const result = await requestToGithub(url);
+				resolve(result);
+			} catch (error) {
+				reject(error);
+			}
+		});
+	});
+};
+const requestToGithub = async (url: URL) => {
 	const response = await net.fetch(url.href, {
 		headers: {
 			Accept: 'application/vnd.github+json',
