@@ -33,9 +33,9 @@ export const main = async () => {
 
 	await prepareNext('./renderer');
 	mainWindow.loadURL(getLoadedUrl());
-	if (!storeDataFlag.isInvalid()) {
-		gainGithubAllData(true);
-	}
+	const initialDataPromise = storeDataFlag.isInvalid()
+		? Promise.resolve()
+		: gainGithubAllData(true);
 
 	const webview = setupWebview(mainWindow);
 	const { updateWindow } = setupModalWindow(
@@ -46,7 +46,9 @@ export const main = async () => {
 	setupErrorHandling(mainWindow, webview);
 	setupResizedSetting(mainWindow, webview);
 
-	scheduledGainGithubIssues();
+	initialDataPromise.then(() => {
+		scheduledGainGithubIssues();
+	});
 	await announceUpdate(updateWindow, false);
 	await setupDevtools();
 };

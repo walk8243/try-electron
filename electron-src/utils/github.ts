@@ -1,10 +1,17 @@
 import { net, safeStorage } from 'electron';
 import log from 'electron-log/main';
 import dayjs from 'dayjs';
+import PQueue from 'p-queue';
 import {
 	translateUserInfo,
 	translateIssues,
 } from '../tanslators/GithubTranslator';
+import {
+	CustomQueueClass,
+	QUEUE_CONCURRENCY,
+	QUEUE_INTERVAL,
+	QUEUE_INTERVAL_CAP,
+} from './queue';
 import { store } from './store';
 import StoreDataFlag from '../enum/StoreDataFlag';
 import type {
@@ -15,6 +22,13 @@ import type {
 } from '../types/GitHub';
 import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
+
+const queue = new PQueue({
+	concurrency: QUEUE_CONCURRENCY,
+	interval: QUEUE_INTERVAL,
+	intervalCap: QUEUE_INTERVAL_CAP,
+	queueClass: CustomQueueClass,
+});
 
 export const githubAppSettings: {
 	readonly filterTypes: readonly IssueFilterType[];
@@ -56,21 +70,7 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 				dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1,
 			),
 		)
-		.then((issues) => {
-			return Promise.all(
-				issues.map(async (issue): Promise<GithubFullIssueData> => {
-					if (issue.pull_request && issue.repository) {
-						const reviews = await gainPrReviews(
-							issue.repository.full_name,
-							issue.number,
-						);
-						return { issue, reviews };
-					}
-
-					return { issue, reviews: [] };
-				}),
-			);
-		})
+		.then((issues) => Promise.all(issues.map(addIssueSupplement)))
 		.then(translateIssues);
 };
 
@@ -119,6 +119,27 @@ const gainFilterdIssues = async (
 	return issues;
 };
 
+const addIssueSupplement = async (
+	issue: GithubIssue,
+): Promise<GithubFullIssueData> => {
+	if (issue.pull_request && issue.repository) {
+		try {
+			const reviews = await gainPrReviews(
+				issue.repository.full_name,
+				issue.number,
+			);
+			return { issue, reviews };
+		} catch (error) {
+			log.info(
+				`PR[${issue.repository.full_name}#${issue.number}]のレビューの取得に失敗しました`,
+				error,
+			);
+		}
+	}
+
+	return { issue, reviews: [] };
+};
+
 const accessGithub = async ({
 	path,
 	query,
@@ -126,9 +147,22 @@ const accessGithub = async ({
 	path: string;
 	query?: Record<string, string>;
 }): Promise<unknown> => {
-	const url = new URL(path, getBaseUrl());
-	url.search = new URLSearchParams(query ?? {}).toString();
-	log.debug('[accessGithub URL]', url.href);
+	return new Promise((resolve, reject) => {
+		queue.add(async () => {
+			try {
+				const url = new URL(path, getBaseUrl());
+				url.search = new URLSearchParams(query ?? {}).toString();
+				log.debug('[accessGithub URL]', url.href);
+
+				const result = await requestToGithub(url);
+				resolve(result);
+			} catch (error) {
+				reject(error);
+			}
+		});
+	});
+};
+const requestToGithub = async (url: URL) => {
 	const response = await net.fetch(url.href, {
 		headers: {
 			Accept: 'application/vnd.github+json',
