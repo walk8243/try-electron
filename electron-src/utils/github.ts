@@ -6,12 +6,7 @@ import {
 	translateUserInfo,
 	translateIssues,
 } from '../tanslators/GithubTranslator';
-import {
-	CustomQueueClass,
-	QUEUE_CONCURRENCY,
-	QUEUE_INTERVAL,
-	QUEUE_INTERVAL_CAP,
-} from './queue';
+import { QUEUE_CONCURRENCY, QUEUE_INTERVAL, QUEUE_INTERVAL_CAP } from './queue';
 import { store } from './store';
 import StoreDataFlag from '../enum/StoreDataFlag';
 import type {
@@ -27,7 +22,6 @@ const queue = new PQueue({
 	concurrency: QUEUE_CONCURRENCY,
 	interval: QUEUE_INTERVAL,
 	intervalCap: QUEUE_INTERVAL_CAP,
-	queueClass: CustomQueueClass,
 });
 
 export const githubAppSettings: {
