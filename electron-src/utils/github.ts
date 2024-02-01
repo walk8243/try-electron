@@ -30,7 +30,7 @@ export const githubAppSettings: {
 	readonly targetTerm: { value: number; unit: dayjs.ManipulateType };
 	readonly retentionTerm: { value: number; unit: dayjs.ManipulateType };
 } = {
-	filterTypes: ['assigned', 'created', 'mentioned'],
+	filterTypes: ['assigned', 'created', 'mentioned', 'subscribed'],
 	perPage: 100,
 	targetTerm: { value: 1, unit: 'month' },
 	retentionTerm: { value: 3, unit: 'month' },
