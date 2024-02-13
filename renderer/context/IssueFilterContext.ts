@@ -83,7 +83,7 @@ export const fromFilterType = (type: IssueFilterTypes): IssueFilter => {
 			return issueFilterMyPr;
 	}
 
-	safeUnreachable(type);
+	safeUnreachable('IssueFilterTypes', type);
 };
 
 const checkOwnIssue = (issue: Issue, user: UserInfo | null) => {

@@ -193,7 +193,7 @@ const findIssueIcon = (state: IssueState): IconDefinition => {
 			return faCodePullRequest;
 	}
 
-	safeUnreachable(state);
+	safeUnreachable('IssueState.type', state);
 };
 const findIssueStateColor = (state: IssueState) => {
 	switch (state.state) {
@@ -213,7 +213,7 @@ const findIssueStateColor = (state: IssueState) => {
 			return githubColor.draft;
 	}
 
-	safeUnreachable(state);
+	safeUnreachable('IssueState.state', state);
 };
 const findIssueReviewStateIcon = (state: Review['state']) => {
 	switch (state) {
@@ -227,5 +227,5 @@ const findIssueReviewStateIcon = (state: Review['state']) => {
 			return 'default';
 	}
 
-	safeUnreachable(state);
+	safeUnreachable('Review.state', state);
 };
