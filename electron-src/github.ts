@@ -56,6 +56,13 @@ export const gainGithubIssues = async () => {
 		});
 
 		if (issues.length > 0) {
+			log.debug('[review state list]', [
+				...new Set(
+					issues.flatMap((issue) =>
+						issue.reviews.map((review) => review.state),
+					),
+				),
+			]);
 			updateIssueSupplementMap(issues);
 			noticeIssues();
 		}
