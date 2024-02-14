@@ -77,7 +77,12 @@ export interface GithubPrReview {
 	id: number;
 	node_id: string;
 	user: GithubUserMinimumInfo;
-	state: 'APPROVED' | 'CHANGES_REQUESTED' | 'COMMENTED' | 'PENDING';
+	state:
+		| 'APPROVED'
+		| 'CHANGES_REQUESTED'
+		| 'COMMENTED'
+		| 'PENDING'
+		| 'DISMISSED';
 }
 
 type GithubFullIssueData = {

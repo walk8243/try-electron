@@ -35,7 +35,12 @@ export interface UserInfo {
 export interface Review {
 	login: string;
 	avatarUrl: string;
-	state: 'APPROVED' | 'CHANGES_REQUESTED' | 'COMMENTED' | 'PENDING';
+	state:
+		| 'APPROVED'
+		| 'CHANGES_REQUESTED'
+		| 'COMMENTED'
+		| 'PENDING'
+		| 'DISMISSED';
 }
 
 export interface IssueSupplementMapData {

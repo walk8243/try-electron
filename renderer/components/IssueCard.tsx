@@ -224,6 +224,7 @@ const findIssueReviewStateIcon = (state: Review['state']) => {
 		case 'COMMENTED':
 			return 'ordinarily';
 		case 'PENDING':
+		case 'DISMISSED':
 			return 'default';
 	}
 
