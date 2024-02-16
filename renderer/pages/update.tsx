@@ -159,7 +159,7 @@ const HowToUpdateForMac = () => {
 	]);
 	const colorMode = useContext(ColorModeContext);
 	const handleClick = () => {
-		window.update?.copy(commands.join('\n'));
+		window.update?.copy(commands.map((command) => command.value).join('\n'));
 	};
 
 	return (
