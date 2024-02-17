@@ -66,6 +66,10 @@ export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 				dayjs(a.updated_at).isBefore(dayjs(b.updated_at)) ? 1 : -1,
 			),
 		)
+		.then((issues) => {
+			log.debug('[gainIssues list]', issues);
+			return issues;
+		})
 		.then((issues) => Promise.all(issues.map(addIssueSupplement)))
 		.then(translateIssues);
 };
