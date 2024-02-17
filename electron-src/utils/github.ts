@@ -147,18 +147,17 @@ const gainSubscribedIssues = async (since: string): Promise<GithubIssue[]> => {
 	});
 };
 const gainNotifications = async (
-	_since: string,
+	since: string,
 ): Promise<GithubNotification[]> => {
 	const notifications: GithubNotification[] = [];
-	const since = dayjs(new Date(2024, 1, 17, 12, 0, 0, 0));
-	for (let page = 1; page < 3; page++) {
+	for (let page = 1; ; page++) {
 		const results = await accessGithub({
 			path: 'notifications',
 			query: {
 				all: String(true),
 				per_page: '50',
 				page: String(page),
-				since: since.toISOString(),
+				since,
 			},
 		});
 		if (!isNotificationsType(results)) {
