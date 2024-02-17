@@ -123,20 +123,28 @@ const gainSubscribedIssues = async (since: string): Promise<GithubIssue[]> => {
 			.filter(
 				(n) => n.subject.type === 'Issue' || n.subject.type === 'PullRequest',
 			)
-			.map((n) => n.subject.url)
-			.reduce((acc: string[], cur: string) => {
-				if (!acc.includes(cur)) {
-					acc.push(cur);
-				}
-				return acc;
-			}, [])
-			.map((url) => accessGithub({ path: url })),
+			.map((n) => ({
+				repository: n.repository,
+				url: n.subject.url,
+			}))
+			.map(async (n) => {
+				const issue = await accessGithub({ path: n.url });
+				return {
+					issue,
+					repository: n.repository,
+				};
+			}),
 	);
-	if (!isIssuesType(issues)) {
-		throw new Error('GitHub APIからのIssueのresponseが異常値です');
-	}
 
-	return issues;
+	return issues.map((issue) => {
+		if (!isIssueType(issue.issue)) {
+			throw new Error('GitHub APIからのIssueのresponseが異常値です');
+		}
+		return {
+			...issue.issue,
+			repository: issue.repository,
+		};
+	});
 };
 const gainNotifications = async (
 	_since: string,
