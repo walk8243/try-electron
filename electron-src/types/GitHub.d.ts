@@ -85,6 +85,20 @@ export interface GithubPrReview {
 		| 'DISMISSED';
 }
 
+export interface GithubNotification {
+	id: string;
+	repository: GithubRepository;
+	subject: {
+		title: string;
+		type: 'Issue' | 'PullRequest' | 'CheckSuite' | string;
+		url: string;
+	};
+	reason: 'mention' | 'ci_activity' | 'subscribed' | string;
+	unread: boolean;
+	updated_at: string;
+	url: string;
+}
+
 type GithubFullIssueData = {
 	issue: GithubIssue;
 	reviews: GithubPrReview[];

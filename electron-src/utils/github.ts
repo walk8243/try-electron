@@ -14,6 +14,7 @@ import type {
 	GithubIssue,
 	GithubPrReview,
 	GithubFullIssueData,
+	GithubNotification,
 } from '../types/GitHub';
 import type { UserInfo } from '../../types/User';
 import type { Issue } from '../../types/Issue';
@@ -46,11 +47,12 @@ export const gainUserInfo = async (): Promise<UserInfo> => {
 
 export const gainIssues = async (target?: dayjs.Dayjs): Promise<Issue[]> => {
 	const since = target?.toISOString() ?? '';
-	return Promise.all(
-		githubAppSettings.filterTypes.map((filterType) =>
+	return Promise.all([
+		...githubAppSettings.filterTypes.map((filterType) =>
 			gainFilterdIssues(filterType, since),
 		),
-	)
+		gainSubscribedIssues(since),
+	])
 		.then((values) => {
 			return values.flat().reduce((acc: GithubIssue[], cur: GithubIssue) => {
 				if (!acc.some((issue) => issue.node_id === cur.node_id)) {
@@ -111,6 +113,56 @@ const gainFilterdIssues = async (
 		}
 	}
 	return issues;
+};
+
+const gainSubscribedIssues = async (since: string): Promise<GithubIssue[]> => {
+	const notifications = await gainNotifications(since);
+
+	const issues = await Promise.all(
+		notifications
+			.filter(
+				(n) => n.subject.type === 'Issue' || n.subject.type === 'PullRequest',
+			)
+			.map((n) => n.subject.url)
+			.reduce((acc: string[], cur: string) => {
+				if (!acc.includes(cur)) {
+					acc.push(cur);
+				}
+				return acc;
+			}, [])
+			.map((url) => accessGithub({ path: url })),
+	);
+	if (!isIssuesType(issues)) {
+		throw new Error('GitHub APIからのIssueのresponseが異常値です');
+	}
+
+	return issues;
+};
+const gainNotifications = async (
+	_since: string,
+): Promise<GithubNotification[]> => {
+	const notifications: GithubNotification[] = [];
+	const since = dayjs(new Date(2024, 1, 17, 12, 0, 0, 0));
+	for (let page = 1; page < 3; page++) {
+		const results = await accessGithub({
+			path: 'notifications',
+			query: {
+				all: String(true),
+				per_page: '50',
+				page: String(page),
+				since: since.toISOString(),
+			},
+		});
+		if (!isNotificationsType(results)) {
+			throw new Error('GitHub APIからのNotificationのresponseが異常値です');
+		}
+		notifications.push(...results);
+		if (results.length < 50) {
+			break;
+		}
+	}
+
+	return notifications;
 };
 
 const addIssueSupplement = async (
@@ -246,6 +298,29 @@ const isPrReviewType = (target: unknown): target is GithubPrReview => {
 		'node_id' in target &&
 		'user' in target &&
 		'state' in target
+	);
+};
+const isNotificationsType = (
+	target: unknown,
+): target is GithubNotification[] => {
+	if (!Array.isArray(target)) {
+		return false;
+	}
+
+	return target.every((notification) => isNotificationType(notification));
+};
+const isNotificationType = (target: unknown): target is GithubNotification => {
+	if (target === null || typeof target !== 'object') {
+		return false;
+	}
+	return (
+		'id' in target &&
+		'repository' in target &&
+		'subject' in target &&
+		'reason' in target &&
+		'unread' in target &&
+		'updated_at' in target &&
+		'url' in target
 	);
 };
 
