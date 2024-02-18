@@ -13,6 +13,7 @@ export const store = new Store<{
 		issues: Issue[];
 	};
 	issueSupplementMap: IssueSupplementMap;
+	colorMode: 'light' | 'dark';
 }>({
 	schema: {
 		appVersion: {
@@ -149,6 +150,11 @@ export const store = new Store<{
 					},
 				},
 			},
+		},
+		colorMode: {
+			type: 'string',
+			enum: ['light', 'dark'],
+			default: 'light',
 		},
 	},
 });

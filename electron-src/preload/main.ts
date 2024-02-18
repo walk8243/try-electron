@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('electron', {
 	) => ipcRenderer.on('browser:load', (_event, value) => callback(value)),
 
 	ready: () => ipcRenderer.send('app:ready'),
+	color: () => ipcRenderer.invoke('app:color'),
 	pushUser: (callback: (user: UserInfo) => void) =>
 		ipcRenderer.on('app:pushUser', (_event, value) => callback(value)),
 	pushIssues: (callback: (issues: Issue[]) => void) =>
@@ -31,6 +32,7 @@ contextBridge.exposeInMainWorld('electron', {
 		ipcRenderer.on('app:pushIssueSupplementMap', (_event, value) =>
 			callback(value),
 		),
+	setColor: (mode: 'light' | 'dark') => ipcRenderer.send('app:setColor', mode),
 });
 
 contextBridge.exposeInMainWorld('error', {
