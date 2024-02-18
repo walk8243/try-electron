@@ -22,6 +22,7 @@ declare global {
 				}) => void,
 			) => void;
 			ready: () => void;
+			color: () => Promise<'light' | 'dark'>;
 			pushUser: (callback: (user: UserInfo) => void) => void;
 			pushIssues: (callback: (issues: Issue[]) => void) => void;
 			pushUpdatedAt: (callback: (updatedAt: string) => void) => void;
@@ -33,9 +34,11 @@ declare global {
 			display: () => Promise<SettingData>;
 			submit: (data: SettingData) => void;
 			cancel: () => void;
+			color: () => Promise<'light' | 'dark'>;
 		};
 		about: {
 			version: () => Promise<string>;
+			color: () => Promise<'light' | 'dark'>;
 			close: () => void;
 			open: (url: string) => void;
 		};
@@ -46,6 +49,7 @@ declare global {
 			openRelease: () => void;
 			openLink: (url: string) => void;
 			close: () => void;
+			color: () => Promise<'light' | 'dark'>;
 		};
 		error: {
 			throw: (error: ErrorData) => void;

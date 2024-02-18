@@ -8,9 +8,9 @@ contextBridge.exposeInMainWorld('update', {
 	download: () => ipcRenderer.send('update:download'),
 	copy: (command: string) => ipcRenderer.send('update:copy', command),
 	openRelease: () => ipcRenderer.send('update:openRelease'),
-	color: () => ipcRenderer.invoke('app:color'),
 	openLink: (url: string) => ipcRenderer.send('browser:open', url),
 	close: () => ipcRenderer.send('update:close'),
+	color: () => ipcRenderer.invoke('app:color'),
 });
 
 contextBridge.exposeInMainWorld('error', {

@@ -158,6 +158,7 @@ const UpdatedAt = () => {
 			if (!updatedAt) return '';
 			setUpdatedAt(dayjs(updatedAt).format('YYYY/MM/DD HH:mm:ss'));
 		});
+		window.electron.color().then(colorModeDispatch);
 	}, []);
 
 	return (
