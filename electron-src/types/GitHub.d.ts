@@ -65,7 +65,6 @@ export interface GithubMilestone {
 export interface GithubPullRequest {
 	merged_at: string | null;
 	html_url: string | null;
-	diff_url: string | null;
 }
 
 export interface GithubIssueReaction {
