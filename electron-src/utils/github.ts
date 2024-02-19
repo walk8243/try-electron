@@ -130,12 +130,14 @@ const gainSubscribedIssues = async (since: string): Promise<GithubIssue[]> => {
 			.map((n) => ({
 				repository: n.repository,
 				url: n.subject.url,
+				type: n.subject.type,
 			}))
 			.map(async (n) => {
 				const issue = await accessGithub({ path: n.url });
 				return {
 					issue,
 					repository: n.repository,
+					type: n.type,
 				};
 			}),
 	);
@@ -147,6 +149,17 @@ const gainSubscribedIssues = async (since: string): Promise<GithubIssue[]> => {
 		return {
 			...issue.issue,
 			repository: issue.repository,
+			pull_request:
+				issue.type === 'PullRequest'
+					? {
+							html_url: issue.issue.html_url,
+							merged_at:
+								'merged_at' in issue.issue &&
+								typeof issue.issue.merged_at === 'string'
+									? issue.issue.merged_at
+									: null,
+						}
+					: undefined,
 		};
 	});
 };
