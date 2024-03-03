@@ -1,6 +1,6 @@
 {
   "name": "amethyst",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "description": "関係しているGitHubのIssuesを表示・管理するデスクトップアプリ",
   "main": "main/index.js",
   "scripts": {
