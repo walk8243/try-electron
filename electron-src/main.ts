@@ -57,7 +57,7 @@ const setupMainWindow = () => {
 	const mainWindow = windowUtils.createMain();
 	let isFirst = true;
 	ipcMain.handle('app:version', () => `v${app.getVersion()}`);
-	ipcMain.handle('app:color', () => store.get('color'));
+	ipcMain.handle('app:color', () => store.get('color', 'light'));
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
 		sendMainData(mainWindow, isFirst);

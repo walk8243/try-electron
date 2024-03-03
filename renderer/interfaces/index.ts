@@ -1,3 +1,4 @@
+import type { PaletteMode } from '@mui/material';
 import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
 import type { UpdateStatus } from '../../types/Update';
@@ -22,23 +23,24 @@ declare global {
 				}) => void,
 			) => void;
 			ready: () => void;
-			color: () => Promise<'light' | 'dark'>;
+			color: () => Promise<PaletteMode>;
 			pushUser: (callback: (user: UserInfo) => void) => void;
 			pushIssues: (callback: (issues: Issue[]) => void) => void;
 			pushUpdatedAt: (callback: (updatedAt: string) => void) => void;
 			pushIssueSupplementMap: (
 				callback: (map: IssueSupplementMap) => void,
 			) => void;
+			setColor: (mode: PaletteMode) => void;
 		};
 		setting: {
 			display: () => Promise<SettingData>;
 			submit: (data: SettingData) => void;
 			cancel: () => void;
-			color: () => Promise<'light' | 'dark'>;
+			color: () => Promise<PaletteMode>;
 		};
 		about: {
 			version: () => Promise<string>;
-			color: () => Promise<'light' | 'dark'>;
+			color: () => Promise<PaletteMode>;
 			close: () => void;
 			open: (url: string) => void;
 		};
@@ -49,7 +51,7 @@ declare global {
 			openRelease: () => void;
 			openLink: (url: string) => void;
 			close: () => void;
-			color: () => Promise<'light' | 'dark'>;
+			color: () => Promise<PaletteMode>;
 		};
 		error: {
 			throw: (error: ErrorData) => void;
