@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('update', {
 	openRelease: () => ipcRenderer.send('update:openRelease'),
 	openLink: (url: string) => ipcRenderer.send('browser:open', url),
 	close: () => ipcRenderer.send('update:close'),
+	color: () => ipcRenderer.invoke('app:color'),
 });
 
 contextBridge.exposeInMainWorld('error', {

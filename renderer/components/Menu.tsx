@@ -158,6 +158,7 @@ const UpdatedAt = () => {
 			if (!updatedAt) return '';
 			setUpdatedAt(dayjs(updatedAt).format('YYYY/MM/DD HH:mm:ss'));
 		});
+		window.electron.color().then(colorModeDispatch);
 	}, []);
 
 	return (
@@ -180,7 +181,9 @@ const UpdatedAt = () => {
 					aria-label="toggle color mode"
 					size="small"
 					onClick={() => {
-						colorModeDispatch(colorMode === 'light' ? 'dark' : 'light');
+						const mode = colorMode === 'light' ? 'dark' : 'light';
+						colorModeDispatch(mode);
+						window.electron.setColor(mode);
 					}}
 				>
 					<FontAwesomeIcon icon={colorMode === 'light' ? faSun : faMoon} />

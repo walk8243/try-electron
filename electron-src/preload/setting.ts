@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('setting', {
 	display: () => ipcRenderer.invoke('setting:display'),
 	submit: (data: SettingData) => ipcRenderer.send('setting:submit', data),
 	cancel: () => ipcRenderer.send('setting:cancel'),
+	color: () => ipcRenderer.invoke('app:color'),
 });
 
 contextBridge.exposeInMainWorld('error', {

@@ -57,10 +57,15 @@ const setupMainWindow = () => {
 	const mainWindow = windowUtils.createMain();
 	let isFirst = true;
 	ipcMain.handle('app:version', () => `v${app.getVersion()}`);
+	ipcMain.handle('app:color', () => store.get('color', 'light'));
 	ipcMain.on('app:ready', (_event) => {
 		log.verbose('App renderer is ready');
 		sendMainData(mainWindow, isFirst);
 		isFirst = false;
+	});
+	ipcMain.on('app:setColor', (_event, mode: 'light' | 'dark') => {
+		log.verbose('App ColorMode is changed', mode);
+		store.set('color', mode);
 	});
 
 	return mainWindow;

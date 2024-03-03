@@ -3,6 +3,7 @@ import type { ErrorData } from '../../types/Error';
 
 contextBridge.exposeInMainWorld('about', {
 	version: () => ipcRenderer.invoke('app:version'),
+	color: () => ipcRenderer.invoke('app:color'),
 	close: () => ipcRenderer.send('about:close'),
 	open: (url: string) => ipcRenderer.send('browser:open', url),
 });
