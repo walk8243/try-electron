@@ -31,6 +31,8 @@ declare global {
 				callback: (map: IssueSupplementMap) => void,
 			) => void;
 			setColor: (mode: PaletteMode) => void;
+			showContextMenu: () => void;
+			commandContextMenu: (callback: (command: string) => void) => void;
 		};
 		setting: {
 			display: () => Promise<SettingData>;

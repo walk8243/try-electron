@@ -33,6 +33,12 @@ contextBridge.exposeInMainWorld('electron', {
 			callback(value),
 		),
 	setColor: (mode: 'light' | 'dark') => ipcRenderer.send('app:setColor', mode),
+
+	showContextMenu: () => ipcRenderer.send('app:showContextMenu'),
+	commandContextMenu: (callback: (command: string) => void) =>
+		ipcRenderer.on('app:commandContextMenu', (_event, command) =>
+			callback(command),
+		),
 });
 
 contextBridge.exposeInMainWorld('error', {

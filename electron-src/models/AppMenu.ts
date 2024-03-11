@@ -15,11 +15,11 @@ import {
 	gainGithubAllData,
 	gainGithubIssues,
 	refreshIssueTimer,
-} from './github';
-import { announceUpdate } from './utils/release';
-import { store } from './utils/store';
-import { isMac } from './utils/window';
-import type { SettingData } from './preload/setting';
+} from '../github';
+import { announceUpdate } from '../utils/release';
+import { store } from '../utils/store';
+import { isMac } from '../utils/window';
+import type { SettingData } from '../preload/setting';
 
 export const createMenu = ({
 	mainWindow,

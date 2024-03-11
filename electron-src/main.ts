@@ -17,7 +17,8 @@ import installExtension, {
 } from 'electron-devtools-installer';
 
 import { gainGithubAllData, scheduledGainGithubIssues } from './github';
-import { createMenu } from './menu';
+import { createMenu } from './models/AppMenu';
+import { createContextMenu } from './models/ContextMenu';
 import { handleErrorDisplay } from './utils/error';
 import { checkStoreData } from './utils/github';
 import { announceUpdate } from './utils/release';
@@ -45,6 +46,7 @@ export const main = async () => {
 	);
 	setupErrorHandling(mainWindow, webview);
 	setupResizedSetting(mainWindow, webview);
+	setupContextMenu();
 
 	initialDataPromise.then(() => {
 		scheduledGainGithubIssues();
@@ -200,6 +202,15 @@ const setupResizedSetting = (
 		.on('leave-full-screen', () => {
 			windowUtils.putWebview(mainWindow, webview);
 		});
+};
+const setupContextMenu = () => {
+	ipcMain.on('app:showContextMenu', (event, _props) => {
+		log.verbose('コンテキストメニューを表示します');
+		const window = BrowserWindow.fromWebContents(event.sender);
+		if (!window) return;
+		const menu = createContextMenu(window);
+		menu.popup({ window });
+	});
 };
 const setupDevtools = async () => {
 	if (isDev) {
