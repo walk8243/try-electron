@@ -1,6 +1,5 @@
 import { useEffect, useContext, useState, MouseEvent } from 'react';
 import dayjs from 'dayjs';
-import log from 'electron-log/renderer';
 import {
 	ColorModeContext,
 	ColorModeDispatchContext,
@@ -14,6 +13,7 @@ import {
 } from '../context/IssueFilterContext';
 import { IssueSupplementMapContext } from '../context/IssueSupplementMapContext';
 import { UserInfoContext } from '../context/UserContext';
+import type { IssueFilterTypes } from '../../types/IssueFilter';
 import type { UserInfo } from '../../types/User';
 
 import {
@@ -90,15 +90,10 @@ const User = ({ user }: { user: UserInfo }) => (
 const Filters = ({ user }: { user: UserInfo | null }) => {
 	const issueFilter = useContext(IssueFilterContext);
 	const issueFilterDispatch = useContext(IssueFilterDispatchContext);
-	const showContextMenu = (e: MouseEvent) => {
+	const showContextMenu = (e: MouseEvent, type: IssueFilterTypes) => {
 		e.preventDefault();
-		window.electron.showContextMenu();
+		window.electron.showFilterMenu(type);
 	};
-	useEffect(() => {
-		window.electron.commandContextMenu((command) => {
-			log.debug('context-menu-command', command);
-		});
-	}, []);
 
 	return (
 		<Grid container item width="100%">
@@ -111,7 +106,7 @@ const Filters = ({ user }: { user: UserInfo | null }) => {
 						<ListItem key={filter.type} sx={{ my: 1, p: 0 }}>
 							<ListItemButton
 								onClick={(_e) => issueFilterDispatch(filter)}
-								onContextMenu={showContextMenu}
+								onContextMenu={(e) => showContextMenu(e, filter.type)}
 								selected={filter.type === issueFilter.type}
 								sx={{ p: '3px', borderRadius: 1 }}
 							>

@@ -9,6 +9,7 @@ import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { safeUnreachable } from '../utils/typescript';
 import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
+import type { IssueFilterTypes } from '../../types/IssueFilter';
 
 export const issueFilterAll: IssueFilter = {
 	type: 'all',
@@ -56,7 +57,6 @@ export const IssueFilterDispatchContext = createContext<Dispatch<IssueFilter>>(
 	(_v) => {},
 );
 
-export type IssueFilterTypes = 'all' | 'open' | 'my-issues' | 'my-pr';
 type IssueFilterOption = { user: UserInfo | null };
 
 export interface IssueFilter {

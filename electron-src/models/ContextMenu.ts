@@ -1,11 +1,13 @@
 import { Menu } from 'electron';
+import log from 'electron-log';
+import type { IssueFilterTypes } from '../../types/IssueFilter';
 
-export const createContextMenu = (window: Electron.BrowserWindow): Menu => {
+export const createFilterMenu = (type: IssueFilterTypes): Menu => {
 	const menu = Menu.buildFromTemplate([
 		{
 			label: 'Menu Item 1',
 			click: () => {
-				window.webContents.send('app:commandContextMenu', 'menu-item-1');
+				log.debug('context-menu-command', 'menu-item-1', type);
 			},
 		},
 		{ type: 'separator' },

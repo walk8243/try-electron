@@ -18,7 +18,7 @@ import installExtension, {
 
 import { gainGithubAllData, scheduledGainGithubIssues } from './github';
 import { createMenu } from './models/AppMenu';
-import { createContextMenu } from './models/ContextMenu';
+import { createFilterMenu } from './models/ContextMenu';
 import { handleErrorDisplay } from './utils/error';
 import { checkStoreData } from './utils/github';
 import { announceUpdate } from './utils/release';
@@ -26,6 +26,7 @@ import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 import type { Issue } from '../types/Issue';
+import type { IssueFilterTypes } from '../types/IssueFilter';
 import type { ErrorData } from '../types/Error';
 
 export const main = async () => {
@@ -204,11 +205,11 @@ const setupResizedSetting = (
 		});
 };
 const setupContextMenu = () => {
-	ipcMain.on('app:showContextMenu', (event, _props) => {
-		log.verbose('コンテキストメニューを表示します');
+	ipcMain.on('app:showFilterMenu', (event, type: IssueFilterTypes) => {
+		log.verbose('コンテキストメニューを表示します', type);
 		const window = BrowserWindow.fromWebContents(event.sender);
 		if (!window) return;
-		const menu = createContextMenu(window);
+		const menu = createFilterMenu(type);
 		menu.popup({ window });
 	});
 };
