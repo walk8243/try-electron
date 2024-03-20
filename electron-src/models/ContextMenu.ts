@@ -1,17 +1,27 @@
 import { Menu } from 'electron';
 import log from 'electron-log';
+import { store } from '../utils/store';
+import { choiceIssueFilterFunction } from '../utils/IssueFilter';
 import type { IssueFilterTypes } from '../../types/IssueFilter';
 
 export const createFilterMenu = (type: IssueFilterTypes): Menu => {
 	const menu = Menu.buildFromTemplate([
 		{
-			label: 'Menu Item 1',
+			label: '全て既読にする',
 			click: () => {
-				log.debug('context-menu-command', 'menu-item-1', type);
+				log.debug('context-menu-command', '全て既読にする', type);
+				const { issues } = store.get('issueData', {
+					updatedAt: '',
+					issues: [],
+				});
+				const user = store.get('userInfo');
+				issues
+					.filter((issue) => choiceIssueFilterFunction(type)(issue, { user }))
+					.forEach((issue) => {
+						store.set(`issueSupplementMap.${issue.key}.isRead`, true);
+					});
 			},
 		},
-		{ type: 'separator' },
-		{ label: 'Menu Item 2', type: 'checkbox', checked: true },
 	]);
 	return menu;
 };
