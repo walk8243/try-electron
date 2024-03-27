@@ -6,13 +6,13 @@ import {
 	faCodePullRequest,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
-import { safeUnreachable } from '../utils/typescript';
 import {
 	issueFilterAllFunction,
 	issueFilterOpenFunction,
 	issueFilterMyIssuesFunction,
 	issueFilterMyPrFunction,
-} from '../utils/IssueFilter';
+} from '@walk8243/amethyst-common';
+import { safeUnreachable } from '../utils/typescript';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
 import type {
 	IssueFilterTypes,

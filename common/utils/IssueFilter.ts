@@ -1,7 +1,9 @@
-import type { IssueFilterFunction } from '../../types/IssueFilter';
 import type { Issue } from '../../types/Issue';
+import type {
+	IssueFilterFunction,
+	IssueFilterTypes,
+} from '../../types/IssueFilter';
 import type { UserInfo } from '../../types/User';
-import type { IssueFilterTypes } from '../../types/IssueFilter';
 
 export const issueFilterAllFunction: IssueFilterFunction = (_issue, _option) =>
 	true;

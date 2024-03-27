@@ -1,0 +1,7 @@
+{
+  "name": "@walk8243/amethyst-common",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  }
+}

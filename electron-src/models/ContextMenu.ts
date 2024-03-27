@@ -1,7 +1,7 @@
 import { Menu } from 'electron';
 import log from 'electron-log';
+import { choiceIssueFilterFunction } from '@walk8243/amethyst-common';
 import { store } from '../utils/store';
-import { choiceIssueFilterFunction } from '../utils/IssueFilter';
 import type { IssueFilterTypes } from '../../types/IssueFilter';
 
 export const createFilterMenu = (type: IssueFilterTypes): Menu => {
