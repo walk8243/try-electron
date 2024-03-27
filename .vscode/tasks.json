@@ -37,6 +37,20 @@
 		},
 		{
 			"type": "npm",
+			"script": "dist",
+			"label": "dist",
+			"detail": "build and pack",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"type": "npm",
 			"script": "lint",
 			"problemMatcher": [],
 			"label": "lint",
@@ -70,6 +84,20 @@
 			"problemMatcher": [],
 			"dependsOrder": "sequence",
 			"dependsOn": ["lint", "type-check"],
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "pack",
+			"problemMatcher": [],
+			"dependsOrder": "sequence",
+			"dependsOn": ["lint", "type-check", "dist"],
 			"presentation": {
 				"echo": true,
 				"reveal": "silent",
