@@ -6,15 +6,25 @@ import {
 	faCodePullRequest,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
+import {
+	issueFilterAllFunction,
+	issueFilterOpenFunction,
+	issueFilterMyIssuesFunction,
+	issueFilterMyPrFunction,
+} from '@walk8243/amethyst-common';
 import { safeUnreachable } from '../utils/typescript';
-import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
+import type {
+	IssueFilterTypes,
+	IssueFilterFunction,
+	IssueFilterOption,
+} from '../../types/IssueFilter';
 
 export const issueFilterAll: IssueFilter = {
 	type: 'all',
 	title: 'Inbox',
 	icon: faInbox,
-	filter: (_issue, _option) => true,
+	filter: issueFilterAllFunction,
 	count: (issues, map, option) =>
 		countUnreadIssues(issueFilterAll, issues, map, option),
 } as const;
@@ -22,7 +32,7 @@ export const issueFilterOpen: IssueFilter = {
 	type: 'open',
 	title: 'Open',
 	icon: faCircleHalfStroke,
-	filter: (issue, _option) => ['open', 'draft'].includes(issue.state.state),
+	filter: issueFilterOpenFunction,
 	count: (issues, map, option) =>
 		countUnreadIssues(issueFilterOpen, issues, map, option),
 } as const;
@@ -30,8 +40,7 @@ export const issueFilterMyIssues: IssueFilter = {
 	type: 'my-issues',
 	title: 'My Issues',
 	icon: faCircleDot,
-	filter: (issue, { user }) =>
-		issue.state.type === 'issue' && checkOwnIssue(issue, user),
+	filter: issueFilterMyIssuesFunction,
 	count: (issues, map, option) =>
 		countUnreadIssues(issueFilterMyIssues, issues, map, option),
 } as const;
@@ -39,8 +48,7 @@ export const issueFilterMyPr: IssueFilter = {
 	type: 'my-pr',
 	title: 'My PullRequests',
 	icon: faCodePullRequest,
-	filter: (issue, { user }) =>
-		issue.state.type === 'pull-request' && checkOwnIssue(issue, user),
+	filter: issueFilterMyPrFunction,
 	count: (issues, map, option) =>
 		countUnreadIssues(issueFilterMyPr, issues, map, option),
 } as const;
@@ -56,14 +64,11 @@ export const IssueFilterDispatchContext = createContext<Dispatch<IssueFilter>>(
 	(_v) => {},
 );
 
-export type IssueFilterTypes = 'all' | 'open' | 'my-issues' | 'my-pr';
-type IssueFilterOption = { user: UserInfo | null };
-
 export interface IssueFilter {
 	readonly type: IssueFilterTypes;
 	readonly title: string;
 	readonly icon: IconDefinition;
-	readonly filter: (issue: Issue, option: IssueFilterOption) => boolean;
+	readonly filter: IssueFilterFunction;
 	readonly count: (
 		issues: Issue[],
 		map: IssueSupplementMap,
@@ -84,13 +89,6 @@ export const fromFilterType = (type: IssueFilterTypes): IssueFilter => {
 	}
 
 	safeUnreachable('IssueFilterTypes', type);
-};
-
-const checkOwnIssue = (issue: Issue, user: UserInfo | null) => {
-	if (!issue.creator || !user) {
-		return false;
-	}
-	return issue.creator.login === user.login;
 };
 
 const countUnreadIssues = (

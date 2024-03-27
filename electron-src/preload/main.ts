@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
+import type { IssueFilterTypes } from '../../types/IssueFilter';
 import type { ErrorData } from '../../types/Error';
 
 contextBridge.exposeInMainWorld('electron', {
@@ -33,6 +34,9 @@ contextBridge.exposeInMainWorld('electron', {
 			callback(value),
 		),
 	setColor: (mode: 'light' | 'dark') => ipcRenderer.send('app:setColor', mode),
+
+	showFilterMenu: (type: IssueFilterTypes) =>
+		ipcRenderer.send('app:showFilterMenu', type),
 });
 
 contextBridge.exposeInMainWorld('error', {

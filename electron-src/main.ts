@@ -17,7 +17,8 @@ import installExtension, {
 } from 'electron-devtools-installer';
 
 import { gainGithubAllData, scheduledGainGithubIssues } from './github';
-import { createMenu } from './menu';
+import { createMenu } from './models/AppMenu';
+import { createFilterMenu } from './models/ContextMenu';
 import { handleErrorDisplay } from './utils/error';
 import { checkStoreData } from './utils/github';
 import { announceUpdate } from './utils/release';
@@ -25,6 +26,7 @@ import { getLoadedUrl } from './utils/render';
 import { store } from './utils/store';
 import * as windowUtils from './utils/window';
 import type { Issue } from '../types/Issue';
+import type { IssueFilterTypes } from '../types/IssueFilter';
 import type { ErrorData } from '../types/Error';
 
 export const main = async () => {
@@ -45,6 +47,7 @@ export const main = async () => {
 	);
 	setupErrorHandling(mainWindow, webview);
 	setupResizedSetting(mainWindow, webview);
+	setupContextMenu();
 
 	initialDataPromise.then(() => {
 		scheduledGainGithubIssues();
@@ -200,6 +203,15 @@ const setupResizedSetting = (
 		.on('leave-full-screen', () => {
 			windowUtils.putWebview(mainWindow, webview);
 		});
+};
+const setupContextMenu = () => {
+	ipcMain.on('app:showFilterMenu', (event, type: IssueFilterTypes) => {
+		log.verbose('コンテキストメニューを表示します', type);
+		const window = BrowserWindow.fromWebContents(event.sender);
+		if (!window) return;
+		const menu = createFilterMenu(type);
+		menu.popup({ window });
+	});
 };
 const setupDevtools = async () => {
 	if (isDev) {

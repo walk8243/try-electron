@@ -3,6 +3,7 @@ import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
 import type { UpdateStatus } from '../../types/Update';
 import type { ErrorData } from '../../types/Error';
+import type { IssueFilterTypes } from '../../types/IssueFilter';
 
 declare global {
 	interface Window {
@@ -31,6 +32,7 @@ declare global {
 				callback: (map: IssueSupplementMap) => void,
 			) => void;
 			setColor: (mode: PaletteMode) => void;
+			showFilterMenu: (type: IssueFilterTypes) => void;
 		};
 		setting: {
 			display: () => Promise<SettingData>;

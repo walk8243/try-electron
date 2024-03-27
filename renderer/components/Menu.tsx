@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState, MouseEvent } from 'react';
 import dayjs from 'dayjs';
 import {
 	ColorModeContext,
@@ -13,6 +13,7 @@ import {
 } from '../context/IssueFilterContext';
 import { IssueSupplementMapContext } from '../context/IssueSupplementMapContext';
 import { UserInfoContext } from '../context/UserContext';
+import type { IssueFilterTypes } from '../../types/IssueFilter';
 import type { UserInfo } from '../../types/User';
 
 import {
@@ -89,6 +90,10 @@ const User = ({ user }: { user: UserInfo }) => (
 const Filters = ({ user }: { user: UserInfo | null }) => {
 	const issueFilter = useContext(IssueFilterContext);
 	const issueFilterDispatch = useContext(IssueFilterDispatchContext);
+	const showContextMenu = (e: MouseEvent, type: IssueFilterTypes) => {
+		e.preventDefault();
+		window.electron.showFilterMenu(type);
+	};
 
 	return (
 		<Grid container item width="100%">
@@ -101,6 +106,7 @@ const Filters = ({ user }: { user: UserInfo | null }) => {
 						<ListItem key={filter.type} sx={{ my: 1, p: 0 }}>
 							<ListItemButton
 								onClick={(_e) => issueFilterDispatch(filter)}
+								onContextMenu={(e) => showContextMenu(e, filter.type)}
 								selected={filter.type === issueFilter.type}
 								sx={{ p: '3px', borderRadius: 1 }}
 							>
