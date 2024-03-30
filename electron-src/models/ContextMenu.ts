@@ -1,4 +1,4 @@
-import { Menu } from 'electron';
+import { clipboard, Menu, shell } from 'electron';
 import log from 'electron-log';
 import { choiceIssueFilterFunction } from '@walk8243/amethyst-common';
 import { store } from '../utils/store';
@@ -25,3 +25,48 @@ export const createFilterMenu = (type: IssueFilterTypes): Menu => {
 	]);
 	return menu;
 };
+
+export const createWebviewMenu = (params: Electron.ContextMenuParams) => {
+	const menu = Menu.buildFromTemplate([
+		...(params.linkURL && params.linkText ? createLinkContextMenu(params) : []),
+	]);
+	return menu;
+};
+
+const createLinkContextMenu = (
+	params: Electron.ContextMenuParams,
+): Electron.MenuItemConstructorOptions[] => [
+	{
+		label: 'リンクをブラウザで開く',
+		click: () => {
+			log.debug(
+				'webview-context-menu-command',
+				'リンクをブラウザで開く',
+				params.linkURL,
+			);
+			shell.openExternal(params.linkURL);
+		},
+	},
+	{
+		label: 'リンクURLをコピー',
+		click: () => {
+			log.debug(
+				'webview-context-menu-command',
+				'リンクURLをコピー',
+				params.linkURL,
+			);
+			clipboard.writeText(params.linkURL);
+		},
+	},
+	{
+		label: 'リンクテキストをコピー',
+		click: () => {
+			log.debug(
+				'webview-context-menu-command',
+				'リンクテキストをコピー',
+				params.linkText,
+			);
+			clipboard.writeText(params.linkText);
+		},
+	},
+];
