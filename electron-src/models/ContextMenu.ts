@@ -1,10 +1,11 @@
 import { clipboard, Menu, shell } from 'electron';
 import log from 'electron-log';
 import { choiceIssueFilterFunction } from '@walk8243/amethyst-common';
-import { store } from '../utils/store';
+import { store, removeIssue } from '../utils/store';
+import { Issue } from '../../types/Issue';
 import type { IssueFilterTypes } from '../../types/IssueFilter';
 
-export const createFilterMenu = (type: IssueFilterTypes): Menu => {
+export const createFilterMenu = (type: IssueFilterTypes) => {
 	const menu = Menu.buildFromTemplate([
 		{
 			label: '全て既読にする',
@@ -20,6 +21,34 @@ export const createFilterMenu = (type: IssueFilterTypes): Menu => {
 					.forEach((issue) => {
 						store.set(`issueSupplementMap.${issue.key}.isRead`, true);
 					});
+			},
+		},
+	]);
+	return menu;
+};
+
+export const createIssueCardMenu = (issue: Issue) => {
+	const menu = Menu.buildFromTemplate([
+		{
+			label: '既読にする',
+			click: () => {
+				log.debug(
+					'context-menu-command',
+					'既読にする',
+					`${issue.repositoryName}#${issue.number}`,
+				);
+				store.set(`issueSupplementMap.${issue.key}.isRead`, true);
+			},
+		},
+		{
+			label: '非表示にする',
+			click: () => {
+				log.debug(
+					'context-menu-command',
+					'非表示にする',
+					`${issue.repositoryName}#${issue.number}`,
+				);
+				removeIssue(issue);
 			},
 		},
 	]);
