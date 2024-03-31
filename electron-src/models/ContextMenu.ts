@@ -57,7 +57,21 @@ export const createIssueCardMenu = (issue: Issue) => {
 
 export const createWebviewMenu = (params: Electron.ContextMenuParams) => {
 	const menu = Menu.buildFromTemplate([
-		...(params.linkURL && params.linkText ? createLinkContextMenu(params) : []),
+		...(params.linkURL && params.linkText
+			? createLinkContextMenu(params)
+			: [
+					{
+						label: 'このページをブラウザで開く',
+						click: () => {
+							log.debug(
+								'webview-context-menu-command',
+								'このページをブラウザで開く',
+								params.pageURL,
+							);
+							shell.openExternal(params.pageURL);
+						},
+					},
+				]),
 	]);
 	return menu;
 };
@@ -75,6 +89,9 @@ const createLinkContextMenu = (
 			);
 			shell.openExternal(params.linkURL);
 		},
+	},
+	{
+		type: 'separator',
 	},
 	{
 		label: 'リンクURLをコピー',
