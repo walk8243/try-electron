@@ -49,6 +49,7 @@ export const store = new Store<{
 			properties: {
 				updatedAt: {
 					type: 'string',
+					default: '',
 				},
 				issues: {
 					type: 'array',
@@ -134,6 +135,7 @@ export const store = new Store<{
 							},
 						},
 					},
+					default: [],
 				},
 			},
 		},
@@ -164,6 +166,15 @@ if (
 	semver.major(store.get('appVersion', '0.0.0'))
 ) {
 	store.delete('userInfo');
-	store.delete('issueData');
 }
+store.delete('issueData');
 store.set('appVersion', app.getVersion());
+
+export const removeIssue = (issue: Issue) => {
+	const { issues } = store.get('issueData');
+	issues.splice(
+		issues.findIndex((i) => i.key === issue.key),
+		1,
+	);
+	store.set('issueData.issues', issues);
+};

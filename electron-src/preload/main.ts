@@ -37,6 +37,8 @@ contextBridge.exposeInMainWorld('electron', {
 
 	showFilterMenu: (type: IssueFilterTypes) =>
 		ipcRenderer.send('app:showFilterMenu', type),
+	showIssueCardMenu: (issue: Issue) =>
+		ipcRenderer.send('app:showIssueCardMenu', issue),
 });
 
 contextBridge.exposeInMainWorld('error', {

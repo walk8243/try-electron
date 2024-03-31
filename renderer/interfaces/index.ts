@@ -33,6 +33,7 @@ declare global {
 			) => void;
 			setColor: (mode: PaletteMode) => void;
 			showFilterMenu: (type: IssueFilterTypes) => void;
+			showIssueCardMenu: (issue: Issue) => void;
 		};
 		setting: {
 			display: () => Promise<SettingData>;

@@ -18,7 +18,7 @@ import installExtension, {
 
 import { gainGithubAllData, scheduledGainGithubIssues } from './github';
 import { createMenu } from './models/AppMenu';
-import { createFilterMenu } from './models/ContextMenu';
+import { createFilterMenu, createIssueCardMenu } from './models/ContextMenu';
 import { handleErrorDisplay } from './utils/error';
 import { checkStoreData } from './utils/github';
 import { announceUpdate } from './utils/release';
@@ -206,10 +206,20 @@ const setupResizedSetting = (
 };
 const setupContextMenu = () => {
 	ipcMain.on('app:showFilterMenu', (event, type: IssueFilterTypes) => {
-		log.verbose('コンテキストメニューを表示します', type);
+		log.verbose('Issueフィルタのコンテキストメニューを表示します', type);
 		const window = BrowserWindow.fromWebContents(event.sender);
 		if (!window) return;
 		const menu = createFilterMenu(type);
+		menu.popup({ window });
+	});
+	ipcMain.on('app:showIssueCardMenu', (event, issue: Issue) => {
+		log.verbose(
+			'Issueカードのコンテキストメニューを表示します',
+			`${issue.repositoryName}#${issue.number}`,
+		);
+		const window = BrowserWindow.fromWebContents(event.sender);
+		if (!window) return;
+		const menu = createIssueCardMenu(issue);
 		menu.popup({ window });
 	});
 };

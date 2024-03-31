@@ -51,6 +51,10 @@ export const IssueCard = ({
 		window.electron?.issue(issue);
 		e.preventDefault();
 	};
+	const handleContextMenu = (e: MouseEvent) => {
+		e.preventDefault();
+		window.electron.showIssueCardMenu(issue);
+	};
 
 	return (
 		<Card
@@ -69,7 +73,7 @@ export const IssueCard = ({
 						}),
 			}}
 		>
-			<CardActionArea onClick={handleClick}>
+			<CardActionArea onClick={handleClick} onContextMenu={handleContextMenu}>
 				<CardContent>
 					<Grid container direction="column" rowGap={1}>
 						<Grid container columnGap={1}>
