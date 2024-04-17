@@ -167,7 +167,6 @@ if (
 ) {
 	store.delete('userInfo');
 }
-store.delete('issueData');
 store.set('appVersion', app.getVersion());
 
 export const removeIssue = (issue: Issue) => {
