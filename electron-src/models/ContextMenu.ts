@@ -16,8 +16,12 @@ export const createFilterMenu = (type: IssueFilterTypes) => {
 					issues: [],
 				});
 				const user = store.get('userInfo');
+				const readIssues = Object.entries(store.get('issueSupplementMap', {}))
+					.filter(([_key, value]) => value.isRead)
+					.map(([key, _value]) => key);
 				issues
 					.filter((issue) => choiceIssueFilterFunction(type)(issue, { user }))
+					.filter((issue) => !readIssues.includes(issue.key))
 					.forEach((issue) => {
 						store.set(`issueSupplementMap.${issue.key}.isRead`, true);
 					});
