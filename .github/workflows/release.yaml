@@ -9,6 +9,7 @@ env:
   TAG_ID: ${{ github.event.release.tag_name }}
   ELECTRON_VER: ''
   BREW_SHA: ''
+  BREW_SHA_INTEL: ''
 
 jobs:
   note:
@@ -28,6 +29,7 @@ jobs:
 
   linux:
     if: false
+    needs: note
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +42,7 @@ jobs:
       - run: ls -al dist
 
   windows:
+    needs: note
     runs-on: windows-latest
     steps:
       - name: Set git to use LF
@@ -56,6 +59,7 @@ jobs:
       - run: gh release upload ${{ env.TAG_ID }} 'dist\amethyst-${{ env.TAG_ID }}-win.msi'
 
   macos:
+    needs: note
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -68,18 +72,9 @@ jobs:
       - run: echo "BREW_SHA=$(shasum -a 256 'dist/amethyst-${{ env.TAG_ID }}-mac.zip' | awk '{ print $1 }')" >> $GITHUB_ENV
       - run: gh release upload ${{ env.TAG_ID }} 'dist/amethyst-${{ env.TAG_ID }}-mac.dmg'
       - run: gh release upload ${{ env.TAG_ID }} 'dist/amethyst-${{ env.TAG_ID }}-mac.zip'
-      - name: Homebrew update
-        run: |
-          gh workflow run main.yml --repo walk8243/homebrew-cask \
-            -f type=brew \
-            -f cask=amethyst \
-            -f version=${{ env.TAG_ID }} \
-            -f sha256=${{ env.BREW_SHA }} \
-            -f url=${{ github.event.release.html_url }}
-    env:
-      GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
   macos-intel:
+    needs: note
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
@@ -97,3 +92,23 @@ jobs:
         run: |
           mv dist/amethyst-${{ env.TAG_ID }}-mac.zip dist/amethyst-${{ env.TAG_ID }}-mac-intel.zip
           gh release upload ${{ env.TAG_ID }} 'dist/amethyst-${{ env.TAG_ID }}-mac-intel.zip'
+
+  brew:
+    needs: [macos, macos-intel]
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh release download ${{ env.TAG_ID }} --pattern '*.zip'
+      - name: Set environment variables
+        run: |
+          echo "BREW_SHA=$(shasum -a 256 'dist/amethyst-${{ env.TAG_ID }}-mac.zip' | awk '{ print $1 }')" >> $GITHUB_ENV
+          echo "BREW_SHA_INTEL=$(shasum -a 256 'dist/amethyst-${{ env.TAG_ID }}-mac-intel.zip' | awk '{ print $1 }')" >> $GITHUB_ENV
+      - name: Homebrew update
+        run: |
+          gh workflow run main.yml --repo walk8243/homebrew-cask \
+            -f type=brew \
+            -f cask=amethyst \
+            -f version=${{ env.TAG_ID }} \
+            -f sha256=${{ env.BREW_SHA }} \
+            -f sha256_intel=${{ env.BREW_SHA_INTEL }}
+    env:
+      GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
