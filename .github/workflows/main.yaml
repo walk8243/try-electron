@@ -19,3 +19,8 @@ jobs:
       - run: npm ci
       - run: npm run type-check
       - run: npm run lint
+
+  brew:
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh release download v1.16.0 --pattern '*.zip'
