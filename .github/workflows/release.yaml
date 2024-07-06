@@ -29,6 +29,7 @@ jobs:
 
   linux:
     if: false
+    needs: note
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +42,7 @@ jobs:
       - run: ls -al dist
 
   windows:
+    needs: note
     runs-on: windows-latest
     steps:
       - name: Set git to use LF
@@ -57,6 +59,7 @@ jobs:
       - run: gh release upload ${{ env.TAG_ID }} 'dist\amethyst-${{ env.TAG_ID }}-win.msi'
 
   macos:
+    needs: note
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -71,6 +74,7 @@ jobs:
       - run: gh release upload ${{ env.TAG_ID }} 'dist/amethyst-${{ env.TAG_ID }}-mac.zip'
 
   macos-intel:
+    needs: note
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
