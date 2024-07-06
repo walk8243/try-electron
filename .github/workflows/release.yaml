@@ -100,8 +100,8 @@ jobs:
       - run: gh release download ${{ env.TAG_ID }} --pattern '*.zip'
       - name: Set environment variables
         run: |
-          echo "BREW_SHA=$(shasum -a 256 'dist/amethyst-${{ env.TAG_ID }}-mac.zip' | awk '{ print $1 }')" >> $GITHUB_ENV
-          echo "BREW_SHA_INTEL=$(shasum -a 256 'dist/amethyst-${{ env.TAG_ID }}-mac-intel.zip' | awk '{ print $1 }')" >> $GITHUB_ENV
+          echo "BREW_SHA=$(shasum -a 256 'amethyst-${{ env.TAG_ID }}-mac.zip' | awk '{ print $1 }')" >> $GITHUB_ENV
+          echo "BREW_SHA_INTEL=$(shasum -a 256 'amethyst-${{ env.TAG_ID }}-mac-intel.zip' | awk '{ print $1 }')" >> $GITHUB_ENV
       - name: Homebrew update
         run: |
           gh workflow run main.yml --repo walk8243/homebrew-cask \
