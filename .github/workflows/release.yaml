@@ -97,6 +97,7 @@ jobs:
     needs: [macos, macos-intel]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: gh release download ${{ env.TAG_ID }} --pattern '*.zip'
       - name: Set environment variables
         run: |
