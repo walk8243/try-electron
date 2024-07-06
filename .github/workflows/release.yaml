@@ -112,3 +112,4 @@ jobs:
             -f sha256_intel=${{ env.BREW_SHA_INTEL }}
     env:
       GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      GH_REPO: ${{ github.repository }}
