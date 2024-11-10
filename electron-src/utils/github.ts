@@ -240,10 +240,23 @@ const requestToGithub = async (url: URL) => {
 			'X-GitHub-Api-Version': '2022-11-28',
 		},
 	});
+
 	if (!response.ok) {
-		throw new Error(`HTTP error! status: ${response.status}`);
+		throw new Error(`HTTP error! status: ${response.status}, url: ${url.href}`);
 	}
-	return await response.json();
+
+	try {
+		return await response.json();
+	} catch (error) {
+		log.debug('[requestToGithub JSON parse]', {
+			url: url.href,
+			body: await response.text(),
+		});
+		throw new Error(
+			'GitHub API response is not in JSON format. Please check the API response.',
+			{ cause: error },
+		);
+	}
 };
 
 const getBaseUrl = () => {
