@@ -192,25 +192,23 @@ const viewMenu = ({
 			webview.webContents.reload();
 		},
 	},
-	...viewDevMenu(),
+	...viewDevMenu(mainWindow),
 	{ type: 'separator' },
 	{ role: 'togglefullscreen', label: 'フルスクリーン', enabled: false },
 ];
-const viewDevMenu = (): MenuItemConstructorOptions[] =>
+const viewDevMenu = (
+	mainWindow: BrowserWindow,
+): MenuItemConstructorOptions[] =>
 	isDev
 		? [
 				{
 					label: '開発者ツールを開く',
 					accelerator: 'CmdOrCtrl+Shift+I',
-					click: (_menuItem, window) => {
-						if (!window) {
-							return;
-						}
-
-						if (window.webContents.isDevToolsOpened()) {
-							window.webContents.closeDevTools();
+					click: () => {
+						if (mainWindow.webContents.isDevToolsOpened()) {
+							mainWindow.webContents.closeDevTools();
 						} else {
-							window.webContents.openDevTools({ mode: 'detach' });
+							mainWindow.webContents.openDevTools({ mode: 'detach' });
 						}
 					},
 				},
