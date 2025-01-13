@@ -19,7 +19,7 @@ import {
 import { announceUpdate } from '../utils/release';
 import { store } from '../utils/store';
 import { isMac } from '../utils/window';
-import type { SettingData } from '../preload/setting';
+import type { SettingData } from '../../types/Setting';
 
 export const createMenu = ({
 	mainWindow,
@@ -62,23 +62,17 @@ export const createMenu = ({
 		},
 	]);
 
-	ipcMain.handle('setting:display', async () => {
-		return {
-			baseUrl: store.get('githubSetting', {
-				baseUrl: 'https://api.github.com/',
-				token: '',
-			}).baseUrl,
-		};
-	});
+	ipcMain.handle('setting:display', () => store.get('githubSetting'));
 	ipcMain
 		.on(
 			'setting:submit',
 			(_event: Electron.IpcMainEvent, data: SettingData) => {
+				const url = new URL(data.url);
 				store.set('githubSetting', {
-					baseUrl: data.baseUrl,
 					token:
 						data.token &&
 						safeStorage.encryptString(data.token).toString('base64'),
+					url: url.href,
 				});
 				settingWindow.hide();
 

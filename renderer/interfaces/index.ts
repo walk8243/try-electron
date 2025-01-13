@@ -1,9 +1,10 @@
 import type { PaletteMode } from '@mui/material';
-import type { UserInfo } from '../../types/User';
-import type { Issue, IssueSupplementMap } from '../../types/Issue';
-import type { UpdateStatus } from '../../types/Update';
 import type { ErrorData } from '../../types/Error';
+import type { Issue, IssueSupplementMap } from '../../types/Issue';
 import type { IssueFilterTypes } from '../../types/IssueFilter';
+import type { SettingData } from '../../types/Setting';
+import type { UpdateStatus } from '../../types/Update';
+import type { UserInfo } from '../../types/User';
 
 declare global {
 	interface Window {
@@ -63,5 +64,3 @@ declare global {
 		};
 	}
 }
-
-export type SettingData = { baseUrl: string; token?: string };

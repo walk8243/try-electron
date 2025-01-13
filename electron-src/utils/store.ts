@@ -1,12 +1,14 @@
 import { app } from 'electron';
 import Store from 'electron-store';
 import semver from 'semver';
+import GithubConstant from '../constant/GithubConstant';
 import type { UserInfo } from '../../types/User';
 import type { Issue, IssueSupplementMap } from '../../types/Issue';
+import type { SettingData } from '../../types/Setting';
 
 export const store = new Store<{
 	appVersion: string;
-	githubSetting: { baseUrl: string; token: string };
+	githubSetting: SettingData;
 	userInfo: UserInfo;
 	issueData: {
 		updatedAt: string;
@@ -22,11 +24,12 @@ export const store = new Store<{
 		githubSetting: {
 			type: 'object',
 			properties: {
-				baseUrl: {
-					type: 'string',
-				},
 				token: {
 					type: 'string',
+				},
+				url: {
+					type: 'string',
+					default: GithubConstant.URL,
 				},
 			},
 		},

@@ -8,6 +8,7 @@ import {
 } from '../tanslators/GithubTranslator';
 import { QUEUE_CONCURRENCY, QUEUE_INTERVAL, QUEUE_INTERVAL_CAP } from './queue';
 import { store } from './store';
+import GithubConstant from '../constant/GithubConstant';
 import StoreDataFlag from '../enum/StoreDataFlag';
 import type {
 	GithubUserInfo,
@@ -86,7 +87,7 @@ export const gainPrReviews = async (repository: string, prNumber: number) => {
 
 export const checkStoreData = () => {
 	const githubSetting = store.get('githubSetting');
-	return githubSetting?.baseUrl && githubSetting?.token
+	return githubSetting && githubSetting.url && githubSetting.token
 		? StoreDataFlag.VALID
 		: StoreDataFlag.INVALID;
 };
@@ -260,19 +261,25 @@ const requestToGithub = async (url: URL) => {
 };
 
 const getBaseUrl = () => {
-	const baseUrl = store.get('githubSetting', {
-		baseUrl: '',
+	const url = store.get('githubSetting', {
 		token: '',
-	}).baseUrl;
-	if (!baseUrl) {
-		throw new Error('No GitHub baseURL set. Please set one in the settings.');
+		url: '',
+	}).url;
+	if (!url) {
+		throw new Error('No GitHub url set. Please set one in the settings.');
 	}
 
-	return baseUrl;
+	if (url === GithubConstant.URL) {
+		return GithubConstant.API_URL;
+	}
+	return new URL('api/v3', url).href;
 };
 
 const getToken = () => {
-	const token = store.get('githubSetting', { baseUrl: '', token: '' }).token;
+	const token = store.get('githubSetting', {
+		token: '',
+		url: '',
+	}).token;
 	if (!token) {
 		throw new Error('No GitHub token set. Please set one in the settings.');
 	}

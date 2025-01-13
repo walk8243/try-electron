@@ -12,17 +12,15 @@ Amethystを使用するためには、以下2つの設定が必要です。
 
 ## URL
 
-URLには以下を設定してください。
+URLには以下のようにGitHubのトップページURLを設定してください。
 
 ```
-https://api.github.com/
+https://github.com/
 ```
 
-GitHub EnterpriseでURLが変わる場合は以下のように設定してください。
+GitHub EnterpriseでURLが変わる場合でも同様にトップページURLを設定してください。
 
-```
-https://(Domain)/api/v3/
-```
+例: `https://enterprise.github.xyz/`
 
 ## Token
 
