@@ -19,6 +19,7 @@ import {
 import { announceUpdate } from '../utils/release';
 import { store } from '../utils/store';
 import { isMac } from '../utils/window';
+import GithubConstant from '../constant/GithubConstant';
 import type { SettingData } from '../preload/setting';
 
 export const createMenu = ({
@@ -65,8 +66,9 @@ export const createMenu = ({
 	ipcMain.handle('setting:display', async () => {
 		return {
 			baseUrl: store.get('githubSetting', {
-				baseUrl: 'https://api.github.com/',
+				baseUrl: GithubConstant.API_URL,
 				token: '',
+				url: GithubConstant.URL,
 			}).baseUrl,
 		};
 	});
@@ -79,6 +81,7 @@ export const createMenu = ({
 					token:
 						data.token &&
 						safeStorage.encryptString(data.token).toString('base64'),
+					url: data.baseUrl,
 				});
 				settingWindow.hide();
 

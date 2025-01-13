@@ -1,7 +1,14 @@
 import { join } from 'node:path';
-import { BrowserWindow, BrowserView, clipboard, ipcMain } from 'electron';
+import {
+	BrowserWindow,
+	BrowserView,
+	clipboard,
+	ipcMain,
+	session,
+} from 'electron';
 import log from 'electron-log';
 import { getLoadedUrl } from './render';
+import { store } from './store';
 import { createWebviewMenu } from '../models/ContextMenu';
 
 export const isMac = process.platform === 'darwin';
@@ -109,6 +116,23 @@ export const createWebview = () => {
 		log.debug('webview context-menu', params);
 		const menu = createWebviewMenu(params);
 		menu.popup();
+	});
+	webview.webContents.on('did-finish-load', async () => {
+		try {
+			const url = store.get('githubSetting').url;
+			const cookies = await session.defaultSession.cookies.get({ url });
+			await Promise.all(
+				cookies
+					.filter((cooie) =>
+						['user_session', 'dotcom_user'].includes(cooie.name),
+					)
+					.map((cookie) =>
+						session.defaultSession.cookies.set({ url, ...cookie }),
+					),
+			);
+		} catch (error) {
+			log.warn('failed to update cookies', error);
+		}
 	});
 
 	return webview;
