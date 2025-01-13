@@ -261,18 +261,18 @@ const requestToGithub = async (url: URL) => {
 };
 
 const getBaseUrl = () => {
-	const baseUrl = store.get('githubSetting', {
+	const url = store.get('githubSetting', {
 		token: '',
 		url: '',
 	}).url;
-	if (!baseUrl) {
+	if (!url) {
 		throw new Error('No GitHub url set. Please set one in the settings.');
 	}
 
-	if (baseUrl === GithubConstant.URL) {
+	if (url === GithubConstant.URL) {
 		return GithubConstant.API_URL;
 	}
-	return `${baseUrl}api/v3/`;
+	return new URL('api/v3', url).href;
 };
 
 const getToken = () => {

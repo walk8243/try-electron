@@ -67,11 +67,12 @@ export const createMenu = ({
 		.on(
 			'setting:submit',
 			(_event: Electron.IpcMainEvent, data: SettingData) => {
+				const url = new URL(data.url);
 				store.set('githubSetting', {
 					token:
 						data.token &&
 						safeStorage.encryptString(data.token).toString('base64'),
-					url: data.url,
+					url: url.href,
 				});
 				settingWindow.hide();
 
