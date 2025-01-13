@@ -262,7 +262,6 @@ const requestToGithub = async (url: URL) => {
 
 const getBaseUrl = () => {
 	const baseUrl = store.get('githubSetting', {
-		baseUrl: '',
 		token: '',
 		url: '',
 	}).url;
@@ -278,7 +277,6 @@ const getBaseUrl = () => {
 
 const getToken = () => {
 	const token = store.get('githubSetting', {
-		baseUrl: '',
 		token: '',
 		url: '',
 	}).token;

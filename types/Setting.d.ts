@@ -1,1 +1,1 @@
-export type SettingData = { baseUrl: string; token?: string; url: string };
+export type SettingData = { url: string; token?: string };

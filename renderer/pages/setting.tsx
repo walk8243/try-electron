@@ -16,7 +16,7 @@ import { Heading } from '../components/Heading';
 import type { SettingData } from '../../types/Setting';
 
 const SettingPage = () => {
-	const [data, setData] = useState<SettingData>({ baseUrl: '', url: '' });
+	const [data, setData] = useState<SettingData>({ url: '' });
 	useEffect(() => {
 		window.setting
 			?.display()
@@ -30,7 +30,6 @@ const SettingPage = () => {
 
 	const handleSubmit = () => {
 		window.setting?.submit({
-			baseUrl: data.baseUrl,
 			token: data.token,
 			url: data.url,
 		});

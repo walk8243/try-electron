@@ -19,7 +19,6 @@ import {
 import { announceUpdate } from '../utils/release';
 import { store } from '../utils/store';
 import { isMac } from '../utils/window';
-import GithubConstant from '../constant/GithubConstant';
 import type { SettingData } from '../../types/Setting';
 
 export const createMenu = ({
@@ -63,21 +62,12 @@ export const createMenu = ({
 		},
 	]);
 
-	ipcMain.handle('setting:display', async () => {
-		return {
-			baseUrl: store.get('githubSetting', {
-				baseUrl: GithubConstant.API_URL,
-				token: '',
-				url: GithubConstant.URL,
-			}).baseUrl,
-		};
-	});
+	ipcMain.handle('setting:display', () => store.get('githubSetting'));
 	ipcMain
 		.on(
 			'setting:submit',
 			(_event: Electron.IpcMainEvent, data: SettingData) => {
 				store.set('githubSetting', {
-					baseUrl: data.baseUrl,
 					token:
 						data.token &&
 						safeStorage.encryptString(data.token).toString('base64'),
