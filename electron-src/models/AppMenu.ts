@@ -20,7 +20,7 @@ import { announceUpdate } from '../utils/release';
 import { store } from '../utils/store';
 import { isMac } from '../utils/window';
 import GithubConstant from '../constant/GithubConstant';
-import type { SettingData } from '../preload/setting';
+import type { SettingData } from '../../types/Setting';
 
 export const createMenu = ({
 	mainWindow,
@@ -81,7 +81,7 @@ export const createMenu = ({
 					token:
 						data.token &&
 						safeStorage.encryptString(data.token).toString('base64'),
-					url: data.baseUrl,
+					url: data.url,
 				});
 				settingWindow.hide();
 

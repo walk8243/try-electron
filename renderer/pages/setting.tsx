@@ -13,10 +13,10 @@ import {
 	Typography,
 } from '@mui/material';
 import { Heading } from '../components/Heading';
-import type { SettingData } from '../interfaces';
+import type { SettingData } from '../../types/Setting';
 
 const SettingPage = () => {
-	const [data, setData] = useState<SettingData>({ baseUrl: '' });
+	const [data, setData] = useState<SettingData>({ baseUrl: '', url: '' });
 	useEffect(() => {
 		window.setting
 			?.display()
@@ -29,7 +29,11 @@ const SettingPage = () => {
 	}, []);
 
 	const handleSubmit = () => {
-		window.setting?.submit({ baseUrl: data.baseUrl, token: data.token });
+		window.setting?.submit({
+			baseUrl: data.baseUrl,
+			token: data.token,
+			url: data.url,
+		});
 	};
 	const handleCancel = () => {
 		window.setting?.cancel();
@@ -55,9 +59,9 @@ const SettingPage = () => {
 								</TableCell>
 								<TableCell>
 									<TextField
-										value={data.baseUrl}
+										value={data.url}
 										onChange={(e) =>
-											setData(() => ({ ...data, baseUrl: e.target.value }))
+											setData(() => ({ ...data, url: e.target.value }))
 										}
 										variant="standard"
 									/>
